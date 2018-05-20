@@ -14,7 +14,7 @@
 				<textarea class="form-control" id="exampleFormControlTextarea3" rows="10" ng-model="content"></textarea>
 				<div class="center space">
 					<button type="button" class="btn btn-primary" ng-click="sendEmail();">Send</button>
-					<button type="button" class="btn btn-secondary" ng-click="openFileWindow();">File</button>
+					<button type="button" class="btn btn-secondary" ng-click="openFileWindow();">File {{fileName}}</button>
 					<input type="file" onchange="angular.element(this).scope().upload(this)"  id="fileUpload" style="display : none"></input>
 					
 				</div>

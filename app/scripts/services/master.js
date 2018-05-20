@@ -4,8 +4,7 @@ angular
 
 		return {	
 			fetchData: fetchData,
-			getTags : getTags,
-			sendMail : sendMail
+			getTags : getTags
 		};
 		function fetchData(term, limit) {
 			return $http.get('login').then(handleSuccess, handleError);
@@ -13,10 +12,6 @@ angular
 
 		function getTags() {
 			return $http.get('tags').then(handleSuccess, handleError);
-		}
-
-		function sendMail(obj) {
-			return $http.post('mail',obj).then(handleSuccess, handleError);
 		}
 		
 
