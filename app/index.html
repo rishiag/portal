@@ -10,6 +10,8 @@
 		<meta name="author" content="">
 		<link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/tags.css">
+		<link rel="stylesheet" href="css/ngToast.css">
 		<!--[if lt IE 9]>
 			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -19,10 +21,11 @@
 	<body ng-app="testApp">
 		<title update-title></title>
 		<div header></div>
+		<toast></toast>
 		<div class="main-container" ng-view=""></div>
 		<div footer></div>
 		<div class="load-wait" id="loading"></div>
-		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="angular/angular.min.js"></script>
 		<script src="angular-animate/angular-animate.min.js"></script>
 		<script src="angular-cookies/angular-cookies.min.js"></script>
@@ -31,7 +34,9 @@
 		<script src="angular-sanitize/angular-sanitize.min.js"></script>
 		<script src="angular-touch/angular-touch.min.js"></script>
 		<script src="angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-
+		<script src="js/tags.js"></script>
+		<script src="js/fileUpload.js"></script>
+		<script src="js/ngToast.js"></script>
 		<script src="scripts/app.js"></script>
 		<script src="scripts/controllers/master.js"></script>
 		<script src="scripts/services/master.js"></script>

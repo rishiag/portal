@@ -16,7 +16,10 @@ angular
 		'ngRoute',
 		'ngSanitize',
 		'ngTouch',
-		'ui.bootstrap'
+		'ui.bootstrap',
+		'ngTagsInput',
+		'ngFileUpload',
+		'ngToast'
 	])
 	.config(function($routeProvider, $locationProvider) {
 		$routeProvider
@@ -48,3 +51,11 @@ angular
 		$httpProvider.defaults.transformRequest.unshift($httpParamSerializerJQLikeProvider.$get());
 		$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
 	})
+	.config(['ngToastProvider', function(ngToast) { 
+		ngToast.configure({ horizontalPosition: 'center', 
+			maxNumber: 1, 
+			animation: 'slide',
+			dismissButton : true,
+			timeout : 3000
+		}); 
+	}])
