@@ -18,6 +18,7 @@ angular
 		function sendMail(obj) {
 			return $http.post('mail',obj).then(handleSuccess, handleError);
 		}
+		
 
 		// private functions
 		function handleSuccess(res) {
