@@ -12,11 +12,15 @@ var express 			= require('express'),
 		router 				= express.Router(),
 		request 			= require('request'),
 		mongoose 			= require('mongoose'),
+		multipart = require('connect-multiparty'),
+	    multipartMiddleware = multipart();
 		port 					= process.env.PORT || 5678;
 
 		app.use(expressValidator());
 		app.use(bodyParser.json());
 		app.use(bodyParser.urlencoded({ extended: false }));
+		const fs = require('fs');
+		var _ = require('underscore');
 
 
 /**
@@ -42,15 +46,21 @@ mongoose.connection.on('error', (err) => {
  * Controllers (route handlers).
  */
 const userController = require('./controllers/user');
-
-
+const notificationController = require('./controllers/notification');
+const Utils = require('./Utils/utility');
+const utility = new Utils();
 /**
  * Primary app routes.
  */
 app.post('/api/register', userController.postRegister);
-
-
-
+app.post('/api/login', userController.login);
+app.post('/api/forgot', userController.forgot);
+app.get('/api/usertags', utility.authenticateUser,userController.getUserTags);
+app.post('/api/notification', multipartMiddleware,utility.authenticateUser,notificationController.saveNotification);
+app.get('/api/notification',utility.authenticateUser,notificationController.getNotification);
+app.get('/api/getTrainingMaterial',utility.authenticateUser, userController.getTrainingMaterial);
+app.get('/api/getTrainingSubject',utility.authenticateUser, userController.getTrainingSubject);
+app.get('/api/getTrainingMaterialHome',utility.authenticateUser, userController.getTrainingMaterialHome);
 
 if(process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() == "production"){
 

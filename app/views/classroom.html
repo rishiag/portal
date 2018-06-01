@@ -1,0 +1,59 @@
+<div class="center bottom-border">
+        <ul class="ul-sub-menu1">
+            <li class="menu1 sub-sub-menu active-bottom" ng-click="activateTrainingOrSession('training');" id="training">Training Material</li>
+            <li class="menu1 sub-sub-menu" ng-click="activateTrainingOrSession('session');" id="session">Session Recorded Videos</li>
+        </ul>
+ </div>
+ <div style="margin-top: 20px;" class="col-md-12">
+     <div style="" class="col-md-3 padding-right-zero padding-left-zero">
+            <div style="background: #4a90e2;border-radius: 4px;padding: 8px;color:#fff;" class="col-md-12 padding-right-zero padding-left-zero">
+                <div style="margin:7px;" class="col-md-4">List of : </div>
+                <div style="" class="col-md-6">
+                    <select class="form-control" id="sel1" ng-model="selectedSubject" ng-options="item for item in subjectOptions" style="color:#fff;border:0px;background:#4a90e2;" ng-change="subjectChanged();">
+                    </select>
+                </div>
+            </div>
+            <div style="background: #fff;border: 1px solid #9fcdf8;" class="col-md-12 padding-right-zero padding-left-zero">
+               <div ng-repeat="week in weeks" class="bottom-border col-md-12 padding-right-zero padding-left-zero" style="padding-top: 5px;padding-bottom: 5px;" >
+                    <div style="margin: 5px;cursor:pointer;"  ng-click="toggleWeek(week.weekName);" class="col-md-12">
+                        <div class="col-md-8 padding-right-zero padding-left-zero">{{week.weekName}}</div>
+                        <div style="text-align: -webkit-center;" class="col-md-3"><i class="fas fa-chevron-down {{week.weekName}}" style="color:#007fff"></i></div>
+                       
+                    </div>
+                    <!-- <div style="width:100%;height:1px;background:green"></div> -->
+                    <div id="{{week.weekName}}" style="display:none;padding-top: 3px;padding-bottom: 3px;" class="col-md-12 padding-right-zero">
+                        <div ng-repeat="subject in week.material" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;" ng-click="openMaterial(subject);" id="{{subject.title}}">
+                                {{subject.title}}
+                        </div>
+                    </div>
+              </div>
+            </div>
+     </div>
+     <div style="background:darkgrey;padding:10px;" class="col-md-8">
+            <!-- <div style="text-align:center;"><img src="../images/play-circle.png" ng-click="toggle();" style="margin-top:10px;"></div> -->
+            <player  videos=videoObj ng-if="videoAvailable"/>
+            <div class="col-md-12">
+                <div ng-show="fileAvailable">
+                 <div style="display:-webkit-box;">
+                        <div class="pdf-page-prev-next">
+                            <span class="glyphicon glyphicon-triangle-left" style="padding:3px;float:left;" ng-click="goPrevious()"></span>
+                            <span style="margin-left:12%;"> {{pageNum}}/{{pageCount}}</span>
+                            <span class="glyphicon glyphicon-triangle-right" style="padding:3px;float:right;" ng-click="goNext()"></span>
+                        </div>
+                        <div class="pdf-zoom-in-out">
+                                <span class="glyphicon glyphicon-zoom-in" style="padding:3px;float:left;" ng-click="zoomIn()"></span>
+                                <span class="" style=""></span>
+                                <span class="glyphicon glyphicon-zoom-out" style="padding:3px;float:right;" ng-click="zoomOut()"></span>  
+                        </div>
+                </div>
+                        <div class="wrapper" >
+                                <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1></ng-pdf>
+                        </div>
+                </div>
+            </div>
+            <div ng-show="displayAreaFlag" class="official-text-display">
+                    <div style="text-align: -webkit-center;font-size: -webkit-xxx-large;
+                ">Training Material Display Area</div>
+            </div>
+     </div>
+ </div>

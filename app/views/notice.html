@@ -1,0 +1,122 @@
+<div class="center">
+    <ul class="ul-sub-menu1">
+        <li class="menu1 sub-sub-menu active-bottom" ng-click="activateNotice('official');" id="official">Official Notice</li>
+        <li class="menu1 sub-sub-menu" ng-click="activateNotice('personal');" id="personal">Personal Notice</li>
+    </ul>
+ </div>
+
+ <div style="margin-left: auto;margin-right: auto;margin-top:3%;background:#f5f6fa !important" class="col-md-12">
+     <div class="notice-list col-md-4">
+         <div class="create-notice-button" data-toggle="modal" data-target="#myModal">
+               + Create New Notice
+         </div>
+         <div style="background:#f5f6fa;height:10px;"></div>
+            <div class="notice-list-title">
+                <span class="">List of Notices</span><span style="float:right;">{{commonArr.length}}</span>
+            </div>
+           <div ng-repeat="link in commonArr" class="notice-link" ng-click="openNotice(link,link.content.length>5 ? true : false,link._id)" id="{{link._id}}">
+                <span>{{link.subjectToShow}}</span>
+                <span style="float: right;margin-right:5px;">{{link.time }}</span>
+           </div>
+     </div>
+     <div class="notice-display-area col-md-7">
+        <div ng-show="commonArr.length"  class="col-md-12">
+                <div ng-show="fileAvailable">
+                        <div style="display:-webkit-box;">
+                        <div class="pdf-page-prev-next">
+                                <span class="glyphicon glyphicon-triangle-left" style="padding:3px;float:left;" ng-click="goPrevious()"></span>
+                                <span style="margin-left:12%;"> {{pageNum}}/{{pageCount}}</span>
+                                <span class="glyphicon glyphicon-triangle-right" style="padding:3px;float:right;" ng-click="goNext()"></span>  
+                        </div>
+
+                        <div class="pdf-zoom-in-out">
+                                <span class="glyphicon glyphicon-zoom-in" style="padding:3px;float:left;" ng-click="zoomIn()"></span>
+                                <span class="" style=""></span>
+                                <span class="glyphicon glyphicon-zoom-out" style="padding:3px;float:right;" ng-click="zoomOut()"></span>  
+                        </div>
+                            
+                         <!-- <span><a href="{{pdfUrl}}" target="_blank"><img src="../images/download.png" style="width:30px;"></a></span> -->
+                            
+                        </div>
+                        <div class="wrapper" >
+                                <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1></ng-pdf>
+                        </div>
+                 </div>
+                     <div ng-hide="fileAvailable" class="official-text-display">
+                            <div style="font-weight:600;">{{sender}}</div>
+                            <div>{{subject}}</div>
+                            <div style="width:100%;height:1px;background:#ccc;margin:15px 0 15px 0;"></div>
+                            <div style="white-space:pre-wrap;">{{textToShow}}
+                                    <div class="" ng-if="fileAttached"><a href="{{fileAttached}}" target="_blank"><img src="../images/move-waiting-down-alternative.png" style="width: 45px;"></a></div>
+                            </div>
+                     </div>
+        </div>
+        <div ng-hide="commonArr.length" class="official-text-display">
+                <div style="text-align: -webkit-center;font-size: -webkit-xxx-large;
+                ">{{noNoticeAvailableMeassage}}</div>
+        </div>
+     </div>
+ </div>
+
+ <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog" style="width:70%;">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Create New Notice</h4>
+            </div>
+            <div class="modal-body">
+                    <div class="">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form  name="emailForm" class="email-form">
+                                            <div class="form-group" style="/*display: -webkit-box;*/">
+                                               <div>
+                                                        <div>
+                                                            <span style="color:#4a4a4a">Notice Heading</span><span style="color:red;"><sup>&#x2605;</sup></span>
+                                                        </div>
+                                                        <div>
+                                                                <input type="text" class="form-control" placeholder="Input text"  ng-model="subject">
+                                                        </div>
+                                               </div>
+
+                                               <!-- <div style="margin-left: 40px;">
+                                                    <div>
+                                                            <span style="color:#494949">Public on</span><span style="color:red;"><sup>&#x2605;</sup></span>
+                                                    </div>
+                                                        <div>
+                                                                <select class="form-control" id="sel1" ng-model="selectedPublish" ng-options="item for item in publishOptions">
+                                                                      </select>
+                                                        </div>
+                                               </div> -->
+                                            </div>
+                                        <div class="form-group">
+                                                <div>
+                                                        <span style="color:#494949"> Addresses</span><span style="color:red;"><sup>&#x2605;</sup></span>
+                                                    </div>
+                                            <tags-input ng-model="tags" add-on-paste="true">
+                                                <auto-complete source="loadTags($query)"></auto-complete>
+                                              </tags-input>
+                                        </div>
+                                        
+                                        <textarea class="form-control" id="exampleFormControlTextarea3" rows="10" ng-model="content" placeholder="Write something....."></textarea>
+                                        <button type="button" class="btn btn-primary attach-file" ng-click="openFileWindow();">+ Attach File</button>
+                        
+                                        <div class="center space">
+                                            <input type="file" onchange="angular.element(this).scope().upload(this)"  id="fileUpload" style="display : none"></input>
+                                            
+                                        </div>
+                                      </form>
+                                </div>
+                            </div>
+                        </div>
+            </div>
+            <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-right" ng-click="sendEmail();">Send</button>
+            </div>
+          </div>
+          
+        </div>
+      </div>

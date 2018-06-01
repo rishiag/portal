@@ -94,11 +94,11 @@
                 a.events = i.simplePubSub(), h.load("tagsInput", a, c, {
                     template: [String, "ngTagsInput/tag-item.html"],
                     type: [String, "text", k],
-                    placeholder: [String, "User name or group name"],
+                    placeholder: [String, "..."],
                     tabindex: [Number, null],
                     removeTagSymbol: [String, String.fromCharCode(215)],
                     replaceSpacesWithDashes: [Boolean, !0],
-                    minLength: [Number, 3],
+                    minLength: [Number, 1],
                     maxLength: [Number, b],
                     addOnEnter: [Boolean, !0],
                     addOnSpace: [Boolean, !1],
@@ -329,7 +329,7 @@
                 a.events = g.simplePubSub(), f.load("autoComplete", a, c, {
                     template: [String, "ngTagsInput/auto-complete-match.html"],
                     debounceDelay: [Number, 100],
-                    minLength: [Number, 3],
+                    minLength: [Number, 1],
                     highlightMatchedText: [Boolean, !0],
                     maxResultsToShow: [Number, 10],
                     loadOnDownArrow: [Boolean, !1],

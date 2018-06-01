@@ -10,39 +10,70 @@
  */
 angular
 	.module('testApp', [
+		'ui.router',
 		'ngAnimate',
 		'ngCookies',
 		'ngResource',
-		'ngRoute',
 		'ngSanitize',
 		'ngTouch',
 		'ui.bootstrap',
 		'ngTagsInput',
 		'ngFileUpload',
-		'ngToast'
+		'ngToast',
+		'pdf'
 	])
-	.config(function($routeProvider, $locationProvider) {
-		$routeProvider
-			.when('/home', {
+	.config(function($stateProvider, $locationProvider,$urlRouterProvider) {
+		$stateProvider
+			.state('home', {
+				url: "/home",
 				templateUrl: 'views/home.html',
 				controller: 'HomeCtrl',
 				controllerAs: 'home'
-			})
-			.when('/login', {
+			  })
+			.state('login', {
+				url : '/login',
 				templateUrl: 'views/login.html',
 				controller: 'LoginCtrl',
 				controllerAs: 'login'
 			})
-			.when('/register', {
+			.state('register', {
+				url : '/register',
 				templateUrl: 'views/register.html',
 				controller: 'RegisterCtrl',
 				controllerAs: 'register'
 			})
-			.otherwise({
-				redirectTo: '/login'
+			.state('forgot', {
+				url : '/forgot',
+				templateUrl: 'views/forgot.html',
+				controller: 'ForgotCntrl',
+				controllerAs: 'forgot'
+			})
+			.state('dashboard', {
+				url : '/dashboard',
+				templateUrl: 'views/dashboard.html',
+				controller: 'Dashboard',
+				controllerAs: 'dashboard'
+			})
+			.state('notice', {
+				url : '/notice',
+				templateUrl: 'views/notice.html',
+				controller: 'Notice',
+				controllerAs: 'notice'
+			})
+			.state('logout', {
+				url : '/logout',
+				templateUrl: 'views/login.html',
+				controller: 'LogoutCntrl',
+				controllerAs: 'logout'
+			})
+			.state('classroom', {
+				url : '/classroom',
+				templateUrl: 'views/classroom.html',
+				controller: 'ClassroomCntrl',
+				controllerAs: 'classroom'
 			});
-
-		$locationProvider.html5Mode(true);
+			$urlRouterProvider.otherwise('/login')
+			$locationProvider.html5Mode(true);
 	})
 	.config(['$qProvider', function ($qProvider) {
 		$qProvider.errorOnUnhandledRejections(false);
@@ -59,3 +90,43 @@ angular
 			timeout : 3000
 		}); 
 	}])
+	.config(['$httpProvider',function($httpProvider) {
+		$httpProvider.interceptors.push('apiCheck');
+	}])
+	.service('apiCheck', ['$location',function($location) {
+		this.request = function(config) {
+			if(window.sessionStorage && window.sessionStorage.user && config.url.indexOf('/api') > -1){
+				config.headers['x-access-token']= JSON.parse(window.sessionStorage.user).token
+			}
+			return config;
+		};
+	
+		this.response = function(response) {
+		  if( response && response.data && response.data.status && response.data.status == 403){
+			console.log(response)	 
+			// window.location.href = '/logout';
+		  }else
+				   return response ;
+		}
+	}])
+	.run(function($rootScope, $location, $state,$timeout){
+		$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+			var privateUrl = ['/home','/notice','/classroom'];
+			if(privateUrl.indexOf(toState.url) > -1 && window.sessionStorage["user"]){
+				//$timeout(function(){
+					console.log("from heder")
+					
+				//},2)
+				$rootScope.loggedin = true;	
+				//console.log(JSON.parse(window.sessionStorage.user))
+				$rootScope.userName = JSON.parse(window.sessionStorage.user).name;
+				// $timeout(function(){
+				// 	$('.header-class').removeClass("top-two-header");
+				// })
+				//window.location.href = '/login';
+			}else if(privateUrl.indexOf(toState.url) > -1 && !window.sessionStorage["user"]){
+				$('.header-class').addClass("top-two-header");
+				$location.path('/login');
+			}
+		})
+	})

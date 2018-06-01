@@ -1,24 +1,56 @@
-<div class="container">
-	<div class="row center space"> <span class="title-font">Compose Your Email Here</span></div>
-	<div class="row">
+<div style="" class="home-page">
+
 		<div class="col-md-12">
-			<form  name="emailForm" class="email-form">
-				<div class="form-group">
-					<tags-input ng-model="tags" add-on-paste="true">
-						<auto-complete source="loadTags($query)"></auto-complete>
-					  </tags-input>
+				<div class="col-md-6" style="margin-top: 10px;">
+					<div class="academics-notices">Academics</div>
+					<div class="home-child-title" style="color:#425364;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;border-color:#e0e6ef !important;">
+						<span stle="color: #425364;">Training Material</span>
+						<span style="float:right;font-size: initial;">{{trainingArr.length}}</span>
+					</div>
+					<div class="home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;" ng-click="callFromHome(training,'classroom')">{{training.title}}</div>
+					<div class="home-child-one-child home-view-more" ng-click="callFromHome(null,'classroom')" ng-if="trainingArr.length>0">View More</div>
+					<div ng-if="trainingArr.length==0" class="no-material-notice">No Training Material Available</div>
 				</div>
-				<div class="form-group">
-				  <input type="text" class="form-control" placeholder="subject"  ng-model="subject">
-				</div>
-				<textarea class="form-control" id="exampleFormControlTextarea3" rows="10" ng-model="content"></textarea>
-				<div class="center space">
-					<button type="button" class="btn btn-primary" ng-click="sendEmail();">Send</button>
-					<button type="button" class="btn btn-secondary" ng-click="openFileWindow();">File {{fileName}}</button>
-					<input type="file" onchange="angular.element(this).scope().upload(this)"  id="fileUpload" style="display : none"></input>
-					
-				</div>
-			  </form>
+				<!-- <div style="width:3%"></div> -->
+				<div class=" col-md-6" style="margin-top: 10px;">
+						<div class="academics-notices">Notices</div>
+						<div class="home-child-title" style="color:#425364;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;display:-webkit-box;border-color:#e0e6ef !important;">
+							<div style="width:100%;display:-webkit-box">
+								<div style="width:38%;color: #425364;">Notices</div>
+								<div class="notice-home-count">
+									<div style="color:#007fff;">{{unread}} Unread</div>
+									<div style="width:2px;background:#95a9c0;margin: 0 2px 0 2px;"></div>
+									<div style="color:#425364">{{notices.length}} Total</div>
+								</div>
+							</div>
+						</div>
+						<div class="home-child-one-child" ng-repeat="notice in notices" style="padding: 10px 15px 10px 15px;display: -webkit-box;border-color:#e0e6ef;"  ng-click="callFromHome(notice,'notice');" ng-style="(notice.status == 'unread') && {'color': '#007fff'}">
+							<div class="notice-subject-home">{{notice.subjectToShow}}</div>
+							<div style="" class="notice-type-home">{{notice.notificationType ? notice.notificationType :'official' }}</div> &nbsp; &nbsp; 
+							<div style="" class="notice-time-home">{{notice.time}}</div>
+						</div>
+						<div class="home-child-one-child home-view-more" ng-click="callFromHome(null,'notice')" ng-if="notices.length>0">View More</div>
+						<div ng-if="notices.length==0" class="no-material-notice">No Notice Available</div>
+					</div>
 		</div>
-	</div>
+		<!-- <div class="col-md-12" style="margin-top: 44px;" >
+			<div style="" class="col-md-6">
+				<div style="background: #007fff;border-radius: 6px;padding: 2%;color:#fff;text-align: -webkit-center;margin-top:10px;" class="col-md-5">
+					<div style="text-align: -webkit-center;">
+						<div style="width: 68px;background: #d8d8d8;height: 68px;border-radius: 34px"></div>
+					</div>
+					<div style="">Happy Birthday!<br/> <span style="font-size:24px;">Mayak verma</span>
+					</div>
+				</div>
+				<div style="background:#7ed321;border-radius:6px;padding: 2%;color:#fff;text-align: -webkit-center;margin-top:10px;" class="col-md-5 padding-left-zero event-mar">
+						<div style="text-align: -webkit-center;"><div style="width: 68px;background: #d8d8d8;height: 68px;border-radius: 34px"></div></div>
+					<div style="">Happy Holi!<br/> <span style="font-size:24px;">Gather @Hall</span></div>
+				</div>
+			</div>
+		<div style="width:3%"></div>
+			<div  class="col-md-6 " style="color:#425364;border-top-left-radius: 6px;border-top-right-radius: 6px;margin-top:10px;">
+					<div class="col-md-12 home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;">{{training.fileName}}</div>
+			</div>
+		</div> -->
+			
 </div>

@@ -1,0 +1,44 @@
+<div>
+			<div ng-controller="Dashboard">
+				<nav class="navbar navbar-default navbar-back" style="margin-bottom:0px !important">
+					<div class="container-fluid">
+					  <div class="topbar-user">
+						<div class="pull-right">
+							<a href="/profile" >
+								<span class="user-name">{{userName}}</span><span><img src="../images/login.png" alt="user" class="img-circle"> </span>
+							  </a>
+						</div>
+						<div class="pull-left">
+								<a href="/home" >
+									<img src="../images/logo12.png" style="width:50px;">
+								</a>
+							</div>
+					  </div>
+					</div>
+				  </nav>
+				
+				  <nav class="navbar navbar-default navbar-back top-bar-main" style="margin-bottom:0px !important">
+					<div class="container-fluid">
+					  <div class="">
+					   <ul class="ul-sub-menu col-md-12">
+						   <li class="menu col-md-4" ng-click="callOption('home')" id="frame">Home</li>
+						   <li class="menu col-md-4" ng-click="callOption('notice')" id="notice"><i class="far fa-bell"></i>Notices</li>
+						   <li class="menu col-md-4" ng-click="callOption('classroom')" id="classroom">Classroom Training</li>
+						   <!-- <li class="menu" ng-click="callOption('club')" id="club">Clubs and Societies</li>
+						   <li class="menu" ng-click="callOption('administrative')" id="administrative">Administrative Corner</li> -->
+					   </ul>
+					  </div>
+					</div>
+				  </nav>
+			</div>
+</div>
+
+<div class="side-bar-main">
+		<span style="font-size:30px;cursor:pointer;padding-left: 10px;" onclick="openNav()">&#9776;</span>
+	<div id="mySidenav" class="sidenav">
+		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+		<a href="/home" onclick="closeNav()">Home</a>
+		<a href="/notice"  onclick="closeNav()">Notice</a>
+		<a href="/classroom"  onclick="closeNav()">Classroom Training</a>
+	</div>
+</div>
