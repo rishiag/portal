@@ -5,12 +5,13 @@ const Utils = require('../Utils/utility')
 const utility = new Utils();
 const fs = require('fs');
 const directoryExists = require('directory-exists');
+const bcrypt = require('bcrypt-nodejs');
 
 module.exports.postRegister = (req, res, next) => {
-  //console.log('from reg')
+  console.log('from reg',req.body.passwd)
     const user = new User({
       email: req.body.email,
-      password: req.body.password,
+      password: req.body.passwd,
       name: req.body.name,
     });
 
@@ -38,13 +39,20 @@ module.exports.postRegister = (req, res, next) => {
 
 module.exports.login = function(req,res){
   if(req.body.email && req.body.passwd){
-    User.findOne({ email: req.body.email,password: req.body.passwd},{password : 0},function(err,user){
+    User.findOne({ email: req.body.email},function(err,user){
+      console.log(err,user)
       if(!err)
         if(user){
-          utility.secureUser(user._id,function(err,token){
-            var logUser = {email : user.email,_id : user._id,token : token,name : user.name};
-            res.send({status:200,message:'Success',data:logUser});            
-          })
+          user.comparePassword(req.body.passwd, (err, isMatch) => {
+           if(!err && isMatch){
+            utility.secureUser(user._id,function(err,token){
+              var logUser = {email : user.email,_id : user._id,token : token,name : user.name};
+              res.send({status:200,message:'Success',data:logUser});            
+            })
+           }else{
+            res.send({status:404,message:'User password is incorrect'});
+           }
+          });
         }
         else
             res.send({status:404,message:'Error'});
