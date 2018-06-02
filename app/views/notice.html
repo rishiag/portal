@@ -14,7 +14,7 @@
             <div class="notice-list-title">
                 <span class="">List of Notices</span><span style="float:right;">{{commonArr.length}}</span>
             </div>
-           <div ng-repeat="link in commonArr" class="notice-link" ng-click="openNotice(link,link.content.length>5 ? true : false,link._id)" id="{{link._id}}">
+           <div ng-repeat="link in commonArr" class="notice-link" ng-click="openNotice(link,link.content.length>=1 ? true : false,link._id)" id="{{link._id}}">
                 <span>{{link.subjectToShow}}</span>
                 <span style="float: right;margin-right:5px;">{{link.time }}</span>
            </div>

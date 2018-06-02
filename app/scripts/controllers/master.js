@@ -249,7 +249,7 @@ angular.module('testApp')
 					$scope.activateNotice($rootScope.notice.notificationType,$rootScope.notice);
 				}else{
 				 if($scope.commonArr.length > 0)
-					if($scope.commonArr[0].content.length > 5){
+					if($scope.commonArr[0].content.length >= 1){
 						$scope.fileAvailable = false;
 						$scope.textToShow = $scope.commonArr[0].content;
 						$scope.sender = $scope.commonArr[0].creator;
@@ -347,13 +347,13 @@ angular.module('testApp')
 				$scope.commonArr = notice.notificationType == 'official' ? $scope.official : $scope.personal;
 				$('.ul-sub-menu1 li.active-bottom').removeClass('active-bottom');
 				$('#'+type).addClass('active-bottom');
-				$scope.openNotice(notice,notice.content.length > 5 ? true : false,notice._id)
+				$scope.openNotice(notice,notice.content.length >= 1 ? true : false,notice._id)
 			}else{
 				if(type == 'personal')
 					$scope.commonArr = $scope.personal;
 				else
 					$scope.commonArr = $scope.official;
-				if($scope.commonArr.length > 0 && $scope.commonArr[0].content.length > 5){
+				if($scope.commonArr.length > 0 && $scope.commonArr[0].content.length >= 1){
 					$scope.fileAvailable = false;
 					$scope.textToShow = $scope.commonArr[0].content;
 					$scope.sender = $scope.commonArr[0].creator;
