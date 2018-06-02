@@ -22,7 +22,7 @@
                     </div>
                     <!-- <div style="width:100%;height:1px;background:green"></div> -->
                     <div id="{{week.weekName}}" style="display:none;padding-top: 3px;padding-bottom: 3px;" class="col-md-12 padding-right-zero">
-                        <div ng-repeat="subject in week.material" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;" ng-click="openMaterial(subject);" id="{{subject.title}}">
+                        <div ng-repeat="subject in week.material" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;" ng-click="openMaterial(subject);" id="{{subject.id}}">
                                 {{subject.title}}
                         </div>
                     </div>
@@ -31,9 +31,12 @@
      </div>
      <div style="background:darkgrey;padding:10px;" class="col-md-8">
             <!-- <div style="text-align:center;"><img src="../images/play-circle.png" ng-click="toggle();" style="margin-top:10px;"></div> -->
-            <player  videos=videoObj ng-if="videoAvailable"/>
+            <div class="col-md-12" ng-if="videoAvailable">
+                    <player  videos=videoObj />
+            </div>
             <div class="col-md-12">
                 <div ng-show="fileAvailable">
+                       
                  <div style="display:-webkit-box;">
                         <div class="pdf-page-prev-next">
                             <span class="glyphicon glyphicon-triangle-left" style="padding:3px;float:left;" ng-click="goPrevious()"></span>
@@ -46,9 +49,10 @@
                                 <span class="glyphicon glyphicon-zoom-out" style="padding:3px;float:right;" ng-click="zoomOut()"></span>  
                         </div>
                 </div>
-                        <div class="wrapper" >
-                                <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1></ng-pdf>
-                        </div>
+                <div ng-show="loadingPdf" style="text-align:-webkit-center;margin-top:20%;"><img src="../images/Loading_icon_with_fade.svg" style="width:50px;"></div>
+                    <div class="wrapper" style="margin-top:5px;">
+                            <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1 style="width: 90%;height: 400px;padding: 5%;"></ng-pdf>
+                    </div>
                 </div>
             </div>
             <div ng-show="displayAreaFlag" class="official-text-display">

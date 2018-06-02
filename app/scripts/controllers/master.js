@@ -254,6 +254,7 @@ angular.module('testApp')
 						$scope.textToShow = $scope.commonArr[0].content;
 						$scope.sender = $scope.commonArr[0].creator;
 						$scope.subject = $scope.commonArr[0].subject;
+						$scope.fileAttached =  $scope.commonArr[0].fileName ?  $scope.commonArr[0].fileName:null;
 					}else{
 						$scope.fileAvailable = true;
 						$scope.pdfUrl = $scope.commonArr[0].fileName;
@@ -261,7 +262,7 @@ angular.module('testApp')
 				else
 					$scope.noNoticeAvailableMeassage = 'No Official Notice Available.';
 					$scope.officialTotal = $scope.official.length;
-				$scope.personalTotal = $scope.personal.length;
+					$scope.personalTotal = $scope.personal.length;
 				$timeout(function(){
 					if($scope.commonArr.length > 0)
 					$('#'+$scope.commonArr[0]._id).addClass('notice-active');
@@ -342,7 +343,7 @@ angular.module('testApp')
 
 		$scope.activateNotice = function(type,notice){
 			console.log(type,notice)
-			$scope.fileAttached = null;
+			//$scope.fileAttached = null;
 			if(notice){
 				$scope.commonArr = notice.notificationType == 'official' ? $scope.official : $scope.personal;
 				$('.ul-sub-menu1 li.active-bottom').removeClass('active-bottom');
@@ -411,7 +412,7 @@ angular.module('testApp')
 
 		BackendService.getTrainingMaterial($rootScope.classroom ? $rootScope.classroom.subject : null).then(function(response){
 			if(response.status == 200){
-				console.log('$scope.dataweeks',response.data)
+				//console.log('$scope.data......',response.data)
 				$scope.activeTab = 'training';
 				$scope.training = response.data.training?response.data.training:[];
 				$scope.session = response.data.session?response.data.session:[];
@@ -463,6 +464,7 @@ angular.module('testApp')
 			$scope.displayAreaFlag = true;
 			$scope.fileAvailable = false;
 			$scope.pdfUrl = null;
+			$scope.videoAvailable = false;
 			if(tab == 'training'){
 				$scope.weeks = $scope.training;
 				$scope.activeTab = 'training';
@@ -516,15 +518,20 @@ angular.module('testApp')
 		}
 		
 
+		
+			$scope.onLoad = function() {
+				$scope.loadingPdf = false;
+			}
+
 		$scope.openMaterial = function(obj){
-			$('.material-link').removeClass('training-material-active');
-		    $('#'+obj.title).addClass('training-material-active');
+			
 			console.log('obj...',obj);
 			$rootScope.classroom = null;
 			$scope.displayAreaFlag = false;
 			var extArr = obj.link.split('.');
 			console.log('extArr',extArr)
 			if(extArr[extArr.length-1] == 'pdf'){
+				$scope.loadingPdf = true;
 				$scope.videos = [];
 				$scope.fileAvailable = true;
 				$scope.videoAvailable = false;
@@ -537,6 +544,11 @@ angular.module('testApp')
 				$scope.videoAvailable = true;
 				$scope.videos = [{"type":"mp4","src":obj.link,"poster":"http://www.videojs.com/img/poster.jpg","captions":"http://www.videojs.com/vtt/captions.vtt"}];				
 			}
+
+			$timeout(function(){
+				$('.material-link').removeClass('training-material-active');
+		   		 $('#'+obj.id).addClass('training-material-active');
+			})
 		}
 
 

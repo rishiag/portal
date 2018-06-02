@@ -38,17 +38,23 @@
                          <!-- <span><a href="{{pdfUrl}}" target="_blank"><img src="../images/download.png" style="width:30px;"></a></span> -->
                             
                         </div>
-                        <div class="wrapper" >
-                                <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1></ng-pdf>
+                        <div class="wrapper" style="margin-top:5px;">
+                                <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1style="width: 90%;height: 400px;padding: 5%;"></ng-pdf>
                         </div>
                  </div>
                      <div ng-hide="fileAvailable" class="official-text-display">
-                            <div style="font-weight:600;">{{sender}}</div>
-                            <div>{{subject}}</div>
+                            <div ><span style="font-weight:600;">From </span>: {{sender}}</div>
+                            <div><span style="font-weight:600;">Subject</span> : {{subject}}</div>
                             <div style="width:100%;height:1px;background:#ccc;margin:15px 0 15px 0;"></div>
                             <div style="white-space:pre-wrap;">{{textToShow}}
-                                    <div class="" ng-if="fileAttached"><a href="{{fileAttached}}" target="_blank"><img src="../images/move-waiting-down-alternative.png" style="width: 45px;"></a></div>
                             </div>
+                            <div class="" ng-if="fileAttached" style="width:90px;">
+                                        <!-- <div style="font-weight:600;"></div> -->
+                                        <a href="{{fileAttached}}" target="_blank" style="text-decoration:none;">
+                                                <div>Attachment</div>
+                                                <div><img src="../images/download.png" style="width: 45px;"></div>
+                                        </a>
+                             </div>
                      </div>
         </div>
         <div ng-hide="commonArr.length" class="official-text-display">

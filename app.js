@@ -61,6 +61,7 @@ app.get('/api/notification',utility.authenticateUser,notificationController.getN
 app.get('/api/getTrainingMaterial',utility.authenticateUser, userController.getTrainingMaterial);
 app.get('/api/getTrainingSubject',utility.authenticateUser, userController.getTrainingSubject);
 app.get('/api/getTrainingMaterialHome',utility.authenticateUser, userController.getTrainingMaterialHome);
+app.get('/api/getTraining', userController.getFolderFiles);
 
 if(process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() == "production"){
 

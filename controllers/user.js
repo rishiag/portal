@@ -6,6 +6,9 @@ const utility = new Utils();
 const fs = require('fs');
 const directoryExists = require('directory-exists');
 const bcrypt = require('bcrypt-nodejs');
+const uuidV4 = require('uuid/v4');
+var util = require('util');
+var path = require('path')
 
 module.exports.postRegister = (req, res, next) => {
   //console.log('from reg',req.body.passwd)
@@ -102,18 +105,29 @@ module.exports.getUserTags = function(req,res){
 module.exports.getTrainingMaterial = function(req,res){
 
   var dirName = '';
-	var walk = function(dir,front,allSubject,subject) {
+	var walk = function(dir,front,allSubject,subject,list) {
     var results = [];
-   // console.log('dir',dir)
-    var list = fs.readdirSync(dir);
+    var listOfItem = list?list:fs.readdirSync(dir);
     //console.log(list)
-		list.forEach(function(item){
+		listOfItem.forEach(function(item){
 			var allMaterial = fs.readdirSync(dir + '/' + item);
-			var material = []
-			allMaterial.forEach(function(mat){
-				material.push({link:front+item+'/'+mat,title:mat.split('.')[0]});
-			})
-			results.push({weekName:item,material : material,subject:subject,allSubject:allSubject?allSubject:null});
+      var material = [];
+      console.log(allMaterial,item)
+      
+        allMaterial.forEach(function(mat){
+          if(!list){
+            material.push({link:front+item+'/'+mat,title:mat.split('.')[0],id:uuidV4()});
+          }else{
+            var allSubjectMat = fs.readdirSync(dir + item+'/'+mat);
+                allSubjectMat.forEach(function(course){
+                  material.push({link:front+item+'/'+mat+course,title:course.split('.')[0],id:uuidV4()});
+                })
+                results.push({weekName:mat,material : material,subject:subject,allSubject:allSubject?allSubject:null});
+          }
+         
+        })
+        if(!list)
+			    results.push({weekName:item,material : material,subject:subject,allSubject:allSubject?allSubject:null});
 		})
 		return results;
   }
@@ -126,8 +140,8 @@ module.exports.getTrainingMaterial = function(req,res){
   if(req.query.subject && req.query.subject != 'null'){
        dir = dir+req.query.subject;
     var front = 'training-material/'+req.query.subject+'/';
-    var frontSession = 'session-recorded/'+req.query.subject+'/';
-        dirSession = dirSession+req.query.subject;
+   // var frontSession = 'session-recorded/'+req.query.subject+'/';
+       // dirSession = dirSession+req.query.subject;
     var subject = req.query.subject;
     
     directoryExists(dir, (error, result) => {
@@ -135,10 +149,13 @@ module.exports.getTrainingMaterial = function(req,res){
       if(result)
          training = walk(dir,front,allSubject,subject);
          
-          directoryExists(dirSession, (error, result) => {
+          directoryExists(dirSession+req.query.subject, (error, result) => {
           //  console.log('dirSession',result,dirSession); // result is a boolean;
             if(result)
-                session = walk(dirSession,frontSession,allSubjectSession,subject);
+                session = walk(dirSession+req.query.subject,'session-recorded/'+req.query.subject+'/',allSubjectSession,subject);
+            else
+                session = walk(dirSession,'session-recorded/',allSubjectSession,allSubjectSession[0],allSubjectSession);
+
                 res.send({status:200,data:{training:training,session:session}});
           });
     });
@@ -201,7 +218,7 @@ module.exports.getTrainingMaterialHome = function(req,res){
 			results=results.concat(walk(file))
         } else {
           f = f.split('.')[0]
-          results.push({'fileName' : file,'date': new Date(stat.mtime),'title':f});
+          results.push({'fileName' : file,'date': new Date(stat.mtime),'title':f,id:uuidV4()});
         }
 
     });
@@ -221,3 +238,104 @@ module.exports.getTrainingMaterialHome = function(req,res){
   
   res.send({status : 200,data:data});
 }
+
+
+module.exports.getFolderFiles = function(req,res){
+  //if (module.parent == undefined){
+   
+
+    // function dirTree(filename) {
+    //   var stats = fs.lstatSync(filename),
+    //       info = {
+    //           path: filename,
+    //           name: path.basename(filename)
+    //       };
+    
+    //   if (stats.isDirectory()) {
+    //       info.type = "folder";
+    //       info.children = fs.readdirSync(filename).map(function(child) {
+    //           return dirTree(filename + '/' + child);
+    //       });
+    //   } else {
+    //       // Assuming it's a file. In real life it could be a symlink or
+    //       // something else!
+    //       info.type = "file";
+    //   }
+    
+    //  return info;
+    // }
+
+    //if (module.parent == undefined) {
+      // var list =  util.inspect(dirTree('app/training-material'), false, null);
+      // setTimeout(function () {
+      //   console.log('boo',list);
+      //   list = JSON.parse(JSON.stringify(list))
+      //   res.send({status:200,data:JSON.parse(list)});
+      //   // var subjects = [];
+      //   // list = JSON.parse(list);
+      //   // if(list.children){
+      //   //   list.children.forEach(function(subject){
+      //   //     subjects.push(subject.name);
+      //   //   });
+      //   //   res.send({status:200,data:{folderFiles: list,allSubject:subjects}});
+      //   // }else{
+      //   //   res.send({status:200,data:{}});
+      //   // }
+      // }, 100)
+   // }
+
+
+   var diretoryTreeToObj = function(dir, done) {
+    var results = [];
+
+    fs.readdir(dir, function(err, list) {
+        if (err)
+            return done(err);
+
+        var pending = list.length;
+
+        if (!pending)
+            return done(null, {name: path.basename(dir), type: 'folder', children: results});
+
+        list.forEach(function(file) {
+            file = path.resolve(dir, file);
+            fs.stat(file, function(err, stat) {
+                if (stat && stat.isDirectory()) {
+                    diretoryTreeToObj(file, function(err, res) {
+                        results.push({
+                            name: path.basename(file),
+                            type: 'folder',
+                            children: res
+                        });
+                        if (!--pending)
+                            done(null, results);
+                    });
+                }
+                else {
+                  var link = file.split('/app/')[1];
+                    results.push({
+                        type: 'file',
+                        link : link,
+                        title : path.basename(file).split('.')[0],
+                        name: path.basename(file)
+                    });
+                    if (!--pending)
+                        done(null, results);
+                }
+            });
+        });
+    });
+}
+
+diretoryTreeToObj('app/training-material', function(err, result){
+  if(err)
+      console.error(err);
+
+  //console.log(JSON.stringify(result));
+  res.send({status:200,data:result});
+});
+       
+}
+
+ 
+
