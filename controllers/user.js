@@ -8,7 +8,7 @@ const directoryExists = require('directory-exists');
 const bcrypt = require('bcrypt-nodejs');
 
 module.exports.postRegister = (req, res, next) => {
-  console.log('from reg',req.body.passwd)
+  //console.log('from reg',req.body.passwd)
     const user = new User({
       email: req.body.email,
       password: req.body.passwd,
@@ -17,7 +17,7 @@ module.exports.postRegister = (req, res, next) => {
 
     User.findOne({ email: req.body.email }, (err, existingUser) => {
       if (err) {
-        console.error(err)
+        //console.error(err)
         res.send({ status:400,message: 'Something went wrong!! Please try again later!'});
       }else{
         if (existingUser) {
@@ -40,7 +40,7 @@ module.exports.postRegister = (req, res, next) => {
 module.exports.login = function(req,res){
   if(req.body.email && req.body.passwd){
     User.findOne({ email: req.body.email},function(err,user){
-      console.log(err,user)
+      //console.log(err,user)
       if(!err)
         if(user){
           user.comparePassword(req.body.passwd, (err, isMatch) => {
@@ -103,8 +103,10 @@ module.exports.getTrainingMaterial = function(req,res){
 
   var dirName = '';
 	var walk = function(dir,front,allSubject,subject) {
-		var results = [];
-		var list = fs.readdirSync(dir);
+    var results = [];
+   // console.log('dir',dir)
+    var list = fs.readdirSync(dir);
+    //console.log(list)
 		list.forEach(function(item){
 			var allMaterial = fs.readdirSync(dir + '/' + item);
 			var material = []
@@ -118,43 +120,44 @@ module.exports.getTrainingMaterial = function(req,res){
   var dir = 'app/training-material/';
   var dirSession = 'app/session-recorded/';
   var allSubjectSession = fs.readdirSync(dirSession);
+  //console.log('allSubjectSession',allSubjectSession)
   var allSubject = fs.readdirSync(dir);
   var training,session;
   if(req.query.subject && req.query.subject != 'null'){
-       dir = dir+req.query.subject+'/';
+       dir = dir+req.query.subject;
     var front = 'training-material/'+req.query.subject+'/';
     var frontSession = 'session-recorded/'+req.query.subject+'/';
-    var dirSession = dirSession+req.query.subject+'/';
+        dirSession = dirSession+req.query.subject;
     var subject = req.query.subject;
     
     directoryExists(dir, (error, result) => {
       //console.log(result); // result is a boolean;
       if(result)
          training = walk(dir,front,allSubject,subject);
-      directoryExists(dirSession, (error, result) => {
-      //console.log(result); // result is a boolean;
-      if(result)
-          session = walk(dirSession,frontSession,allSubjectSession,subject);
-          res.send({status:200,data:{training:training,session:session}});
-      });
-      
+         
+          directoryExists(dirSession, (error, result) => {
+          //  console.log('dirSession',result,dirSession); // result is a boolean;
+            if(result)
+                session = walk(dirSession,frontSession,allSubjectSession,subject);
+                res.send({status:200,data:{training:training,session:session}});
+          });
     });
-
-   
-    // if(fs.statSync(dir))
-    //    var training = walk(dir,front,fs.readdirSync(dir),subject);
-    // if(fs.statSync(dirSession))
-    //     var session = walk(dirSession,frontSession,fs.readdirSync(dirSession),subject);
   }else{
     var list = fs.readdirSync(dir);
     var listSession = fs.readdirSync(dirSession);
-    dirSession = dirSession + listSession[0]+'/';
-    var dir = dir+list[0]+'/';
-    var front =  'training-material/'+list[0]+'/';
-    var frontSession = 'session-recorded/'+listSession[0]+'/'
-    var subject = list[0];
-     training = walk(dir,front,allSubject,subject);
-     session = walk(dirSession,frontSession,allSubjectSession,subject);
+    if(list.length>0){
+      dir = dir+list[0]+'/';
+      var front =  'training-material/'+list[0]+'/';
+
+      var subject = list[0];
+      training = walk(dir,front,allSubject,subject);
+    }
+
+    if(listSession.length > 0){
+      dirSession = dirSession + listSession[0]+'/';
+      var frontSession = 'session-recorded/'+listSession[0]+'/'
+      session = walk(dirSession,frontSession,allSubjectSession,subject);
+    }
      res.send({status:200,data:{training:training,session:session}});
   }
 

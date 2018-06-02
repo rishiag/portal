@@ -371,7 +371,7 @@ angular.module('testApp')
 			
 			
 
-			console.log($scope.commonArr[0]._id)
+		//	console.log($scope.commonArr[0]._id)
 			$timeout(function(){
 				if($scope.commonArr.length > 0 && !$rootScope.notice)
 					$('#'+$scope.commonArr[0]._id).addClass('notice-active');
@@ -460,6 +460,9 @@ angular.module('testApp')
 		}
 
 		$scope.activateTrainingOrSession = function(tab){
+			$scope.displayAreaFlag = true;
+			$scope.fileAvailable = false;
+			$scope.pdfUrl = null;
 			if(tab == 'training'){
 				$scope.weeks = $scope.training;
 				$scope.activeTab = 'training';
@@ -467,8 +470,19 @@ angular.module('testApp')
 				$scope.weeks = $scope.session;
 				$scope.activeTab = 'session';
 			}
-			$scope.selectedSubject = $scope.weeks[0].subject;
-			$scope.subjectOptions = $scope.weeks[0].allSubject;
+			if($scope.weeks.length > 0){
+				console.log('from week',$scope.weeks[0].subject)
+				$scope.disableSelectSubject = false;
+				
+				$scope.subjectOptions = $scope.weeks[0].allSubject ;
+				$scope.selectedSubject =  $scope.subjectOptions[0];
+			}else{
+				//console.log('from no week')
+				$scope.disableSelectSubject = true
+				$scope.selectedSubject = 'No subject Available';
+				$scope.subjectOptions = ['No subject Available'];
+			}
+			
 		}
 		
 
