@@ -10,7 +10,8 @@ angular
 			register : register,
 			getTrainingMaterial : getTrainingMaterial,
 			getTrainingSubject : getTrainingSubject,
-			getTrainingMaterialHome : getTrainingMaterialHome
+			getTrainingMaterialHome : getTrainingMaterialHome,
+			getTraining : getTraining
 		};
 		function getTags() {
 			return $http.get('/api/usertags').then(handleSuccess, handleError);
@@ -26,6 +27,10 @@ angular
 
 		function getTrainingMaterialHome(subject) {
 			return $http.get('/api/getTrainingMaterialHome').then(handleSuccess, handleError);
+		}
+
+		function getTraining(subject) {
+			return $http.get('/api/getTraining').then(handleSuccess, handleError);
 		}
 		
 		function login(obj) {

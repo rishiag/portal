@@ -82,7 +82,7 @@ angular.module('testApp')
             // '</div>'
     };
 }])
-	.controller('HomeCtrl', function ($scope, $uibModal,BackendService,ngToast,Upload,$filter,$rootScope,$location) {
+	.controller('HomeCtrl', function ($scope, $uibModal,BackendService,ngToast,Upload,$filter,$rootScope,$location,$timeout,$compile) {
 		$('.header-class').removeClass("top-two-header");
 		// $scope.trainingArr = [];
 		// 						{fileName : 'Minute to minute program of Mr bipin rawat'},
@@ -91,6 +91,10 @@ angular.module('testApp')
 		// $scope.notices = [];
 		// 						{fileName : 'Minute to minute program of Mr bipin rawat'},
 		// 						{fileName : 'Minute to minute program of Mr bipin rawat'}];
+
+		$scope.fileAvailable = false;
+		$scope.videoAvailable = false;
+
 		BackendService.getNotifications().then(function(response){
 			var folderName = 'notice-files/';
 			if(response.status == 200){
@@ -116,10 +120,75 @@ angular.module('testApp')
 			if(response.status == 200){
 				$scope.trainingArr = response.data;
 			}
-		})
+		});
+
+		$("#myModal").on('hidden.bs.modal', function () {
+			// /clearCanvas();
+			$scope.fileAvailable = false;
+			$scope.videoAvailable = false;
+			$scope.pdfUrl = '';
+			$scope.title = '';
+			$scope.videoAvailable = false;
+			$("#myModal").data('bs.modal', null);
+
+			
+		});
+
+		// $(document).on('hidden.bs.modal', function () {
+			
+		// 	$('#myModal').modal('remove')
+		// });
+
+		$scope.onLoad = function() {
+			//$scope.zoomIn();
+			//$scope.pageNum = 1;
+		}
+
+		$scope.onError = function(error) {
+			// handle the error
+			 console.log('from error',error);
+		}
+
+		$scope.onProgress = function(progress) {
+			// handle a progress bar
+			var progress1 = progress.loaded / progress.total
+			 console.log(progress1,$scope.pageNum,$scope.pageCount);
+			 
+			//   if(progress1 >= 1){
+			// 	 try{
+			// 		$scope.zoomIn();
+				
+			// 	 }catch(e){
+			// 		$scope.zoomOut();
+			// 	 }
+			//   }
+			 	
+		}
+
+		$scope.openModal = function(obj){
+			$scope.loadingPdf = true;
+			var filePart = obj.fileName.split('.');
+			$scope.title = obj.title;
+			if(filePart[filePart.length-1] == 'pdf' || filePart[filePart.length-1] == 'ppt'){
+				$scope.fileAvailable = true;
+				$scope.videoAvailable = false;
+				$scope.pdfUrl = obj.fileName.split('app/')[1];
+				//$('#pdfdiv').html($compile('<ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1 style="width: 90%;padding: 5%;"></ng-pdf>')($scope))
+			//	$scope.pdfUrl = 'http://docs.google.com/gview?url='+$scope.pdfUrl+'&embedded=true'
+				//$scope.zoomIn();
+			}else{
+				$scope.fileAvailable = false;
+				$scope.videoAvailable = true;
+				var link = obj.fileName.split('app/')[1];
+				$scope.videos = [{"type":"mp4","src":link,"poster":"http://www.videojs.com/img/poster.jpg","captions":"http://www.videojs.com/vtt/captions.vtt"}];	
+						
+			}
+			
+			
+				$('#myModal').modal('show');
+		}
 
 		$scope.callFromHome = function(obj,url){
-			//console.log('obj....',obj)
 			$rootScope[url] = obj;
 			$('.ul-sub-menu li.active').removeClass('active');
 			$('#'+url).addClass('active');
@@ -409,55 +478,50 @@ angular.module('testApp')
 			$('#'+evt.target.id).addClass('active-bottom');
 		});
 
-
-		BackendService.getTrainingMaterial($rootScope.classroom ? $rootScope.classroom.subject : null).then(function(response){
+		//getTrainingMaterial
+		BackendService.getTraining($rootScope.classroom ? $rootScope.classroom.subject : null).then(function(response){
 			if(response.status == 200){
-				//console.log('$scope.data......',response.data)
 				$scope.activeTab = 'training';
-				$scope.training = response.data.training?response.data.training:[];
-				$scope.session = response.data.session?response.data.session:[];
-				$scope.weeks = $scope.training;
-				
-				if($scope.weeks.length>0){
-					$scope.subjectOptions = $scope.weeks[0].allSubject;
-					console.log('$scope.weeks',$scope.weeks)
-					$scope.selectedSubject = $rootScope.classroom ? $rootScope.classroom.subject : $scope.weeks[0].subject;
-					if($rootScope.classroom){
-						var openThisObj;
-						var materialObj;
-						$scope.weeks.forEach(function(obj){
-							if(obj.weekName == $rootScope.classroom.week)
-							   materialObj = obj.material;
-							// if(obj.subject == $rootScope.classroom && obj.weekName == $rootScope.classroom.week && obj.title == $rootScope.classroom.title){
-							// 	openThisObj = obj;
-							// }
-						})
-
-						materialObj.forEach(function(obj){
-							if(obj.title == $rootScope.classroom.title){
-								openThisObj = obj;
-							}
-						})
-
-						$timeout(function(){
-							console.log($rootScope.classroom,openThisObj)
-						   $scope.toggleWeek($rootScope.classroom.week,$rootScope.classroom.title,openThisObj);
-						},5)
-					}
+				$scope.training = response.data.training ?response.data.training:[];
+				$scope.session = response.data.session ?response.data.session:[];
+				$scope.sessionSubjects = response.data.sessionSubjects;
+				$scope.trainingSubjects = response.data.trainingSubjects;
+				if($rootScope.classroom){
+					console.log($rootScope.classroom)
+					$scope.weeks = ($scope.training.find(o => o.name === $rootScope.classroom.subject)).children;
+					//$scope.weeks = $scope.training[0].children;
+					$scope.subjectOptions = $scope.trainingSubjects;
+					$scope.selectedSubject = $rootScope.classroom.subject;
+					$scope.toggleWeek(null,null,null,$rootScope.classroom);
+					
+				}else{
+					$scope.weeks = $scope.training[0].children;
+					$scope.subjectOptions = $scope.trainingSubjects;
+					$scope.selectedSubject = $scope.training[0].name;
 				}
 			}
 		});
 
 		$scope.subjectChanged = function(){
 			$('.load-wait').removeClass('.loading');
-			console.log('$scope.selectedSubject',$scope.selectedSubject)
-			BackendService.getTrainingMaterial($scope.selectedSubject).then(function(response){
-				console.log('success',response)
-				if(response.status == 200){
-				//	$('.load-wait').addClass('.loading');
-					$scope.weeks = response.data[$scope.activeTab];
+
+			$scope.displayAreaFlag = true;
+			$scope.fileAvailable = false;
+			$scope.pdfUrl = null;
+			$scope.videoAvailable = false;
+
+			if($scope.activeTab == 'training')
+				$scope.training.forEach(function(subject){
+					if(subject.name == $scope.selectedSubject){
+						$scope.weeks = subject.children;
+					}
+				});
+			else
+			$scope.session.forEach(function(subject){
+				if(subject.name == $scope.selectedSubject){
+					$scope.weeks = subject.children;
 				}
-			});
+			});	
 		}
 
 		$scope.activateTrainingOrSession = function(tab){
@@ -465,19 +529,20 @@ angular.module('testApp')
 			$scope.fileAvailable = false;
 			$scope.pdfUrl = null;
 			$scope.videoAvailable = false;
+			$scope.activeTab = tab;
 			if(tab == 'training'){
-				$scope.weeks = $scope.training;
+				$scope.weeks = $scope.training && $scope.training.length > 0 ? $scope.training[0].children :[];
 				$scope.activeTab = 'training';
+				$scope.subjectOptions = $scope.trainingSubjects;
+				$scope.selectedSubject = $scope.training[0].name;
 			}else{
-				$scope.weeks = $scope.session;
+				$scope.weeks = $scope.session && $scope.session.length > 0 ? $scope.session[0].children :[];
 				$scope.activeTab = 'session';
+				$scope.subjectOptions = $scope.sessionSubjects;
+				$scope.selectedSubject = $scope.session[0].name;
 			}
 			if($scope.weeks.length > 0){
-				console.log('from week',$scope.weeks[0].subject)
 				$scope.disableSelectSubject = false;
-				
-				$scope.subjectOptions = $scope.weeks[0].allSubject ;
-				$scope.selectedSubject =  $scope.subjectOptions[0];
 			}else{
 				//console.log('from no week')
 				$scope.disableSelectSubject = true
@@ -494,27 +559,45 @@ angular.module('testApp')
 
 		
 		//$scope.selectedSubject = $scope.subjectOptions[0];
-		$scope.toggleWeek = function(id,titleFromRoot,obj){
-			console.log('id...',id,titleFromRoot,obj);
-			var x = document.getElementById(id);
-				if (x.style.display === "none") {
-					x.style.display = "block";
-				} else {
-					x.style.display = "none";
-				}
-				var y = document.getElementsByClassName(id);
-				if(y[0].className.indexOf('up') > -1){
-					console.log("from uup")
-					$('.'+id).removeClass('fas fa-chevron-up')
-					$('.'+id).addClass('fas fa-chevron-down')
-				}else{
-					$('.'+id).removeClass('fas fa-chevron-down')
-					$('.'+id).addClass('fas fa-chevron-up')
-				}
-
-			if($rootScope.classroom){
-				$scope.openMaterial(obj)
+		$scope.toggleWeek = function(id,titleFromRoot,obj,objFromHome){
+			$rootScope.classroom = null;
+			var toggleForWeek = function(id){
+				
+				$timeout(function(){
+					var x = document.getElementById(id);
+					console.log(x)
+					if (x.style.display === "none") {
+						x.style.display = "block";
+					} else {
+						x.style.display = "none";
+					}
+					var y = document.getElementsByClassName(id);
+					if(y[0].className.indexOf('up') > -1){
+						console.log("from uup")
+						$('.'+id).removeClass('fas fa-chevron-up')
+						$('.'+id).addClass('fas fa-chevron-down')
+					}else{
+						$('.'+id).removeClass('fas fa-chevron-down')
+						$('.'+id).addClass('fas fa-chevron-up')
+					}
+				},10)
 			}
+
+			if(objFromHome && objFromHome.listOfFolders){
+				for(var i = 0; i < objFromHome.listOfFolders.length; i++){
+					(function(i){
+						console.log('from foreach',objFromHome.listOfFolders)
+						toggleForWeek(objFromHome.listOfFolders[i]);
+						if(i == objFromHome.listOfFolders.length - 1){
+							$scope.openMaterial({link:objFromHome.path,title:objFromHome.title})
+						}
+							
+					}(i))
+				}
+			}else{
+				toggleForWeek(id)
+			}
+
 		}
 		
 
@@ -524,8 +607,6 @@ angular.module('testApp')
 			}
 
 		$scope.openMaterial = function(obj){
-			
-			console.log('obj...',obj);
 			$rootScope.classroom = null;
 			$scope.displayAreaFlag = false;
 			var extArr = obj.link.split('.');

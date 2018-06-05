@@ -108,7 +108,7 @@ var NgPdf = exports.NgPdf = ["$window", "$document", "$log", function NgPdf($win
     var ratio = backingScale(canvas);
     canvas.width = Math.floor(w * ratio);
     canvas.height = Math.floor(h * ratio);
-    canvas.style.width = Math.floor(w) + 'px';
+    canvas.style.width =Math.floor(w) + 'px';
     canvas.style.height = Math.floor(h) + 'px';
     canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
     return canvas;
@@ -301,6 +301,8 @@ var NgPdf = exports.NgPdf = ["$window", "$document", "$log", function NgPdf($win
           }
           url = newVal;
           scope.pageNum = scope.pageToDisplay = pageToDisplay;
+          //pageFit = true;
+         // scope.renderPage(scope.pageToDisplay);
           if (pdfLoaderTask) {
             pdfLoaderTask.destroy().then(function () {
               renderPDF();

@@ -8,7 +8,8 @@ const directoryExists = require('directory-exists');
 const bcrypt = require('bcrypt-nodejs');
 const uuidV4 = require('uuid/v4');
 var util = require('util');
-var path = require('path')
+var path = require('path');
+var async = require('async');
 
 module.exports.postRegister = (req, res, next) => {
   //console.log('from reg',req.body.passwd)
@@ -217,8 +218,8 @@ module.exports.getTrainingMaterialHome = function(req,res){
         //  console.log(file)
 			results=results.concat(walk(file))
         } else {
-          f = f.split('.')[0]
-          results.push({'fileName' : file,'date': new Date(stat.mtime),'title':f,id:uuidV4()});
+          var title = f.split('.')[0];
+          results.push({'fileName' : file,'date': new Date(stat.mtime),'title':title,id:uuidV4()});
         }
 
     });
@@ -229,12 +230,20 @@ module.exports.getTrainingMaterialHome = function(req,res){
     data.sort(function(a,b){
        return b.date-a.date;
    });
-
+   var count = 0;
    data.forEach(function(item){
     var splitF = item.fileName.split(dir+'/')[1];
+    item['path'] ='training-material/'+ item.fileName.split(dir+'/')[1];
     item['subject'] = splitF.split('/')[0];
     item['week'] = splitF.split('/')[1];
+    var folders = (item.fileName.split('app/training-material/')[1]).split('/');
+    folders.shift();
+    folders.pop();
+    item["listOfFolders"] = folders;
+    count++;
   });
+
+   console.log(data)
   
   res.send({status : 200,data:data});
 }
@@ -326,14 +335,36 @@ module.exports.getFolderFiles = function(req,res){
         });
     });
 }
+var sessionSubjects = [];
+var trainingSubjects = [];
+async.waterfall([
+  function(cb){
+    diretoryTreeToObj('app/training-material', function(err, training){
+      if(err)
+          console.error(err);
+      training.forEach(function(item){
+        trainingSubjects.push(item.name);
+      })
+      cb(null,training);
+    });
+  },
+  function(training,cb){
+    diretoryTreeToObj('app/session-recorded', function(err, session){
+      if(err)
+          console.error(err);
+      session.forEach(function(item){
+        sessionSubjects.push(item.name);
+      })
+      cb(null,{training:training,session:session});
+    });
+  }
+],function(err,result){
+  result.sessionSubjects = sessionSubjects;
+  result.trainingSubjects = trainingSubjects;
+  res.send({status:200,data:result})
+})
 
-diretoryTreeToObj('app/training-material', function(err, result){
-  if(err)
-      console.error(err);
 
-  //console.log(JSON.stringify(result));
-  res.send({status:200,data:result});
-});
        
 }
 
