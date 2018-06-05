@@ -14,7 +14,7 @@ var express 			= require('express'),
 		mongoose 			= require('mongoose'),
 		multipart = require('connect-multiparty'),
 	    multipartMiddleware = multipart();
-		port 					= process.env.PORT || 5678;
+		port 					= process.env.PORT || 8000;
 
 		app.use(expressValidator());
 		app.use(bodyParser.json());
