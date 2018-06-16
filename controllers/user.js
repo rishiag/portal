@@ -113,7 +113,7 @@ module.exports.getTrainingMaterial = function(req,res){
 		listOfItem.forEach(function(item){
 			var allMaterial = fs.readdirSync(dir + '/' + item);
       var material = [];
-      console.log(allMaterial,item)
+     // console.log(allMaterial,item)
       
         allMaterial.forEach(function(mat){
           if(!list){
@@ -243,7 +243,7 @@ module.exports.getTrainingMaterialHome = function(req,res){
     count++;
   });
 
-   console.log(data)
+  // console.log(data)
   
   res.send({status : 200,data:data});
 }

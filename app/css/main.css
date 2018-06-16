@@ -163,7 +163,7 @@ h6 {
   }
 
   .menu {
-	/* width: 43%; */
+	width: 25%;
 	height: 50px;
 	line-height : 50px;
 	color: #8b8fa1;
@@ -184,10 +184,10 @@ h6 {
   }
 
   .ul-sub-menu1{
-	list-style: none;
-	display: -webkit-inline-box;
-	margin-bottom: auto;
-}
+		list-style: none;
+		display: -webkit-inline-box;
+		margin-bottom: auto;
+	}
 
   .menu:hover ,.active{
 		color:  #007fff;
@@ -389,6 +389,20 @@ h6 {
 		width:51%;
 		margin-left: auto;
 		margin-right: auto;
+	}
+
+	.course-menu{
+		width: 17%;
+		height: 50px;
+		line-height : 50px;
+		color: #8b8fa1;
+		margin: 0px 10px 0px 10px;
+	  }
+	.course-menu-ul{
+		list-style: none;
+		display: -webkit-inline-box;
+		margin-bottom: auto;
+		width: 100%;
 	}
   
 	.wrapper {margin: 0 auto; width: 100%;overflow-x: auto; }
@@ -626,15 +640,123 @@ h6 {
     padding: 57px;
 }
 
+.faculty-list-display{
+	margin-top: 60px;
+}
+.faculty-list{
+	max-height: 450px;
+	overflow-y: scroll;
+}
 
- 
+.batch-profile{
+	width:32%;
+	margin: 4px;
+	float: left;
+}
+
+.search-batch{
+	width: 20%;
+	margin-left: auto;
+	margin-right: auto;
+}
+.faculty-list-active{
+    background: #f5f5f5;
+}
+
+.faculty-contact-height{
+	height: auto;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+	/* width: 40%; */
+	padding: 20px;
+	background: #fff;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.panel-border{
+	border-color: #fff;
+}
+
+.faculty-contact{
+	width: 33%;
+	float:left;
+}
+
+.faculty-address{
+	font-size : 10pt;
+}
+
+.user-profile{
+    padding: 20px;
+    font-size: 13pt;
+}
+
+.page-wise-menu{
+	border-bottom:1px solid #e0e6ef;
+}
+
 @media(max-width:990px){
 	.event-mar{
 		margin-left:0;
 	}
+
+	.faculty-contact-height{
+		height: 58px;;
+	}
+	.menu {
+		width: 41%;
+		height: 50px;
+		line-height : 50px;
+		color: #8b8fa1;
+		text-align: center;
+	  }
+}
+
+@media(max-width:750px){
+	.course-menu{
+		width: 90%;
+		height: 50px;
+		line-height : 50px;
+		color: #8b8fa1;
+		margin: 0px 10px 0px 10px;
+	  }
+	.course-menu-ul{
+		list-style: none;
+		display: block;
+		margin-bottom: auto;
+		width: 100%;
+	}
+
+	.batch-profile{
+		width:99%;
+		float: left;
+		margin: 5px;
+		margin: 2%;
+	}
+
+	.search-batch{
+		width: 80%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
 }
 
 @media(max-width:700px){
+
+	.menu {
+		width: 40%;
+		height: 50px;
+		line-height : 50px;
+		color: #8b8fa1;
+		text-align: center;
+	  }
 	.reg-cls{
 		width:99%;
 		margin-left: auto;
@@ -658,7 +780,19 @@ h6 {
 		display: block;
 	}
   .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
+  .sidenav a {font-size: 18px;} 
+}
+
+@media(max-width:530px){
+	
+	.faculty-contact{
+		width: 100%;
+		float:left;
+	}
+
+	.faculty-contact-height{
+		height: 102px;;
+	}
 }
 
 @media(max-width:420px){
@@ -703,5 +837,8 @@ h6 {
 		color: #8b8fa1;
 		margin: 0px 10px 0px 10px;
 	  }
+
+	  
+	
 	
 }

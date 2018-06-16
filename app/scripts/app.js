@@ -71,6 +71,12 @@ angular
 				templateUrl: 'views/classroom.html',
 				controller: 'ClassroomCntrl',
 				controllerAs: 'classroom'
+			})
+			.state('course', {
+				url : '/courseframework',
+				templateUrl: 'views/courseframework.html',
+				controller: 'CourseframeworkCntrl',
+				controllerAs: 'Courseframework'
 			});
 			$urlRouterProvider.otherwise('/login')
 			$locationProvider.html5Mode(true);

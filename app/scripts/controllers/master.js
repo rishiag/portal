@@ -633,7 +633,467 @@ angular.module('testApp')
 		}
 
 
-	});
+	})
+	.controller('CourseframeworkCntrl', function ($scope,ngToast,$location,BackendService) {
+		$scope.facultyArr = [{
+			firstName : 'Chirag',
+			lastName : 'Gupta',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'9988454538',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Pankaj',
+			lastName : 'Gupta',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'07125623',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/aa.jpg'
+		},{
+			firstName : 'Ashish',
+			lastName : 'Gupta',
+			typeOfFaculty : 'In house faculty',
+			designation : 'Deputy Director, ACD NADT, Nagpur',
+			officeAddress : 'Course Director (71st Batch IRS), NADT Nagpur',
+			mailingAddress : 'Room No. 215, Admin Building, NADT Nagpur',
+			contact : {
+				phone :'0712589999',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/ab.jpg'
+		},{
+			firstName : 'Abdul',
+			lastName : 'Hannan',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'0712992871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Sagar',
+			lastName : 'Gupta',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'8812582871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Aseem',
+			lastName : 'dalal',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'0712582822',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Rishi',
+			lastName : 'Agarwal',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'712582871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'PC',
+			lastName : 'Yadav',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'012582871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Virat',
+			lastName : 'Kohli',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'072582871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Yuvraj',
+			lastName : 'Singh',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'071582871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Suresh',
+			lastName : 'Raina',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'071282871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Harbhajan',
+			lastName : 'Singh',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'071252871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Sachin',
+			lastName : 'Tendulekar',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'071258871',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'Virendra',
+			lastName : 'Singh',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'071258271',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		},{
+			firstName : 'MS',
+			lastName : 'Dhoni',
+			typeOfFaculty : 'Guest',
+			designation : 'Pr. DGIT',
+			location : 'National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'071258281',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			comments : '',
+			isStudent : false,
+			batchName : '',
+			gender : '',
+			dob : '',
+			maritalStatus:'',
+			eduQualification:'',
+			hometown : '',
+			state : '',
+			profilePic : 'profile-images/abc.jpeg'
+		}];
+	$scope.faculty = {
+			profilePic : 'profile-images/abc.jpeg',
+			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
+			areaOfSpecializaion : '',
+			firstName : 'Pushpinder Singh',
+			lastName : 'Puniha',
+			typeOfFaculty : 'In house faculty',
+			designation : 'Pr. DGIT National Academy of Direct Taxes',
+			officeAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			mailingAddress : 'NADT, Chhindwara Road, Nagpur-440030',
+			contact : {
+				phone :'071258287',
+				fax:''
+			},
+			email : 'dg@nadt.gov.in',
+		};
+
+	$scope.batchProfileArr = [{
+		name :'Arvind Kumar Yadav',
+		lectureGroup : 'Lecture Group A',
+		morningActivityGroup : 'Gr A',
+		counsellorName : 'Umesh Yadav',
+		houseName : 'Rm-house-123',
+		profilePic : 'profile-images/abc.jpeg'
+	},{
+		name :'Vipin Kumar Rawat',
+		lectureGroup : 'Lecture Group D',
+		morningActivityGroup : 'Gr A',
+		counsellorName : 'Nadeem Khan',
+		houseName : 'Vm-house-123',
+		profilePic : 'profile-images/aa.jpg'
+	},{
+		name :'Aseem Dalal',
+		lectureGroup : 'Lecture Group C',
+		morningActivityGroup : 'Gr A',
+		counsellorName : 'Kamal Varshney',
+		houseName : 'ZW-house-123',
+		profilePic : 'profile-images/ab.jpg'
+	},{
+		name :'Nazish ALi',
+		lectureGroup : 'Lecture Group E',
+		morningActivityGroup : 'Gr A',
+		counsellorName : 'Rahul Kumar Varshney',
+		houseName : 'HB-house-123',
+		profilePic : 'profile-images/abc.jpeg'
+	}]
+
+
+	$scope.openFacultyProfile = function(faculty){
+		$('.list-group-item').removeClass('faculty-list-active');
+			$('#'+faculty.contact.phone).addClass('faculty-list-active');
+		$scope.faculty = faculty;
+	}
+
+	$scope.activateCouserFrame = function(id){
+		$('.course-menu').removeClass('active-bottom');
+		$('#'+id).addClass('active-bottom');
+		if(id=='myprofile'){
+			$('#faculty-main-div').css({'display':'none'});
+			$('#batch-div').css({'display':'none'});
+			$('#profile').css({'display':'block'});
+		}else if(id=='batch'){
+			$('#faculty-main-div').css({'display':'none'});
+			$('#profile').css({'display':'none'});
+			$('#batch-div').css({'display':'block'});
+		}else{
+			$('#faculty-main-div').css({'display':'block'});
+			$('#profile').css({'display':'none'});
+			$('#batch-div').css({'display':'none'});
+		}
+	}
+
+	// $scope.facultyArr.forEach(function(faculty){
+	// 	$(".slickShow").append('<div class="col-md-4 card" style="margin-top:10px;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" > <div class="" style="text-align:center;" > <img src="'+faculty.profilePic+'" style="width:100%;height:298px;object-fit:fill;" ></div> <div style="text-align:center;font-size:17pt;margin-bottom:10px;" ><span>Arvind Kumar Yadav</span> </div> <div class="col-md-12"> <form> <div class="row"> <label for="staticEmail" class="col-sm-7 col-form-label">Lecture Group :</label> <div class="col-sm-5"> Lecture Gr. D </div> </div> <div class="row"> <label for="staticEmail" class="col-sm-7 col-form-label">Morning Activity Group :</label> <div class="col-sm-5"> Gr A </div> </div> <div class="row"> <label for="staticEmail" class="col-sm-7 col-form-label">Counsellor Name :</label> <div class="col-sm-5"> Umesh Kumar Yadav </div> </div> <div class="row"> <label for="staticEmail" class="col-sm-7 col-form-label">House Name : </label> <div class="col-sm-5"> House-12345 </div> </div> </form> </div> </div>')		
+	// });
+	// $(".slickShow").not('.slick-initialized').slick({
+	// 	autoplay: true,
+	// 	dots: true,
+	// 	autoplaySpeed: 3000,
+	// 	fade: true,
+	// 	lazyLoad: 'progressive',
+	// 	pauseOnHover: true
+	//   });
+})
 
 		
 
