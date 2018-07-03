@@ -1,131 +1,166 @@
 <div class="center page-wise-menu">
         <ul class="ul-sub-menu1">
-            <li class="menu1 sub-sub-menu active-bottom" ng-click="activateTrainingOrSession('training');" id="training">Training Material</li>
-            <li class="menu1 sub-sub-menu" ng-click="activateTrainingOrSession('session');" id="session">Session Recorded Videos</li>
+                <li class="menu1 sub-sub-menu active-bottom" ng-click="activateTrainingOrSession('training');" id="training">Training Material</li>
+                <li class="menu1 sub-sub-menu" ng-click="activateTrainingOrSession('session');" id="session">Session Recorded Videos</li>
         </ul>
- </div>
- <div style="margin-top: 20px;" class="col-md-12">
-     <div style="" class="col-md-3 padding-right-zero padding-left-zero">
-            <div style="background: #4a90e2;border-radius: 4px;padding: 8px;color:#fff;" class="col-md-12 padding-right-zero padding-left-zero">
-                <div style="margin:7px;" class="col-md-4">List of : </div>
-                <div style="" class="col-md-6">
-                    <select class="form-control" id="sel1" ng-model="selectedSubject" ng-options="item for item in subjectOptions" style="color:#fff;border:0px;background:#4a90e2;" ng-change="subjectChanged();" ng-disabled='disableSelectSubject'>
-                    </select>
+</div>
+<div style="margin-top: 20px;" class="col-md-12">
+        <div style="" class="col-md-3 padding-right-zero padding-left-zero">
+                <div style="background: #4a90e2;border-radius: 4px;padding: 8px;color:#fff;" class="col-md-12 padding-right-zero padding-left-zero">
+                        <div style="margin:7px;" class="col-md-4">List of : </div>
+                        <div style="" class="col-md-6">
+                                <select class="form-control" id="sel1" ng-model="selectedSubject" ng-options="item for item in subjectOptions" style="color:#fff;border:0px;background:#4a90e2;"
+                                        ng-change="subjectChanged();" ng-disabled='disableSelectSubject'>
+                                </select>
+                        </div>
                 </div>
-            </div>
-            <div style="background: #fff;border: 1px solid #9fcdf8;" class="col-md-12 padding-right-zero padding-left-zero">
-                    <div ng-repeat="week in weeks" class="bottom-border col-md-12 padding-right-zero padding-left-zero" style="padding-top: 5px;padding-bottom: 5px;" >
-                         <div style="margin: 5px;cursor:pointer;"  ng-click="toggleWeek(week.name);" class="col-md-12">
-                             <div class="col-md-8 padding-right-zero padding-left-zero">{{week.name}}</div>
-                             <div style="text-align: -webkit-center;" class="col-md-3"><i class="fas fa-chevron-down {{week.name}}" style="color:#007fff"></i></div>
-                         </div>
-                         <!-- <div style="width:100%;height:1px;background:green"></div> -->
-                         <div id="{{week.name}}" style="display:none;padding-top: 3px;padding-bottom: 3px;" class="col-md-12 padding-right-zero">
-                             <div ng-repeat="subject in week.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;"  id="{{subject.title}}">
-                                    <div ng-if="subject.type == 'file'" ng-click="openMaterial(subject);">{{subject.title}}</div>
-                                    <div ng-if="subject.type == 'folder'">
-                                            <div style="margin: 5px;cursor:pointer;margin:5px 0px 5px 0px;"  ng-click="toggleWeek(subject.name);" class="col-md-12 padding-left-zero">
-                                                    <div class="col-md-8 padding-right-zero padding-left-zero">{{subject.name}}</div>
-                                                    <div style="text-align: -webkit-center;" class="col-md-3"><i class="fas fa-chevron-down {{subject.name}}" style="color:#007fff"></i></div>
-                                            </div>
-                                            <div id="{{subject.name}}" style="display:none">
-                                                    <div ng-repeat="week1 in subject.children" class="bottom-border col-md-12 padding-right-zero padding-left-zero" style="padding-top: 5px;padding-bottom: 5px;padding-left: 8px !important;">
-                                                            <div ng-if="week1.type == 'file'" ng-click="openMaterial(week1);">{{week1.title}}</div>
-                                                            <div ng-if="week1.type == 'folder'">
-                                                                    <div style="margin: 5px 0 5px 0;cursor:pointer;"  ng-click="toggleWeek(week1.name);" class="col-md-12 padding-left-zero">
-                                                                            <div class="col-md-8 padding-right-zero padding-left-zero">{{week1.name}}</div>
-                                                                            <div style="text-align: -webkit-center;" class="col-md-3"><i class="fas fa-chevron-down {{week1.name}}" style="color:#007fff"></i></div>
-                                                                    </div>
-                                                                    <div id="{{week1.name}}" style="display:none;">
-                                                                            <div ng-repeat="subject1 in week1.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;"  id="{{subject.title}}">
-                                                                                    <div ng-if="subject1.type == 'file'" ng-click="openMaterial(subject1);">{{subject1.title}}</div>
-                                                                                    <div ng-if="subject1.type == 'folder'">
-                                                                                            <div style="margin: 5px 0 5px 0;cursor:pointer;"  ng-click="toggleWeek(subject1.name);" class="col-md-12 padding-left-zero">
-                                                                                                    <div class="col-md-8 padding-right-zero padding-left-zero">{{subject1.name}}</div>
-                                                                                                    <div style="text-align: -webkit-center;" class="col-md-3"><i class="fas fa-chevron-down {{subject1.name}}" style="color:#007fff"></i></div>
-                                                                                            </div>
-                                                                                            <div id="{{subject1.name}}" style="display:none;">
-                                                                                                    <div ng-repeat="week2 in subject1.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;"  id="{{subject1.title}}">
-                                                                                                            <div ng-if="week2.type == 'file'" ng-click="openMaterial(week2);">{{week2.title}}</div>
-                                                                                                            <div ng-if="week2.type == 'folder'">
-                                                                                                                    <div style="margin: 5px 0 5px 0;cursor:pointer;"  ng-click="toggleWeek(week2.name);" class="col-md-12 padding-left-zero">
-                                                                                                                            <div class="col-md-8 padding-right-zero padding-left-zero">{{week2.name}}</div>
-                                                                                                                            <div style="text-align: -webkit-center;" class="col-md-3"><i class="fas fa-chevron-down {{week2.name}}" style="color:#007fff"></i></div>
-                                                                                                                    </div>
-                                                                                                                    <div id="{{week2.name}}" style="display:none;">
-                                                                                                                            <div ng-repeat="subject2 in week2.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;"  id="{{subject.title}}">
-                                                                                                                                    <div ng-if="subject2.type == 'file'" ng-click="openMaterial(subject2);">{{subject2.title}}</div>
-                                                                                                                                     <div ng-if="subject2.type == 'folder'">
-                                                                                                                                            <div style="margin: 5px 0 5px 0;cursor:pointer;"  ng-click="toggleWeek(subject2.name);" class="col-md-12 padding-left-zero">
-                                                                                                                                                    <div class="col-md-8 padding-right-zero padding-left-zero">{{subject2.name}}</div>
-                                                                                                                                                    <div style="text-align: -webkit-center;" class="col-md-3"><i class="fas fa-chevron-down {{subject2.name}}" style="color:#007fff"></i></div>
-                                                                                                                                            </div>
-                                                                                                                                            <div id="{{subject2.name}}" style="display:none;">
-                                                                                                                                                    <div ng-repeat="week3 in subject2.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;"  id="{{subject.title}}">
-                                                                                                                                                            <div ng-if="week3.type == 'file'" ng-click="openMaterial(week3);">{{week3.title}}</div>
-                                                                                                                                                            <div ng-if="week3.type == 'folder'">
-                                                                                                                                                                <div style="margin: 5px 0 5px 0;cursor:pointer;"  ng-click="toggleWeek(week3.name);" class="col-md-12 padding-left-zero">
-                                                                                                                                                                        <div class="col-md-8 padding-right-zero padding-left-zero">{{week3.name}}</div>
-                                                                                                                                                                        <div style="text-align: -webkit-center;" class="col-md-3"><i class="fas fa-chevron-down {{week3.name}}" style="color:#007fff"></i></div>
+                <div style="background: #fff;border: 1px solid #9fcdf8;" class="col-md-12 padding-right-zero padding-left-zero">
+                        <div ng-repeat="week in weeks" class="bottom-border col-md-12 padding-right-zero padding-left-zero" style="padding-top: 5px;padding-bottom: 5px;">
+                                <div style="margin: 5px;cursor:pointer;" ng-click="toggleWeek(week.name);" class="col-md-12">
+                                        <div class="col-md-8 padding-right-zero padding-left-zero">{{week.name}}</div>
+                                        <div style="text-align: -webkit-center;" class="col-md-3">
+                                                <i class="fas fa-chevron-down {{week.name}}" style="color:#007fff"></i>
+                                        </div>
+                                </div>
+                                <!-- <div style="width:100%;height:1px;background:green"></div> -->
+                                <div id="{{week.name}}" style="display:none;padding-top: 3px;padding-bottom: 3px;" class="col-md-12 padding-right-zero">
+                                        <div ng-repeat="subject in week.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link"
+                                                style="cursor:pointer;" id="{{subject.title}}">
+                                                <div ng-if="subject.type == 'file'" ng-click="openMaterial(subject);">{{subject.title}}</div>
+                                                <div ng-if="subject.type == 'folder'">
+                                                        <div style="margin: 5px;cursor:pointer;margin:5px 0px 5px 0px;" ng-click="toggleWeek(subject.name);" class="col-md-12 padding-left-zero">
+                                                                <div class="col-md-8 padding-right-zero padding-left-zero">{{subject.name}}</div>
+                                                                <div style="text-align: -webkit-center;" class="col-md-3">
+                                                                        <i class="fas fa-chevron-down {{subject.name}}" style="color:#007fff"></i>
+                                                                </div>
+                                                        </div>
+                                                        <div id="{{subject.name}}" style="display:none">
+                                                                <div ng-repeat="week1 in subject.children" class="bottom-border col-md-12 padding-right-zero padding-left-zero" style="padding-top: 5px;padding-bottom: 5px;padding-left: 8px !important;">
+                                                                        <div ng-if="week1.type == 'file'" ng-click="openMaterial(week1);">{{week1.title}}</div>
+                                                                        <div ng-if="week1.type == 'folder'">
+                                                                                <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(week1.name);" class="col-md-12 padding-left-zero">
+                                                                                        <div class="col-md-8 padding-right-zero padding-left-zero">{{week1.name}}</div>
+                                                                                        <div style="text-align: -webkit-center;" class="col-md-3">
+                                                                                                <i class="fas fa-chevron-down {{week1.name}}"
+                                                                                                        style="color:#007fff"></i>
+                                                                                        </div>
+                                                                                </div>
+                                                                                <div id="{{week1.name}}" style="display:none;">
+                                                                                        <div ng-repeat="subject1 in week1.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link"
+                                                                                                style="cursor:pointer;" id="{{subject.title}}">
+                                                                                                <div ng-if="subject1.type == 'file'" ng-click="openMaterial(subject1);">{{subject1.title}}</div>
+                                                                                                <div ng-if="subject1.type == 'folder'">
+                                                                                                        <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(subject1.name);" class="col-md-12 padding-left-zero">
+                                                                                                                <div class="col-md-8 padding-right-zero padding-left-zero">{{subject1.name}}</div>
+                                                                                                                <div style="text-align: -webkit-center;" class="col-md-3">
+                                                                                                                        <i class="fas fa-chevron-down {{subject1.name}}"
+                                                                                                                                style="color:#007fff"></i>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                        <div id="{{subject1.name}}" style="display:none;">
+                                                                                                                <div ng-repeat="week2 in subject1.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link"
+                                                                                                                        style="cursor:pointer;"
+                                                                                                                        id="{{subject1.title}}">
+                                                                                                                        <div ng-if="week2.type == 'file'" ng-click="openMaterial(week2);">{{week2.title}}</div>
+                                                                                                                        <div ng-if="week2.type == 'folder'">
+                                                                                                                                <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(week2.name);" class="col-md-12 padding-left-zero">
+                                                                                                                                        <div class="col-md-8 padding-right-zero padding-left-zero">{{week2.name}}</div>
+                                                                                                                                        <div style="text-align: -webkit-center;" class="col-md-3">
+                                                                                                                                                <i
+                                                                                                                                                        class="fas fa-chevron-down {{week2.name}}"
+                                                                                                                                                        style="color:#007fff"></i>
+                                                                                                                                        </div>
+                                                                                                                                </div>
+                                                                                                                                <div id="{{week2.name}}" style="display:none;">
+                                                                                                                                        <div ng-repeat="subject2 in week2.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link"
+                                                                                                                                                style="cursor:pointer;"
+                                                                                                                                                id="{{subject.title}}">
+                                                                                                                                                <div ng-if="subject2.type == 'file'" ng-click="openMaterial(subject2);">{{subject2.title}}</div>
+                                                                                                                                                <div ng-if="subject2.type == 'folder'">
+                                                                                                                                                        <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(subject2.name);" class="col-md-12 padding-left-zero">
+                                                                                                                                                                <div class="col-md-8 padding-right-zero padding-left-zero">{{subject2.name}}</div>
+                                                                                                                                                                <div style="text-align: -webkit-center;" class="col-md-3">
+                                                                                                                                                                        <i
+                                                                                                                                                                                class="fas fa-chevron-down {{subject2.name}}"
+                                                                                                                                                                                style="color:#007fff"></i>
                                                                                                                                                                 </div>
-                                                                                                                                                                <div id="{{week3.name}}" style="display:none">
-                                                                                                                                                                        <div ng-repeat="subject3 in week3.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link" style="cursor:pointer;"  id="{{subject.title}}">
-                                                                                                                                                                                <div ng-if="subject3.type == 'file'" ng-click="openMaterial(subject3);">{{subject3.title}}</div>
-                                                                                                                                                                                <div ng-if="week3.type == 'folder'">
+                                                                                                                                                        </div>
+                                                                                                                                                        <div id="{{subject2.name}}" style="display:none;">
+                                                                                                                                                                <div ng-repeat="week3 in subject2.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link"
+                                                                                                                                                                        style="cursor:pointer;"
+                                                                                                                                                                        id="{{subject.title}}">
+                                                                                                                                                                        <div ng-if="week3.type == 'file'" ng-click="openMaterial(week3);">{{week3.title}}</div>
+                                                                                                                                                                        <div ng-if="week3.type == 'folder'">
+                                                                                                                                                                                <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(week3.name);" class="col-md-12 padding-left-zero">
+                                                                                                                                                                                        <div class="col-md-8 padding-right-zero padding-left-zero">{{week3.name}}</div>
+                                                                                                                                                                                        <div style="text-align: -webkit-center;" class="col-md-3">
+                                                                                                                                                                                                <i
+                                                                                                                                                                                                        class="fas fa-chevron-down {{week3.name}}"
+                                                                                                                                                                                                        style="color:#007fff"></i>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                </div>
+                                                                                                                                                                                <div id="{{week3.name}}" style="display:none">
+                                                                                                                                                                                        <div ng-repeat="subject3 in week3.children" class="bottom-border col-md-12 padding-right-zero padding-top-bottom material-link"
+                                                                                                                                                                                                style="cursor:pointer;"
+                                                                                                                                                                                                id="{{subject.title}}">
+                                                                                                                                                                                                <div ng-if="subject3.type == 'file'" ng-click="openMaterial(subject3);">{{subject3.title}}</div>
+                                                                                                                                                                                                <div ng-if="week3.type == 'folder'">
+                                                                                                                                                                                                </div>
+                                                                                                                                                                                        </div>
                                                                                                                                                                                 </div>
                                                                                                                                                                         </div>
                                                                                                                                                                 </div>
-                                                                                                                                                            </div>
-                                                                                                                                                    </div>
-                                                                                                                                            </div>
-                                                                                                                                     </div>
-                                                                                                                            </div>
-                                                                                                                    </div>
-                                                                                                                    
-                                                                                                            </div>
-                                                                                                    </div>
-                                                                                            </div>
-                                                                                    </div>
-                                                                            </div>
-                                                                    </div>
-                                                            </div>
-                                                    </div>
-                                            </div>
-                                    </div>
-                            </div>
-                         </div>
-                   </div>
-                 </div>
-  </div>
-     <div style="background:darkgrey;padding:10px;" class="col-md-8">
-            <!-- <div style="text-align:center;"><img src="../images/play-circle.png" ng-click="toggle();" style="margin-top:10px;"></div> -->
-            <div class="col-md-12" ng-if="videoAvailable">
-                    <player  videos=videoObj />
-            </div>
-            <div class="col-md-12">
-                <div ng-show="fileAvailable">
-                       
-                 <div style="display:-webkit-box;">
-                        <div class="pdf-page-prev-next">
-                            <span class="glyphicon glyphicon-triangle-left" style="padding:3px;float:left;" ng-click="goPrevious()"></span>
-                            <span style="margin-left:12%;"> {{pageNum}}/{{pageCount}}</span>
-                            <span class="glyphicon glyphicon-triangle-right" style="padding:3px;float:right;" ng-click="goNext()"></span>
-                        </div>
-                        <div class="pdf-zoom-in-out">
-                                <span class="glyphicon glyphicon-zoom-in" style="padding:3px;float:left;" ng-click="zoomIn()"></span>
-                                <span class="" style=""></span>
-                                <span class="glyphicon glyphicon-zoom-out" style="padding:3px;float:right;" ng-click="zoomOut()"></span>  
+                                                                                                                                                        </div>
+                                                                                                                                                </div>
+                                                                                                                                        </div>
+                                                                                                                                </div>
+
+                                                                                                                        </div>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
                         </div>
                 </div>
-                <div ng-show="loadingPdf" style="text-align:-webkit-center;margin-top:20%;"><img src="../images/loader.gif" style="width:50px;"></div>
-                    <div class="wrapper" style="margin-top:5px;">
-                            <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1 style="width: 90%;height: 600px;padding: 5%;"></ng-pdf>
-                    </div>
+        </div>
+        <div style="background:darkgrey;padding:10px;" class="col-md-8">
+                <!-- <div style="text-align:center;"><img src="../images/play-circle.png" ng-click="toggle();" style="margin-top:10px;"></div> -->
+                <div class="col-md-12" ng-if="videoAvailable">
+                        <player videos=videoObj />
                 </div>
-            </div>
-            <div ng-show="displayAreaFlag" class="official-text-display">
-                    <div style="text-align: -webkit-center;font-size: -webkit-xxx-large;
+                <div class="col-md-12">
+                        <div ng-show="fileAvailable">
+
+                                <div style="display:-webkit-box;">
+                                        <div class="pdf-page-prev-next">
+                                                <span class="glyphicon glyphicon-triangle-left" style="padding:3px;float:left;" ng-click="goPrevious()"></span>
+                                                <span style="margin-left:12%;"> {{pageNum}}/{{pageCount}}</span>
+                                                <span class="glyphicon glyphicon-triangle-right" style="padding:3px;float:right;" ng-click="goNext()"></span>
+                                        </div>
+                                        <div class="pdf-zoom-in-out">
+                                                <span class="glyphicon glyphicon-zoom-in" style="padding:3px;float:left;" ng-click="zoomIn()"></span>
+                                                <span class="" style=""></span>
+                                                <span class="glyphicon glyphicon-zoom-out" style="padding:3px;float:right;" ng-click="zoomOut()"></span>
+                                        </div>
+                                </div>
+                                <div ng-show="loadingPdf" style="text-align:-webkit-center;margin-top:20%;">
+                                        <img src="../images/loader.gif" style="width:50px;">
+                                </div>
+                                <div class="wrapper" style="margin-top:5px;">
+                                        <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1 style="width: 90%;height: 600px;padding: 5%;"></ng-pdf>
+                                </div>
+                        </div>
+                </div>
+                <div ng-show="displayAreaFlag" class="official-text-display">
+                        <div style="text-align: -webkit-center;font-size: -webkit-xxx-large;
                 ">Training Material Display Area</div>
-            </div>
-     </div>
- </div>
+                </div>
+        </div>
+</div>

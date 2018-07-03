@@ -1,84 +1,89 @@
 <div style="" class="home-page">
 
-		<div class="col-md-12">
-				<div class="col-md-6" style="margin-top: 10px;">
-					<div class="academics-notices">Academics</div>
-					<div class="home-child-title" style="color:#425364;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;border-color:#e0e6ef !important;">
-						<span stle="color: #425364;">Training Material</span>
-						<span style="float:right;font-size: initial;">{{trainingArr.length}}</span>
-					</div>
-					<div class="home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;" ng-click="callFromHome(training,'classroom')">{{training.title}}</div>
-					<div class="home-child-one-child home-view-more" ng-click="callFromHome(null,'classroom')" ng-if="trainingArr.length>0">View More</div>
-					<div ng-if="trainingArr.length==0" class="no-material-notice">No Training Material Available</div>
-				</div>
-				<!-- <div style="width:3%"></div> -->
-				<div class=" col-md-6" style="margin-top: 10px;">
-						<div class="academics-notices">Notices</div>
-						<div class="home-child-title" style="color:#425364;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;display:-webkit-box;border-color:#e0e6ef !important;">
-							<div style="width:100%;display:-webkit-box">
-								<div style="width:38%;color: #425364;">Notices</div>
-								<div class="notice-home-count">
-									<div style="color:#007fff;">{{unread}} Unread</div>
-									<div style="width:2px;background:#95a9c0;margin: 0 2px 0 2px;"></div>
-									<div style="color:#425364">{{notices.length}} Total</div>
-								</div>
-							</div>
-						</div>
-						<div class="home-child-one-child" ng-repeat="notice in notices" style="padding: 10px 15px 10px 15px;display: -webkit-box;border-color:#e0e6ef;"  ng-click="callFromHome(notice,'notice');" ng-style="(notice.status == 'unread') && {'color': '#007fff'}">
-							<div class="notice-subject-home">{{notice.subjectToShow}}</div>
-							<div style="" class="notice-type-home">{{notice.notificationType ? notice.notificationType :'official' }}</div> &nbsp; &nbsp; 
-							<div style="" class="notice-time-home">{{notice.time}}</div>
-						</div>
-						<div class="home-child-one-child home-view-more" ng-click="callFromHome(null,'notice')" ng-if="notices.length>0">View More</div>
-						<div ng-if="notices.length==0" class="no-material-notice">No Notice Available</div>
-					</div>
+	<div class="col-md-12">
+		<div class="col-md-6" style="margin-top: 10px;">
+			<div class="academics-notices">Academics</div>
+			<div class="home-child-title" style="color:#425364;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;border-color:#e0e6ef !important;">
+				<span stle="color: #425364;">Training Material</span>
+				<span style="float:right;font-size: initial;">{{trainingArr.length}}</span>
+			</div>
+			<div class="home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;"
+			 ng-click="callFromHome(training,'classroom')">{{training.title}}</div>
+			<div class="home-child-one-child home-view-more" ng-click="callFromHome(null,'classroom')" ng-if="trainingArr.length>0">View More</div>
+			<div ng-if="trainingArr.length==0" class="no-material-notice">No Training Material Available</div>
 		</div>
-		<div class="col-md-12" style="margin: 10px 0 20px 0;" >
-			<div style="color:#fff;" class="col-md-6">
-				<div class="academics-notices">Birthday/Events</div>
-				<div  class="col-md-6 padding-left-zero-b-box">
-					<div class="col-md-12 home-b-e-responsive" style="background: linear-gradient(to left, #00b6ff, #007fff);padding: 5px;border-radius:6px 6px 0px 0px;">
-						<div class="col-md-4 padding-left-zero">
-							<img src="profile-images/aa.jpg" style="width: 60px;height: 60px;border-radius: 50%;"/>
-						</div>
-						<div class="col-md-8 padding-zero ">
-							<div class="home-b-e-name" style="font-size:14px;padding: 5px 0 5px 0;">{{adv}}Happy Birthday!!</div>
-							<div class="home-b-e-name">{{bname}}</div>
-						</div>
+		<!-- <div style="width:3%"></div> -->
+		<div class=" col-md-6" style="margin-top: 10px;">
+			<div class="academics-notices">Notices</div>
+			<div class="home-child-title" style="color:#425364;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;display:-webkit-box;border-color:#e0e6ef !important;">
+				<div style="width:100%;display:-webkit-box">
+					<div style="width:38%;color: #425364;">Notices</div>
+					<div class="notice-home-count">
+						<div style="color:#007fff;">{{unread}} Unread</div>
+						<div style="width:2px;background:#95a9c0;margin: 0 2px 0 2px;"></div>
+						<div style="color:#425364">{{notices.length}} Total</div>
 					</div>
-					<div class="col-md-12 b-e-box" style="background-color: #007fff;" id="home-bday">
-						<div class="b-e-title">Upcoming Birthdays</div>
-						<div ng-repeat="birthday in birthdays" class="home-e-b-list">
-							<span>{{birthday.name}}</span><span style="float:right;">{{birthday.dob | date : "MMM d"}}</span>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6 padding-zero home-event-box-margin" >
-					<div class="col-md-12 home-b-e-responsive" style="background: linear-gradient(to left, #9ae846, #7ed321);padding: 5px;border-radius:6px 6px 0px 0px;" >
-							<div class="col-md-4 padding-left-zero ">
-								<img src="../images/event-infograph.jpg" style="width: 60px;height: 60px;border-radius: 50%;"/>
-							</div>
-							<div class="col-md-8 padding-zero ">
-								<div class="home-b-e-name" style="font-size:14px;padding: 5px 0 5px 0;">Happy Event!!</div>
-								<div class="home-b-e-name">Gather @ Hall</div>
-							</div>
-						</div>
-						<div class="col-md-12 b-e-box" style=" background-color: #7ed321;" id="home-event">
-							<div class="b-e-title">Upcoming Events</div>
-						<div ng-repeat="event in events" class="home-e-b-list" style="cursor: pointer;" ng-click="callFromHome(event,'clubs-society')">
-							<span>{{event.subject}} ({{event.eventVanue}})</span><span style="float:right;">{{event.eventDate | date : "MMM d"}}</span>
-							<br>
-						</div>
-						</div>
 				</div>
 			</div>
-		
-			<div  class="col-md-6 home-event-box-margin">
-				<div class="academics-notices">Quick Links</div>
-				<div style="height:204px;overflow-y:scroll;" id="quick-link">
-				   <div class="col-md-12 home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;" ng-class="{'quick-link' : $index == 0}">{{training.fileName}}</div>					
-				</div>	
+			<div class="home-child-one-child" ng-repeat="notice in notices" style="padding: 10px 15px 10px 15px;display: -webkit-box;border-color:#e0e6ef;"
+			 ng-click="callFromHome(notice,'notice');" ng-style="(notice.status == 'unread') && {'color': '#007fff'}">
+				<div class="notice-subject-home">{{notice.subjectToShow}}</div>
+				<div style="" class="notice-type-home">{{notice.notificationType ? notice.notificationType :'official' }}</div> &nbsp; &nbsp;
+				<div style="" class="notice-time-home">{{notice.time}}</div>
+			</div>
+			<div class="home-child-one-child home-view-more" ng-click="callFromHome(null,'notice')" ng-if="notices.length>0">View More</div>
+			<div ng-if="notices.length==0" class="no-material-notice">No Notice Available</div>
+		</div>
+	</div>
+	<div class="col-md-12" style="margin: 10px 0 20px 0;">
+		<div style="color:#fff;" class="col-md-6">
+			<div class="academics-notices">Birthday/Events</div>
+			<div class="col-md-6 padding-left-zero-b-box">
+				<div class="col-md-12 home-b-e-responsive" style="background: linear-gradient(to left, #00b6ff, #007fff);padding: 5px;border-radius:6px 6px 0px 0px;">
+					<div class="col-md-4 padding-left-zero">
+						<img src="profile-images/aa.jpg" style="width: 60px;height: 60px;border-radius: 50%;" />
+					</div>
+					<div class="col-md-8 padding-zero ">
+						<div class="home-b-e-name" style="font-size:14px;padding: 5px 0 5px 0;">{{adv}}Happy Birthday!!</div>
+						<div class="home-b-e-name">{{bname}}</div>
+					</div>
+				</div>
+				<div class="col-md-12 b-e-box" style="background-color: #007fff;" id="home-bday">
+					<div class="b-e-title">Upcoming Birthdays</div>
+					<div ng-repeat="birthday in birthdays" class="home-e-b-list">
+						<span>{{birthday.name}}</span>
+						<span style="float:right;">{{birthday.dob | date : "MMM d"}}</span>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 padding-zero home-event-box-margin">
+				<div class="col-md-12 home-b-e-responsive" style="background: linear-gradient(to left, #9ae846, #7ed321);padding: 5px;border-radius:6px 6px 0px 0px;">
+					<div class="col-md-4 padding-left-zero ">
+						<img src="../images/event-infograph.jpg" style="width: 60px;height: 60px;border-radius: 50%;" />
+					</div>
+					<div class="col-md-8 padding-zero ">
+						<div class="home-b-e-name" style="font-size:14px;padding: 5px 0 5px 0;">Happy Event!!</div>
+						<div class="home-b-e-name">Gather @ Hall</div>
+					</div>
+				</div>
+				<div class="col-md-12 b-e-box" style=" background-color: #7ed321;" id="home-event">
+					<div class="b-e-title">Upcoming Events</div>
+					<div ng-repeat="event in events" class="home-e-b-list" style="cursor: pointer;" ng-click="callFromHome(event,'clubs-society')">
+						<span>{{event.subject}} ({{event.eventVanue}})</span>
+						<span style="float:right;">{{event.eventDate | date : "MMM d"}}</span>
+						<br>
+					</div>
+				</div>
 			</div>
 		</div>
-			
-</div>       
+
+		<div class="col-md-6 home-event-box-margin">
+			<div class="academics-notices">Quick Links</div>
+			<div style="height:204px;overflow-y:scroll;" id="quick-link">
+				<div class="col-md-12 home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;"
+				 ng-class="{'quick-link' : $index == 0}">{{training.fileName}}</div>
+			</div>
+		</div>
+	</div>
+
+</div>

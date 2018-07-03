@@ -1,28 +1,31 @@
 <div class="container login">
 	<div class="" style="">
 		<div class="login-box ">
-				
-					 <img src="../images/avatar.png" class="avatar">
-					<div class="login-title">Welcome to Acme</div>
-					<form name="loginForm">
-							<div class="form-group">
-								<label for="email">Email:</label>
-								<input type="email" class="form-control" id="email" ng-model="email">
-							</div>
-							<div class="form-group">
-								<label for="pwd">Password:</label>
-								<input type="password" class="form-control" id="pwd" ng-model="passwd" >
-							</div>
-							<div><a href="/forgot">forgot password?</a><button  class="btn btn-primary pull-right" ng-click="loginF();">Login</button></div>
-							
-					</form>
-					<div style="padding:25px;">
-						<a href="/register">New User? Click here to register</a>
-					</div>
+
+			<img src="../images/avatar.png" class="avatar">
+			<div class="login-title">Welcome to Acme</div>
+			<form name="loginForm">
+				<div class="form-group">
+					<label for="email">Email:</label>
+					<input type="email" class="form-control" id="email" ng-model="email">
+				</div>
+				<div class="form-group">
+					<label for="pwd">Password:</label>
+					<input type="password" class="form-control" id="pwd" ng-model="passwd">
+				</div>
+				<div>
+					<a href="/forgot">forgot password?</a>
+					<button class="btn btn-primary pull-right" ng-click="loginF();">Login</button>
+				</div>
+
+			</form>
+			<div style="padding:25px;">
+				<a href="/register">New User? Click here to register</a>
+			</div>
 			<!-- <div class="col-md-7" style="margin-top:8%;">
 					<carousel links="links"></carousel>
 			</div> -->
 		</div>
-			
+
 	</div>
 </div>
