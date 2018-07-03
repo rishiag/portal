@@ -27,56 +27,55 @@ angular
 			.state('home', {
 				url: "/home",
 				templateUrl: 'views/home.html',
-				controller: 'HomeCtrl',
-				controllerAs: 'home'
+				controller: 'HomeCtrl'
 			  })
 			.state('login', {
 				url : '/login',
 				templateUrl: 'views/login.html',
-				controller: 'LoginCtrl',
-				controllerAs: 'login'
+				controller: 'LoginCtrl'
 			})
 			.state('register', {
 				url : '/register',
 				templateUrl: 'views/register.html',
-				controller: 'RegisterCtrl',
-				controllerAs: 'register'
+				controller: 'RegisterCtrl'
 			})
 			.state('forgot', {
 				url : '/forgot',
 				templateUrl: 'views/forgot.html',
-				controller: 'ForgotCntrl',
-				controllerAs: 'forgot'
-			})
-			.state('dashboard', {
-				url : '/dashboard',
-				templateUrl: 'views/dashboard.html',
-				controller: 'Dashboard',
-				controllerAs: 'dashboard'
+				controller: 'ForgotCntrl'
 			})
 			.state('notice', {
 				url : '/notice',
 				templateUrl: 'views/notice.html',
-				controller: 'Notice',
-				controllerAs: 'notice'
+				controller: 'Notice'
 			})
 			.state('logout', {
 				url : '/logout',
 				templateUrl: 'views/login.html',
-				controller: 'LogoutCntrl',
-				controllerAs: 'logout'
+				controller: 'LogoutCntrl'
 			})
 			.state('classroom', {
 				url : '/classroom',
 				templateUrl: 'views/classroom.html',
-				controller: 'ClassroomCntrl',
-				controllerAs: 'classroom'
+				controller: 'ClassroomCntrl'
 			})
 			.state('course', {
 				url : '/courseframework',
+				params : {
+					username : null
+				},
 				templateUrl: 'views/courseframework.html',
-				controller: 'CourseframeworkCntrl',
-				controllerAs: 'Courseframework'
+				controller: 'CourseframeworkCntrl'
+			})
+			.state('club', {
+				url : '/clubs-society',
+				templateUrl: 'views/club.html',
+				controller: 'ClubCntrl'
+			})
+			.state('leave', {
+				url : '/leave',
+				templateUrl: 'views/leave.html',
+				controller: 'LeaveCntrl'
 			});
 			$urlRouterProvider.otherwise('/login')
 			$locationProvider.html5Mode(true);
@@ -115,12 +114,19 @@ angular
 				   return response ;
 		}
 	}])
-	.run(function($rootScope, $location, $state,$timeout){
+	.run(function($rootScope, $location, $state,$timeout,$http){
 		$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-			var privateUrl = ['/home','/notice','/classroom'];
+			//console.log('from state change...',toState.url);
+			$http.pendingRequests.forEach(function(request) {
+				console.log('from pending......',request)
+				if (request.cancel) {
+					request.cancel.resolve();
+				}
+			});
+			var privateUrl = ['/home','/notice','/classroom','/courseframework','/club-society','/leave','/clubs-society'];
 			if(privateUrl.indexOf(toState.url) > -1 && window.sessionStorage["user"]){
 				//$timeout(function(){
-					console.log("from heder")
+				//	console.log("from heder")
 					
 				//},2)
 				$rootScope.loggedin = true;	

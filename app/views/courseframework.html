@@ -1,206 +1,349 @@
-<div class="center page-wise-menu">
+    <div class="center page-wise-menu">
         <ul class="course-menu-ul">
-            <li class="course-menu sub-sub-menu active-bottom" ng-click="activateCouserFrame('faculty');" id="faculty">Faculty information</li>
-            <li class="course-menu sub-sub-menu" ng-click="activateCouserFrame('myprofile');" id="myprofile">My profile</li>
-            <li class="course-menu sub-sub-menu " ng-click="activateCouserFrame('batch');" id="batch">Batch Profile</li>
-            <li class="course-menu sub-sub-menu" ng-click="activateCouserFrame('myprofile');" id="">Time Table </li>
-            <li class="course-menu sub-sub-menu" ng-click="activateCouserFrame('myprofile');" id="">Training Calender </li>
+            <li class="course-menu sub-sub-menu active-bottom" ng-click="activateCouserFrame('faculty','faculty-main-div');" id="faculty">Faculty information</li>
+            <li class="course-menu sub-sub-menu" ng-click="activateCouserFrame('myprofile','profile');" id="myprofile">My profile</li>
+            <li class="course-menu sub-sub-menu " ng-click="activateCouserFrame('batch','batch-div');" id="batch">Batch Profile</li>
+            <li class="course-menu sub-sub-menu" ng-click="activateCouserFrame('timetable','timetable-div');" id="timetable">Time Table </li>
+            <li class="course-menu sub-sub-menu" ng-click="activateCouserFrame('trainingcalender','training-calender-div');" id="trainingcalender">Training Calender </li>
         </ul>
-</div>
-<div class="faculty-list-display col-md-12"  id="faculty-main-div">
-    <div class="col-md-3">
-            <div  class="list-group-item" style="background:#95a9c0;color:#fff;">
-                   <div style="font-size:12pt;"> List of Faculty Members</div>
-                   <span><input type="text" ng-model="search" class="form-control" style="color:#4a90e2;border-radius:15px;" placeholder="Search faculty member"></span>
-            </div>
-        <div class="list-group faculty-list" style="cursor: pointer;">
-            <a ng-click="openFacultyProfile(faculty);" class="list-group-item" ng-repeat="faculty in facultyArr | filter:search" id="{{faculty.contact.phone}}" >
-               <span><img src="{{faculty.profilePic}}" style="width:25px;border-radius: 50%;"/></span> 
-               <span style="margin:0 0 0 5px;">{{faculty.firstName}} {{faculty.lastName}}</span>
-            </a>
-           
-        </div>
     </div>
-    <div class="col-md-9">
-        <div class="panel panel-default">
+    <div class="faculty-list-display col-md-12" id="faculty-main-div" ng-if="facultydiv">
+        <div class="col-md-3">
+            <div class="list-group-item" style="background:#95a9c0;color:#fff;">
+                <div style="font-size:12pt;"> List of Faculty Members</div>
+                <span><input type="text" ng-model="search" class="form-control" style="color:#4a90e2;border-radius:15px;" placeholder="Search faculty member"></span>
+            </div>
+            <div class="list-group faculty-list" style="cursor: pointer;">
+                <a ng-click="openFacultyProfile(faculty);" class="list-group-item" ng-repeat="faculty in facultyArr | filter:search" id="{{faculty.contact.phone}}">
+                    <span><img src="{{faculty.profilePic}}" style="width:25px;border-radius: 50%;"/></span>
+                    <span style="margin:0 0 0 5px;">{{faculty.firstName}} {{faculty.lastName}}</span>
+                </a>
+    
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default">
                 <div class="panel-heading" style="text-align:center;background:#95a9c0;color:#fff;">Faculty Profile : {{faculty.firstName}} {{faculty.lastName}}</div>
-            <div class="panel-body">
-                <div class="col-md-12" style="padding:20px;background:#95a9c0;">
-                    <div class="col-md-12 card faculty-contact-height" style="">
+                <div class="panel-body">
+                    <div class="col-md-12" style="padding:20px;background:#95a9c0;">
+                        <div class="col-md-12 card faculty-contact-height" style="">
                             <div class="faculty-contact"><span style="font-weight: bold;">Email-id :</span> {{faculty.email}}</div>
                             <div class="faculty-contact"><span style="font-weight: bold;">Contact-No :</span> {{faculty.contact.phone}}</div>
                             <div class="faculty-contact"><span style="font-weight: bold;">Fax :</span> {{faculty.contact.fax}}</div>
-                    </div>
-                    <div class="col-md-4 card" style="margin-top:5px;">
-                        <img src="{{faculty.profilePic}}" style="width:100%;height: 298px;object-fit: fill;"/>
-                        <div> <span style="font-size: 12pt;font-weight: bold;">{{faculty.firstName}} {{faculty.lastName}}</span><br>
-                            <span>{{faculty.typeOfFaculty}}</span>
+                        </div>
+                        <div class="col-md-4 card" style="margin-top:5px;">
+                            <img src="{{faculty.profilePic}}" style="width:100%;height: 298px;object-fit: fill;" />
+                            <div> <span style="font-size: 12pt;font-weight: bold;">{{faculty.firstName}} {{faculty.lastName}}</span>
+                                <br>
+                                <span>{{faculty.typeOfFaculty}}</span>
                             </div>
-                        <div style="margin-top:24px;" class="faculty-address"> {{faculty.designation}}<br> </div>
-                    </div>
-                   
-                    <div class="col-md-8 padding-right-zero " style="margin-top:5px;">
-                        <div class="col-md-12 card padding-right-zero">
-                            <div class="col-md-12 ">
-                                <div class="panel panel-default panel-border">
+                            <div style="margin-top:24px;" class="faculty-address"> {{faculty.designation}}
+                                <br> </div>
+                        </div>
+    
+                        <div class="col-md-8 padding-right-zero " style="margin-top:5px;">
+                            <div class="col-md-12 card padding-right-zero">
+                                <div class="col-md-12 ">
+                                    <div class="panel panel-default panel-border">
                                         <div class="panel-heading">Office Address</div>
                                         <div class="panel-body faculty-address"> {{faculty.officeAddress}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="panel panel-default panel-border ">
+                                        <div class="panel-heading">Mailing Address</div>
+                                        <div class="panel-body faculty-address"> {{faculty.mailingAddress}}</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                    <div class="panel panel-default panel-border ">
-                                            <div class="panel-heading">Mailing Address</div>
-                                            <div class="panel-body faculty-address"> {{faculty.mailingAddress}}</div>
+                            <div class="col-md-12 card" style="margin-top:5px;">
+                                <div class="col-md-12 padding-right-zero padding-left-zero">
+                                    <div class="panel panel-default panel-border">
+                                        <div class="panel-heading">Area of Specialization</div>
+                                        <div class="panel-body faculty-address"> {{faculty.officeAddress}}</div>
                                     </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-12 card" style="margin-top:5px;">
-                            <div class="col-md-12 padding-right-zero padding-left-zero">
-                                <div class="panel panel-default panel-border">
-                                        <div class="panel-heading">Area of Specialization</div>
-                                        <div class="panel-body faculty-address"> {{faculty.officeAddress}}</div>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-                    <!-- <div class="col-md-4" style="margin-top:4%;">
-                       <div> <span style="font-size: 12pt;font-weight: bold;">{{faculty.firstName}} {{faculty.lastName}}</span><br>
-                        <span>{{faculty.typeOfFaculty}}</span>
-                        </div>
-                       <div style="margin-top:24px;"> {{faculty.designation}}<br> {{faculty.location}}</div>
-                    </div> -->
-                   
-                    <!-- <div class="col-md-4" style="margin-top:4%;">
-                            <div><span style="font-weight: bold;">Email-id :</span> {{faculty.email}}</div>
-                            <div  style="margin-top:10px;"><span style="font-weight: bold;">Contact-No :</span> {{faculty.contact.phone}}</div>
-                    </div> -->
-                <!-- </div> -->
-                <!-- <div class="col-md-12" style="background: #ccc;height: 1px;"></div> -->
-                <!-- <div class="col-md-12">
-                        <div class="col-md-6 padding-right-zero padding-left-zero">
-                            <div class="panel panel-default">
-                                    <div class="panel-heading">Office Address</div>
-                                    <div class="panel-body"> {{faculty.officeAddress}}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 padding-right-zero padding-left-zero">
-                                <div class="panel panel-default">
-                                        <div class="panel-heading">Mailing Address</div>
-                                        <div class="panel-body"> {{faculty.mailingAddress}}</div>
-                                </div>
-                        </div>
-                </div> -->
-                <div class="col-md-12 card" style="margin-top:5px;">
-                        <div class="panel panel-default panel-border" >
+                            <div class="panel panel-default panel-border">
                                 <div class="panel-heading" style="display:-webkit-box;">
                                     <div style="width:50%;">Profile Description </div>
-                                     <div style="width:50%;text-align:right;"><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#profileDesc">Collapse</button></div>
+                                    <div style="width:50%;text-align:right;">
+                                        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#profileDesc">Collapse</button>
+                                    </div>
                                 </div>
                                 <div class="panel-body" id="profileDesc" style="font-size:10pt;">{{faculty.profileDesc}}</div>
+                            </div>
                         </div>
-                </div>
-                <div class="col-md-12 card" style="margin-top:5px;">
-                        <div class="panel panel-default panel-border" >
-                                <div class="panel-heading">Comment 
+                        <div class="col-md-12 card" style="margin-top:5px;">
+                            <div class="panel panel-default panel-border">
+                                <div class="panel-heading">Comment
                                 </div>
                                 <div class="panel-body" id="profileDesc" style="font-size:10pt;">{{faculty.profileDesc}}</div>
+                            </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
-
-<div style="padding:50px;display:none;" id="profile">
+   
+    <div style="padding:50px;" id="profile" ng-if="profilediv">
         <div class="col-md-2">
-            </div>
+        </div>
         <div class="col-md-4 card" style="margin-top:10px;padding:0;">
-                <div class="" style="text-align:center;"> <img src="profile-images/abc.jpeg" style="width:100%;height: 298px;object-fit: fill;"></div>
-                <div style="text-align:center;font-size:17pt;margin-bottom:10px;"><span>Arvind Kumar Yadav</span> </div>
-                <div class="col-md-12">
-                        <form>
-                                <div class="row">
-                                  <label for="staticEmail" class="col-sm-7 col-form-label">Lecture Group :</label>
-                                  <div class="col-sm-5">
-                                        Lecture Gr. D
-                                  </div>
-                                </div>
-                                <div class="row">
-                                  <label for="staticEmail" class="col-sm-7 col-form-label">Morning Activity Group :</label>
-                                  <div class="col-sm-5">
-                                        Gr A
-                                  </div>
-                                </div>
-                                <div class="row">
-                                        <label for="staticEmail" class="col-sm-7 col-form-label">Counsellor Name :</label>
-                                        <div class="col-sm-5">
-                                                Umesh Kumar Yadav
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <label for="staticEmail" class="col-sm-7 col-form-label">House Name : </label>
-                                        <div class="col-sm-5">
-                                                House-12345
-                                        </div>
-                                      </div>
-                              </form>
-                </div>
-         </div>
-         <div class="col-md-1">
-         </div>
-         <div class="col-md-4 card" style="margin-top:10px;">
+            <div class="" style="text-align:center;"> <img src="profile-images/abc.jpeg" style="width:100%;height: 298px;object-fit: fill;"></div>
+            <div style="text-align:center;font-size:17pt;margin-bottom:10px;"><span>{{myProfile.name}}</span> </div>
+            <div class="col-md-12">
                 <form>
-                    <div style="text-align:center;font-size:17pt;font-weight:600;margin-bottom:10px;">Change Password</div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput">New Password</label>
-                        <input type="text" class="form-control"  placeholder="new password">
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput2">Confirm Password</label>
-                        <input type="text" class="form-control"  placeholder="confirm password">
-                    </div>
-                    <button  class="btn btn-primary my-1 pull-right">Submit</button>
-                </form>
-         </div>
-</div>
-
-<div class="col-md-12" style="padding:50px;display:none;" id="batch-div">
-     <div class="search-batch"><input type="text" ng-model="query" class="form-control" style="color:#4a90e2;border-radius:15px;" placeholder="Search batch member"></div>
-        <div class="batch-profile card" style="padding:0;" ng-repeat="batch in batchProfileArr| filter:query">
-                        <div class="" style="text-align:center;"> <img src="{{batch.profilePic}}" style="width:100%;height: 298px;object-fit: fill;"></div>
-                        <div style="text-align:center;font-size:17pt;margin-bottom:10px;"><span>{{batch.name}}</span> </div>
-                        <div class="col-md-12">
-                                <form>
-                                        <div class="row">
-                                                <label for="staticEmail" class="col-sm-7 col-form-label">Lecture Group :</label>
-                                                <div class="col-sm-5">
-                                                        {{batch.lectureGroup}}
-                                                </div>
-                                        </div>
-                                        <div class="row">
-                                                <label for="staticEmail" class="col-sm-7 col-form-label">Morning Activity Group :</label>
-                                                <div class="col-sm-5">
-                                                                {{batch.morningActivityGroup}}
-                                                </div>
-                                        </div>
-                                        <div class="row">
-                                                <label for="staticEmail" class="col-sm-7 col-form-label">Counsellor Name :</label>
-                                                <div class="col-sm-5">
-                                                                {{batch.counsellorName}}
-                                                </div>
-                                                </div>
-                                                <div class="row">
-                                                <label for="staticEmail" class="col-sm-7 col-form-label">House Name : </label>
-                                                <div class="col-sm-5">
-                                                                {{batch.houseName}}
-                                                </div>
-                                                </div>
-                                        </form>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-7 col-form-label">Lecture Group :</label>
+                        <div class="col-sm-5">
+                            {{myProfile.studentdata.lectureGroup}}
                         </div>
+                    </div>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-7 col-form-label">Roll Number :</label>
+                        <div class="col-sm-5">
+                            {{myProfile.studentdata.rollNumber}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-7 col-form-label">Morning Activity Group :</label>
+                        <div class="col-sm-5">
+                            {{myProfile.studentdata.morningActivityGroup}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-7 col-form-label">Counsellor Name :</label>
+                        <div class="col-sm-5">
+                            {{myProfile.studentdata.counsellorName}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-7 col-form-label">House Name : </label>
+                        <div class="col-sm-5">
+                            {{myProfile.studentdata.houseName}}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-4 card" style="margin-top:10px;">
+            <form>
+                <div style="text-align:center;font-size:17pt;font-weight:600;margin-bottom:10px;">Change Password</div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">New Password</label>
+                    <input type="password" class="form-control change-pass" placeholder="new password" ng-model="newPass">
                 </div>
-       
-       <!-- <div class="col-md-4">
-        <slick class="slickShow" id="slickShow" data-slick='{"slidesToShow": 1, "slidesToScroll": 1}'> </slick>
-       </div> -->
-</div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Confirm Password</label>
+                    <input type="password" class="form-control change-pass" placeholder="confirm password" ng-model="confPass">
+                </div>
+                <button class="btn btn-primary my-1 pull-right" ng-click="changePass();">Submit</button>
+            </form>
+        </div>
+    </div>
+     
+    <div class="col-md-12" style="padding:50px;" id="batch-div" ng-if="batchdiv">
+        <div class="search-batch">
+            <input type="text" ng-model="query" class="form-control" style="color:#4a90e2;border-radius:15px;" placeholder="Search batch member">
+        </div>
+        <div class="batch-profile card" style="" ng-repeat="batch in batchArr| filter:query">
+            <div style="text-align:center;font-size:17pt;margin-bottom:10px;"><span>{{batch.name}}</span> </div>
+            <div class="cold-md-12">
+                <div class="col-md-4" style="text-align:center;"> <img src="profile-images/ab.jpg" style="width:150px;height: 253px;object-fit: cover;"></div>
+    
+                <div class="col-md-8">
+                    <form>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Lecture Group :</label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.lectureGroup}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Roll Number :</label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.rollNumber}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Morning Activity Group :</label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.morningActivityGroup}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Counsellor Name :</label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.counsellorName}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">House Name : </label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.houseName}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Home Town : </label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.homeTown}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Mother Tongue : </label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.motherTongue}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Mobile : </label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.mobile}}
+                            </div>
+                        </div>
+                      
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Gender : </label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.gender}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="staticEmail" class="col-sm-7 col-form-label">Date of Birth : </label>
+                            <div class="col-sm-5 batch-word">
+                                {{batch.studentdata.dob}}
+                            </div>
+                        </div>
+                       
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <form>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">Email : </label>
+                        <div class="col-sm-8 batch-word">
+                            {{batch.email}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">Degree : </label>
+                        <div class="col-sm-8 batch-word">
+                            {{batch.studentdata.degree}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">Prev Experience : </label>
+                        <div class="col-sm-8 batch-word">
+                            {{batch.studentdata.prevExp}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">Prev Organisation : </label>
+                        <div class="col-sm-8 batch-word">
+                            {{batch.studentdata.org}}
+                        </div>
+                    </div>
+                </form>
+            </div>
+    
+        </div>
+    </div>
+    
+    <div style="margin-left: auto;margin-right: auto;margin-top:3%;background:#f5f6fa !important;" class="col-md-12" id="timetable-div" ng-if="timetablediv">
+        <div class="notice-list col-md-4">
+            <div class="create-notice-button" data-toggle="modal" data-target="#myModal">
+                + Upload Time Table
+            </div>
+            <div style="background:#f5f6fa;height:10px;"></div>
+            <div class="notice-list-title">
+                <span class="">List of Time Tables</span><span style="float:right;">{{timetableArr.length}}</span>
+            </div>
+            <div ng-repeat="timetable in timetableArr" class="notice-link" ng-click="openTimeTable(timetable.fileName,timetable._id)" id="{{timetable._id}}">
+                <span>{{timetable.subject}}</span>
+                <span style="float: right;margin-right:5px;">{{timetable.createdAt | date }}</span>
+            </div>
+        </div>
+        
+        <div class="notice-display-area col-md-7">
+            <div class="col-md-12 center" ng-if="timetableArr.length">
+                <a href="{{pdfUrl}}" target="_blank"><span class="glyphicon glyphicon-save" style="font-size:16pt;color:#fff;padding:10px;"></span></a>
+            </div>
+            
+           <div ng-if="timetableArr.length" class="col-md-12" >
+                <div style="display:-webkit-box;">
+                    <div class="pdf-page-prev-next">
+                        <span class="glyphicon glyphicon-triangle-left" style="padding:3px;float:left;" ng-click="goPrevious()"></span>
+                        <span style="margin-left:12%;"> {{pageNum}}/{{pageCount}}</span>
+                        <span class="glyphicon glyphicon-triangle-right" style="padding:3px;float:right;" ng-click="goNext()"></span>
+                    </div>
+    
+                    <div class="pdf-zoom-in-out">
+                        <span class="glyphicon glyphicon-zoom-in" style="padding:3px;float:left;" ng-click="zoomIn()"></span>
+                        <span class="" style=""></span>
+                        <span class="glyphicon glyphicon-zoom-out" style="padding:3px;float:right;" ng-click="zoomOut()"></span>
+                    </div>
+                </div>
+                <div class="wrapper" style="margin-top:5px;">
+                    <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1 style="width: 90%;height: 400px;padding: 5%;"></ng-pdf>
+                </div>
+            </div>
+              
+            <div ng-hide="showtimetable" class="official-text-display">
+                <div style="text-align: -webkit-center;font-size: -webkit-xxx-large;
+                       ">Time Table Not Available
+                </div>
+            </div> 
+        </div> 
+    </div>
+    
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog" style="width:40%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">New Time Table</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form name="emailForm" class="email-form">
+                                    <div class="form-group" style="/*display: -webkit-box;*/">
+                                        <div>
+                                            <div>
+                                                <span style="color:#4a4a4a">Time Table Heading</span><span style="color:red;"><sup>&#x2605;</sup></span>
+                                            </div>
+                                            <div>
+                                                <input type="text" class="form-control" placeholder="Input text" ng-model="subject">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary attach-file" ng-click="openFileWindow();">+ Attach File</button>
+    
+                                    <div class="center space">
+                                        <input type="file" onchange="angular.element(this).scope().upload(this)" id="fileUpload" style="display : none"></input>
+    
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-right" ng-click="sendEmail();">Send</button>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+    
+    <div id="training-calender-div" style="width:90%;display:none;margin-left:auto;margin-right:auto;margin-top:10px;">a
+        Calender Display Here
+    </div> 

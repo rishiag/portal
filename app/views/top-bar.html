@@ -1,18 +1,24 @@
-<div>
-			<div ng-controller="Dashboard">
+<div ng-controller="Dashboard">
+			<div >
 				<nav class="navbar navbar-default navbar-back" style="margin-bottom:0px !important">
 					<div class="container-fluid">
 					  <div class="topbar-user">
 						<div class="pull-right">
-							<a href="/profile" >
-								<span class="user-name">{{userName}}</span><span><img src="../images/login.png" alt="user" class="img-circle"> </span>
-							  </a>
+								<span class="user-name">{{userName}}</span><span><a href="/logout" >
+									<img src="../images/logout.png" class="img-circle" style="width:25px;cursor:pointer;">
+								</a></span>
 						</div>
+						<!-- <div class="pull-right">
+							<a href="/logout" >
+								<img src="../images/logout.png" style="width:50px;">
+							</a>
+					</div> -->
 						<div class="pull-left">
 								<a href="/home" >
-									<img src="../images/logo12.png" style="width:50px;">
+									Dashboard
+									<!-- <img src="../images/logo12.png" style="width:50px;"> -->
 								</a>
-							</div>
+						</div>
 					  </div>
 					</div>
 				  </nav>
@@ -21,11 +27,12 @@
 					<div class="container-fluid">
 					  <div class="">
 					   <ul class="ul-sub-menu col-md-12">
-						   <li class="menu col-md-4" ng-click="callOption('home')" id="frame">Home</li>
+						   <!-- <li class="menu col-md-4" ng-click="callOption('home')" id="frame">Home</li> -->
 						   <li class="menu col-md-4" ng-click="callOption('notice')" id="notice"><i class="far fa-bell"></i>Notices</li>
 						   <li class="menu col-md-4" ng-click="callOption('classroom')" id="classroom">Classroom Training</li>
-						    <li class="menu" ng-click="callOption('courseframework')" id="courseframework">Course Framework</li>
-						  <!-- <li class="menu" ng-click="callOption('administrative')" id="administrative">Administrative Corner</li> -->
+						   <li class="menu" ng-click="callOption('courseframework')" id="courseframework">Course Framework</li>
+							 <li class="menu" ng-click="callOption('clubs-society')" id="clubs-society">Clubs & Society</li>
+							 <li class="menu" ng-click="callOption('leave')" id="leave">Administrative Corner</li>
 					   </ul>
 					  </div>
 					</div>
@@ -37,8 +44,10 @@
 		<span style="font-size:30px;cursor:pointer;padding-left: 10px;" onclick="openNav()">&#9776;</span>
 	<div id="mySidenav" class="sidenav">
 		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-		<a href="/home" onclick="closeNav()">Home</a>
+		<a href="/home" onclick="closeNav()">Dashboard</a>
 		<a href="/notice"  onclick="closeNav()">Notice</a>
 		<a href="/classroom"  onclick="closeNav()">Classroom Training</a>
+		<a href="/courseframework" onclick="closeNav()">Course Framework</a>
+		<a href="/club-society"  onclick="closeNav()">Clubs & Society</a>
 	</div>
 </div>

@@ -116,77 +116,29 @@ angular.module('testApp')
 			}
 		})
 
+		BackendService.getBirthAndEvent('?email='+JSON.parse( window.sessionStorage.user).email+(JSON.parse( window.sessionStorage.user).groupName ? '&group_name='+JSON.parse( window.sessionStorage.user).groupName : '')).then(function(response){
+			//console.log(response)
+			if(response.status==200){
+				$scope.birthdays = response.data.birthdays;
+				if($scope.birthdays.length > 0 && $scope.birthdays[0].month == new Date().getMonth()+1 && $scope.birthdays[0].day == new Date().getDay()){
+					$scope.adv = '';
+					$scope.bname = $scope.birthdays[0].name;
+				}else if($scope.birthdays.length > 0){
+					$scope.adv = 'Advance ';
+					$scope.bname = $scope.birthdays[0].name;
+				}else{
+					$scope.adv = '';
+				}
+				$scope.events = response.data.events;
+			}
+		})
+
 		BackendService.getTrainingMaterialHome().then(function(response){
 			if(response.status == 200){
 				$scope.trainingArr = response.data;
 			}
 		});
 
-		$("#myModal").on('hidden.bs.modal', function () {
-			// /clearCanvas();
-			$scope.fileAvailable = false;
-			$scope.videoAvailable = false;
-			$scope.pdfUrl = '';
-			$scope.title = '';
-			$scope.videoAvailable = false;
-			$("#myModal").data('bs.modal', null);
-
-			
-		});
-
-		// $(document).on('hidden.bs.modal', function () {
-			
-		// 	$('#myModal').modal('remove')
-		// });
-
-		$scope.onLoad = function() {
-			//$scope.zoomIn();
-			//$scope.pageNum = 1;
-		}
-
-		$scope.onError = function(error) {
-			// handle the error
-			 console.log('from error',error);
-		}
-
-		$scope.onProgress = function(progress) {
-			// handle a progress bar
-			var progress1 = progress.loaded / progress.total
-			 console.log(progress1,$scope.pageNum,$scope.pageCount);
-			 
-			//   if(progress1 >= 1){
-			// 	 try{
-			// 		$scope.zoomIn();
-				
-			// 	 }catch(e){
-			// 		$scope.zoomOut();
-			// 	 }
-			//   }
-			 	
-		}
-
-		$scope.openModal = function(obj){
-			$scope.loadingPdf = true;
-			var filePart = obj.fileName.split('.');
-			$scope.title = obj.title;
-			if(filePart[filePart.length-1] == 'pdf' || filePart[filePart.length-1] == 'ppt'){
-				$scope.fileAvailable = true;
-				$scope.videoAvailable = false;
-				$scope.pdfUrl = obj.fileName.split('app/')[1];
-				//$('#pdfdiv').html($compile('<ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1 style="width: 90%;padding: 5%;"></ng-pdf>')($scope))
-			//	$scope.pdfUrl = 'http://docs.google.com/gview?url='+$scope.pdfUrl+'&embedded=true'
-				//$scope.zoomIn();
-			}else{
-				$scope.fileAvailable = false;
-				$scope.videoAvailable = true;
-				var link = obj.fileName.split('app/')[1];
-				$scope.videos = [{"type":"mp4","src":link,"poster":"http://www.videojs.com/img/poster.jpg","captions":"http://www.videojs.com/vtt/captions.vtt"}];	
-						
-			}
-			
-			
-				$('#myModal').modal('show');
-		}
 
 		$scope.callFromHome = function(obj,url){
 			$rootScope[url] = obj;
@@ -282,7 +234,9 @@ angular.module('testApp')
 			$('#'+evt.target.id).addClass('active');
 		})
 		$scope.callOption = function(path,event){
-			$location.url('/'+path)
+			//console.log('calloption....',path,event);
+			 $location.path('/'+path);
+			//window.location.href = '/'+path;
 		}
 	})
 	.controller('Notice', function ($scope,BackendService ,$location,ngToast,Upload,$filter,$timeout,$rootScope) {
@@ -314,7 +268,7 @@ angular.module('testApp')
 				$scope.commonArr = $scope.official;	
 
 				if($rootScope.notice){
-					console.log('notice from home....',$rootScope.notice);
+					//console.log('notice from home....',$rootScope.notice);
 					$scope.activateNotice($rootScope.notice.notificationType,$rootScope.notice);
 				}else{
 				 if($scope.commonArr.length > 0)
@@ -394,14 +348,14 @@ angular.module('testApp')
 		}
 
 		$scope.upload = function(element) {
-			console.log(element.files[0]);
+			//console.log(element.files[0]);
 			$scope.file = element.files[0];
 			$scope.fileName = element.files[0].name;
 		}
 
 		$scope.openFileWindow = function() {
 			angular.element('#fileUpload').trigger('click');
-		  }
+		}
 
 		
 
@@ -411,7 +365,7 @@ angular.module('testApp')
 		});
 
 		$scope.activateNotice = function(type,notice){
-			console.log(type,notice)
+			//console.log(type,notice)
 			//$scope.fileAttached = null;
 			if(notice){
 				$scope.commonArr = notice.notificationType == 'official' ? $scope.official : $scope.personal;
@@ -451,7 +405,7 @@ angular.module('testApp')
 		}
 
 		$scope.openNotice = function(link,fileOrText,id){
-			console.log('hhhhh',link,fileOrText,id)
+			//console.log('hhhhh',link,fileOrText,id)
 			$timeout(function(){
 				$('.notice-link').removeClass('notice-active');
 				$('#'+id).addClass('notice-active');
@@ -478,6 +432,14 @@ angular.module('testApp')
 			$('#'+evt.target.id).addClass('active-bottom');
 		});
 
+		// BackendService.getBatch().then(function(response){
+		// 	console.log('getBatch',response);
+		// 	if(response.status == 200){
+		// 		$scope.batchArr = response.data;
+		// 		$scope.batch = $scope.batchArr[0];
+		// 	}
+		// });
+
 		//getTrainingMaterial
 		BackendService.getTraining($rootScope.classroom ? $rootScope.classroom.subject : null).then(function(response){
 			if(response.status == 200){
@@ -487,7 +449,7 @@ angular.module('testApp')
 				$scope.sessionSubjects = response.data.sessionSubjects;
 				$scope.trainingSubjects = response.data.trainingSubjects;
 				if($rootScope.classroom){
-					console.log($rootScope.classroom)
+					//console.log($rootScope.classroom)
 					$scope.weeks = ($scope.training.find(o => o.name === $rootScope.classroom.subject)).children;
 					//$scope.weeks = $scope.training[0].children;
 					$scope.subjectOptions = $scope.trainingSubjects;
@@ -553,9 +515,9 @@ angular.module('testApp')
 		}
 		
 
-		$scope.callOption = function(path,event){
-			$location.url('/'+path)
-		}
+		// $scope.callOption = function(path,event){
+		// 	$location.url('/'+path)
+		// }
 
 		
 		//$scope.selectedSubject = $scope.subjectOptions[0];
@@ -565,7 +527,7 @@ angular.module('testApp')
 				
 				$timeout(function(){
 					var x = document.getElementById(id);
-					console.log(x)
+					//console.log(x)
 					if (x.style.display === "none") {
 						x.style.display = "block";
 					} else {
@@ -573,7 +535,7 @@ angular.module('testApp')
 					}
 					var y = document.getElementsByClassName(id);
 					if(y[0].className.indexOf('up') > -1){
-						console.log("from uup")
+						//console.log("from uup")
 						$('.'+id).removeClass('fas fa-chevron-up')
 						$('.'+id).addClass('fas fa-chevron-down')
 					}else{
@@ -586,7 +548,7 @@ angular.module('testApp')
 			if(objFromHome && objFromHome.listOfFolders){
 				for(var i = 0; i < objFromHome.listOfFolders.length; i++){
 					(function(i){
-						console.log('from foreach',objFromHome.listOfFolders)
+						//console.log('from foreach',objFromHome.listOfFolders)
 						toggleForWeek(objFromHome.listOfFolders[i]);
 						if(i == objFromHome.listOfFolders.length - 1){
 							$scope.openMaterial({link:objFromHome.path,title:objFromHome.title})
@@ -610,7 +572,7 @@ angular.module('testApp')
 			$rootScope.classroom = null;
 			$scope.displayAreaFlag = false;
 			var extArr = obj.link.split('.');
-			console.log('extArr',extArr)
+			//console.log('extArr',extArr)
 			if(extArr[extArr.length-1] == 'pdf'){
 				$scope.loadingPdf = true;
 				$scope.videos = [];
@@ -634,7 +596,8 @@ angular.module('testApp')
 
 
 	})
-	.controller('CourseframeworkCntrl', function ($scope,ngToast,$location,BackendService) {
+	.controller('CourseframeworkCntrl', function ($scope,ngToast,$location,BackendService,Upload,$timeout,$stateParams) {
+		
 		$scope.facultyArr = [{
 			firstName : 'Chirag',
 			lastName : 'Gupta',
@@ -1010,7 +973,14 @@ angular.module('testApp')
 			state : '',
 			profilePic : 'profile-images/abc.jpeg'
 		}];
-	$scope.faculty = {
+	
+		$scope.facultydiv  = true;
+		$scope.batchdiv = false;
+		$scope.profilediv  = false;
+		$scope.timetablediv  = false;
+
+	
+		$scope.faculty = {
 			profilePic : 'profile-images/abc.jpeg',
 			profileDesc : "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
 			areaOfSpecializaion : '',
@@ -1027,76 +997,544 @@ angular.module('testApp')
 			email : 'dg@nadt.gov.in',
 		};
 
-	$scope.batchProfileArr = [{
-		name :'Arvind Kumar Yadav',
-		lectureGroup : 'Lecture Group A',
-		morningActivityGroup : 'Gr A',
-		counsellorName : 'Umesh Yadav',
-		houseName : 'Rm-house-123',
-		profilePic : 'profile-images/abc.jpeg'
-	},{
-		name :'Vipin Kumar Rawat',
-		lectureGroup : 'Lecture Group D',
-		morningActivityGroup : 'Gr A',
-		counsellorName : 'Nadeem Khan',
-		houseName : 'Vm-house-123',
-		profilePic : 'profile-images/aa.jpg'
-	},{
-		name :'Aseem Dalal',
-		lectureGroup : 'Lecture Group C',
-		morningActivityGroup : 'Gr A',
-		counsellorName : 'Kamal Varshney',
-		houseName : 'ZW-house-123',
-		profilePic : 'profile-images/ab.jpg'
-	},{
-		name :'Nazish ALi',
-		lectureGroup : 'Lecture Group E',
-		morningActivityGroup : 'Gr A',
-		counsellorName : 'Rahul Kumar Varshney',
-		houseName : 'HB-house-123',
-		profilePic : 'profile-images/abc.jpeg'
-	}]
+	
+	var folder = '';
+	BackendService.getTimetable().then(function(response){
+		//console.log('getTimetable');
+		if(response.status == 200){
+			$scope.timetableArr = response.data;
+			folder = response.folder;
+		}
+	});
 
+	BackendService.getBatch().then(function(response){
+		//console.log('getBatch',response);
+		if(response.status == 200){
+			$scope.batchArr = response.data;
+			$scope.batch = $scope.batchArr[0];
+		}
+	});
 
+	
 	$scope.openFacultyProfile = function(faculty){
 		$('.list-group-item').removeClass('faculty-list-active');
 			$('#'+faculty.contact.phone).addClass('faculty-list-active');
 		$scope.faculty = faculty;
 	}
 
-	$scope.activateCouserFrame = function(id){
+	$scope.openBatchProfile = function(batch){
+		$('.list-group-item').removeClass('faculty-list-active');
+			$('#'+batch._id).addClass('faculty-list-active');
+		$scope.batch = batch;
+	}
+
+	$scope.myProfile = JSON.parse(window.sessionStorage.user);
+
+	$scope.activateCouserFrame = function(id,childId){
+		$scope.pdfUrl = null;
+		$scope.showtimetable = false;
 		$('.course-menu').removeClass('active-bottom');
 		$('#'+id).addClass('active-bottom');
-		if(id=='myprofile'){
-			$('#faculty-main-div').css({'display':'none'});
-			$('#batch-div').css({'display':'none'});
-			$('#profile').css({'display':'block'});
-		}else if(id=='batch'){
-			$('#faculty-main-div').css({'display':'none'});
-			$('#profile').css({'display':'none'});
-			$('#batch-div').css({'display':'block'});
-		}else{
-			$('#faculty-main-div').css({'display':'block'});
-			$('#profile').css({'display':'none'});
-			$('#batch-div').css({'display':'none'});
+		$scope.facultydiv  = false;
+		$scope.batchdiv = false;
+		$scope.profilediv  = false;
+		$scope.timetablediv  = false;
+		if(id === 'timetable'){
+			$scope.timetablediv  = true;
+		}else if(id === 'myprofile'){
+			$scope.profilediv  = true;
+		}else if(id === 'faculty'){
+			$scope.facultydiv  = true;
+		}else if(id === 'batch'){
+			$scope.batchdiv  = true;
+		}
+		// $('#faculty-main-div').css({'display':'none'});
+		// $('#batch-div').css({'display':'none'});
+		// $('#timetable-div').css({'display':'none'});
+		// $('#profile').css({'display':'none'});
+		// $('#training-calender-div').css({'display':'none'});
+		// $('#'+childId).css({'display':'block'});
+		if(childId === 'timetable-div' || childId === 'training-calender-div'){
+			$scope.showtimetable = $scope.timetableArr && $scope.timetableArr.length > 0 ? true : false;
+			$scope.pdfUrl = $scope.timetableArr && $scope.timetableArr.length > 0 ? folder + $scope.timetableArr[0].fileName :null;
+			$timeout(function(){
+				$('.notice-link').removeClass('notice-active');
+				if(+$scope.timetableArr && +$scope.timetableArr.length > 0)
+					$('#'+$scope.timetableArr[0]._id).addClass('notice-active');
+			})
+			//console.log('$scope.pdfUrl',$scope.pdfUrl)
 		}
 	}
 
-	// $scope.facultyArr.forEach(function(faculty){
-	// 	$(".slickShow").append('<div class="col-md-4 card" style="margin-top:10px;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" > <div class="" style="text-align:center;" > <img src="'+faculty.profilePic+'" style="width:100%;height:298px;object-fit:fill;" ></div> <div style="text-align:center;font-size:17pt;margin-bottom:10px;" ><span>Arvind Kumar Yadav</span> </div> <div class="col-md-12"> <form> <div class="row"> <label for="staticEmail" class="col-sm-7 col-form-label">Lecture Group :</label> <div class="col-sm-5"> Lecture Gr. D </div> </div> <div class="row"> <label for="staticEmail" class="col-sm-7 col-form-label">Morning Activity Group :</label> <div class="col-sm-5"> Gr A </div> </div> <div class="row"> <label for="staticEmail" class="col-sm-7 col-form-label">Counsellor Name :</label> <div class="col-sm-5"> Umesh Kumar Yadav </div> </div> <div class="row"> <label for="staticEmail" class="col-sm-7 col-form-label">House Name : </label> <div class="col-sm-5"> House-12345 </div> </div> </form> </div> </div>')		
-	// });
-	// $(".slickShow").not('.slick-initialized').slick({
-	// 	autoplay: true,
-	// 	dots: true,
-	// 	autoplaySpeed: 3000,
-	// 	fade: true,
-	// 	lazyLoad: 'progressive',
-	// 	pauseOnHover: true
-	//   });
+	if($stateParams.username){
+		$scope.query = $stateParams.username;
+		$scope.activateCouserFrame('batch');
+	}
+	$scope.openTimeTable = function(filename,id){
+		$scope.pdfUrl = folder + filename;
+			$timeout(function(){
+				$('.notice-link').removeClass('notice-active');
+				$('#'+id).addClass('notice-active');
+			})
+	}
+
+	$scope.changePass = function(){
+		if($scope.newPass != ''){
+			if($scope.confPass === $scope.newPass){
+				BackendService.changePass({passwd : $scope.newPass,email:JSON.parse(window.sessionStorage.user).email}).then(function(response){
+					$scope.confPass = '';
+					$scope.newPass = '';
+					if(response.status == 200){
+						message('Password changed',ngToast)
+					}else{
+						message(response.message,ngToast)
+					}
+				})
+			}else{
+				message('Password not matched',ngToast)
+			}
+
+		}else{
+			message('Please enter a valid password',ngToast)
+		}
+	}
+
+	$scope.sendEmail = function(){
+		if($scope.subject == '' || !$scope.subject)
+					return message('Please enter time table heading',ngToast);
+		else if(!$scope.file){
+			return message('Please attach time table',ngToast);
+		}else{
+			var creatorEmail =JSON.parse( window.sessionStorage.user).email;
+			var creatorName =JSON.parse( window.sessionStorage.user).name;
+				Upload.upload({
+					url: '/api/createtimetable',
+					data: {
+								subject : $scope.subject,
+								content : $scope.content,
+								file : $scope.file ,
+								publishOn : $scope.selectedPublish,
+								creatorName : creatorName,
+								creatorEmail : creatorEmail
+							}
+				}).then(function (resp) {
+					$scope.file = null;
+					$scope.subject = '';
+					$scope.fileName = '';
+					if(resp.status == 200)
+						return message('Time table successfully created....',ngToast);
+					else
+						return message(response.message,ngToast);
+				}, function (resp) {
+					console.log('Error status: ' + resp.status);
+				}, function (evt) {
+					var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+					console.log('progress: ' + progressPercentage + '% ');
+				});
+		}
+	}
+
+	$scope.openFileWindow = function() {
+		angular.element('#fileUpload').trigger('click');
+	}
+
+	$scope.upload = function(element) {
+		$scope.file = element.files[0];
+		$scope.fileName = element.files[0].name;
+	}
 })
+.controller('ClubCntrl', function ($scope,ngToast,$location,BackendService,$timeout,Upload,$rootScope) {
+	$scope.cultOpts = ['Dramatics Club','Fine Arts Club','Music and Dance Club'];
+	$scope.hobbOpts = ['Astronomy Club','Adventure Club','Social Welfare Club','ICT Club','Extra Mural Club','Literary Club','Photography and Movies Club','Nature and Wildlife Club'];
+	$scope.optsEvent = ['Active-Events','Past-Events'];
+	$scope.optEvent = $scope.optsEvent[0];
+	if($rootScope['clubs-society']){
+		$scope.opts = $rootScope['clubs-society'].eventCategory == 'cultural' ? $scope.cultOpts : $scope.hobbOpts;
+		$scope.activeCategoty = $rootScope['clubs-society'].eventCategory == 'cultural' ? 'cultural' : 'hobbies';
+		$scope.optSelected = $rootScope['clubs-society']["eventSubCategory"];
+		$('.ul-sub-menu1 li.active-bottom').removeClass('active-bottom');
+		$('#'+$scope.activeCategoty).addClass('active-bottom');
+	}else{
+		$scope.opts = $scope.cultOpts;
+		$scope.optSelected = $scope.opts[0];
+		$scope.activeCategoty = 'cultural';
+	}
+	
+	var creator = {name : JSON.parse( window.sessionStorage.user).name,email:JSON.parse( window.sessionStorage.user).email}
+	var groupName =  JSON.parse( window.sessionStorage.user).groupName;
+	BackendService.getTags().then(function(response){
+		if(response.status == 200){
+			$scope.allTags = response.data;
+		}
+	});
+
+	BackendService.getEvent('?email='+creator.email+'&group_name='+groupName).then(function(response){
+		if(response.status == 200){
+			$scope.events = response.data;
+			//$scope.commonArr = $scope.events[$scope.activeCategoty][$scope.optSelected];
+			$scope.refreshData($rootScope['clubs-society']?$rootScope['clubs-society']._id:null);
+			$rootScope['clubs-society'] = null;
+		}
+	});
+
+	BackendService.getPastEvent('?email='+creator.email+'&group_name='+groupName+'&past=past').then(function(response){
+	//console.log(response)
+		if(response.status == 200){
+			$scope.pastEvents = response.data;
+		}
+	});
+
+	BackendService.getHallOfFame().then(function(response){
+		if(response.status == 200){
+			$scope.hallOfFame = response.data;
+			$scope.refreshHallOfFameData();
+		}
+	})
+
+	$scope.refreshHallOfFameData = function(){
+		$scope.hallOfFameArr =$scope.hallOfFame[$scope.activeCategoty] && $scope.hallOfFame[$scope.activeCategoty][$scope.optSelected]? $scope.hallOfFame[$scope.activeCategoty][$scope.optSelected]:[];
+	}
+
+
+	$scope.refreshData = function(id){
+		//console.log($scope.optEvent,$scope.optsEvent[1])
+		if($scope.optEvent == $scope.optsEvent[1]){
+			$scope.commonArr = $scope.pastEvents[$scope.activeCategoty] && $scope.pastEvents[$scope.activeCategoty][$scope.optSelected]?$scope.pastEvents[$scope.activeCategoty][$scope.optSelected]:[];
+			$('.create-event-button').css({'display':'none'});
+		}else{
+			$scope.commonArr = $scope.events[$scope.activeCategoty] && $scope.events[$scope.activeCategoty][$scope.optSelected]?$scope.events[$scope.activeCategoty][$scope.optSelected]:[];			
+			$('.create-event-button').css({'display':'block'});
+		}
+		
+			if($scope.commonArr && $scope.commonArr.length){
+				var event;
+				if(id){
+					$scope.commonArr.forEach(function(item){
+						if(item._id == id)
+							 event = item;
+					})
+				}else{
+					 event = $scope.commonArr[0];
+				}
+				//console.log('event',event)
+				$scope.sender = event.creator.email;
+				$scope.subject = event.subject;
+				$scope.content = event.content;
+				$scope.eventDate = event.eventDate;
+				$scope.eventVanue =event.eventVanue;
+				if(event.file){
+					$scope.fileAttached = '../event-files/'+event.file.name;
+	
+				}else{
+					$scope.fileAttached = null;
+				}
+				$timeout(function(){
+					$('#'+event._id).addClass('event-active');
+				})
+			}
+		$scope.refreshHallOfFameData();
+	}
+	
+	$scope.activateClub = function(id){
+		$('.ul-sub-menu1 li.active-bottom').removeClass('active-bottom');
+		$('#'+id).addClass('active-bottom');
+		$scope.activeCategoty = id;
+		if(id == 'cultural')
+			$scope.opts = $scope.cultOpts;
+		else
+			$scope.opts = $scope.hobbOpts;
+		$scope.optSelected = $scope.opts[0];
+		$scope.refreshData();
+	}
+
+	$scope.openEvent = function(event){
+		$scope.sender = event.creator.email;
+		$scope.subject = event.subject;
+		$scope.content = event.content;
+		$scope.activeEvent(event._id);
+	}
+
+
+	$scope.activeEvent = function(id){
+		$timeout(function(){
+			$('.event-link').removeClass('event-active');
+			$('#'+id).addClass('event-active');
+		})
+	}
+
+		$scope.tags = [];
+
+		$scope.loadTags = function(query) {
+			 return $scope.allTags.filter(o => o.text.toLowerCase().indexOf(query.toLowerCase()) > -1);
+		};
+
+		$scope.sendEmail = function(){
+		    if($scope.subjectInput == '' || !$scope.subjectInput)
+					return message('Please enter event heading',ngToast);
+			else if($scope.eventDateInput == '' || !$scope.eventDateInput)
+					return message('Please enter event date',ngToast);
+			else if($scope.eventVanueInput == '' || !$scope.eventVanueInput)
+					return message('Please enter event vanue',ngToast);
+			else if($scope.tags.length == 0)
+					return message('Please enter address',ngToast);
+			else if($scope.contentInput == '' || !$scope.contentInput)
+					return message('Please write some content',ngToast);
+			else{
+
+				var to = [];
+					$scope.tags.forEach(function(tag){
+						to.push(tag.text);
+					})
+				Upload.upload({
+					url: '/api/event',
+					data: {
+								to : to,
+								subject : $scope.subjectInput,
+								content : $scope.contentInput,
+								file : $scope.file ? $scope.file : null,
+								creator : creator,
+								eventDate : $scope.eventDateInput,
+								eventVanue : $scope.eventVanueInput,
+								eventType : {category : $scope.activeCategoty,subCategory : $scope.optSelected}
+							}
+				}).then(function (resp) {
+					$scope.file = null;
+					$scope.tags = [];
+					$scope.subjectInput = '';
+					$scope.contentInput = '';
+					$scope.fileName = '';
+					$scope.eventDateInput = '';
+					$scope.eventVanueInput = '';
+					if(resp.status == 200)
+						return message('Mail successfully sent....',ngToast);
+					else
+						return message(response.message,ngToast);
+				}, function (resp) {
+					console.log('Error status: ' + resp.status);
+				}, function (evt) {
+					var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+					console.log('progress: ' + progressPercentage + '% ');
+				});
+			}
+		}
+
+		$scope.upload = function(element) {
+			$scope.file = element.files[0];
+			$timeout(function(){
+				$scope.fileName = element.files[0].name;
+			})
+		}
+
+		$scope.openFileWindow = function() {
+			angular.element('#fileUpload').trigger('click');
+		}
+
+		$scope.saveHallOfFame = function(){
+			if($scope.hallOfFameContent && $scope.hallOfFameContent != ''){
+				var obj = {hallOfFameContent : $scope.hallOfFameContent,name : JSON.parse( window.sessionStorage.user).name,email:JSON.parse( window.sessionStorage.user).email,category:$scope.activeCategoty,subCategory:$scope.optSelected}
+				$scope.hallOfFameContent = '';
+				BackendService.saveHallOfFame(obj).then(function(response){
+					if(response.status == 200){
+						$scope.hallOfFame = response.data;
+						$scope.refreshHallOfFameData();
+						message('Hall Of Fame added successfully......',ngToast);
+					}
+				})
+			}else{
+				message('Please add some content......',ngToast);
+			}
+		}
+
+		$scope.deleteHallOfFame = function(id){
+			BackendService.deleteHallOfFame(id).then(function(response){
+					if(response.status == 200){
+						$scope.hallOfFame = response.data;
+						$scope.refreshHallOfFameData();
+						message('Hall Of Fame deleted successfully......',ngToast);
+					}
+				})
+		}
+
+		$scope.showEditModal = function(hall){
+			$scope.hall = hall;
+			$scope.hallOfFameContentEdit = hall.hallOfFameContent;
+			$('#hallOfFameEdit').modal().show();
+		}
+
+		$scope.updateHallOfFame = function(){
+			BackendService.updateHallOfFame({id:$scope.hall._id,hallOfFameContent:$scope.hallOfFameContentEdit}).then(function(response){
+				$scope.hall = null;
+				if(response.status == 200){
+					$scope.hallOfFame = response.data;
+					$scope.refreshHallOfFameData();
+					message('Hall Of Fame updated successfully......',ngToast);
+
+				}
+			})
+	}
+
+	  $( function() {
+		$( "#datepicker" ).datepicker({
+			minDate: new Date()
+		});
+	  } );
+})
+.controller('LeaveCntrl',function($scope,BackendService,ngToast,$timeout){
+	$scope.user = JSON.parse( window.sessionStorage.user);
+	$scope.totalLeaves = $scope.user.totalLeaves;
+	
+	$scope.optsLeave = ['Casual','Station'];
+	$scope.leaveType = $scope.optsLeave[0];
+	$scope.optsCombining = ['Yes','No'];
+	$scope.combiningFlag = $scope.optsCombining[0];
+	$scope.optsStatusLeave = ['Declined','Approved'];
+	
+	BackendService.getLeaves('?email='+$scope.user.email).then(function(response){
+		console.log('response',response)
+		$scope.leaves = [];
+		if(response.status == 200){
+			$scope.refreshLeave(response);
+		}
+	});
+
+	$scope.refreshLeave = function(response){
+		$scope.leaves = [];
+		$scope.lastApprovedLeave =  response.lastApprovedLeave && response.lastApprovedLeave.length ? response.lastApprovedLeave[0] : {};
+		if(response.data.length && $scope.user.isStudent){
+			console.log('from leaves....',response.data[0])
+			$scope.leavesTaken = response.data[0].userId.leavesTaken;
+		}else if($scope.user.isStudent){
+			$scope.leavesTaken = 0;
+		}
+		if(response.data.length >= 1){
+			response.data.forEach(function(item){
+				item.to = item.to.join();
+				if(!$scope.user.isStudent)
+					item.commentToShow = item.reason.length > 20 ? item.reason.substring(0,20)+'...' : item.reason;
+				$scope.leaves.push(item);
+				$scope.leaves.push({});
+			})
+		}else if(response.data.length == 0){
+				response.data.to = response.data.to.join();
+				if(!$scope.user.isStudent)
+					response.data[0].commentToShow = response.data[0].reason.length > 20 ? response.data[0].reason.substring(0,20)+'...' : response.data[0].reason;
+				$scope.leaves=response.data;
+		}else{
+			$scope.leaves=[];
+		}
 
 		
+	}
 
+	$scope.viewComment = function(comment,leave){
+		$scope.comm = '';
+		$scope.leaveApplyOrDecApprReason = '';
+		if(leave){
+			$scope.comm = leave.leaveAppDeclineReason;
+			$scope.leaveApplyOrDecApprReason = 'Leave Decline/Approve Reason';
+		}else{
+			$scope.comm = comment;
+			$scope.leaveApplyOrDecApprReason = 'Leave Application Reason';
+		}
+		
+		$('#comment').modal('show');
+	}
+
+	$scope.changeLeaveStatus = function(leave){
+		$scope.leave = leave;
+		$scope.leaveOptStatus = $scope.optsStatusLeave[0]; //$scope.optsStatusLeave[$scope.optsStatusLeave.indexOf(leave.status)];
+		$('#leaveStatusModal').modal('show');
+	}
+	$scope.leaveStatusSelected = function(){
+		if($scope.leaveOptStatus != 'Declined'){
+			$scope.showLeaveDays = true;
+		}else{
+			$scope.showLeaveDays = false;
+		}
+	}
+	$scope.leaveStatusByAdmin = function(){
+		 if($scope.showLeaveDays && ( $scope.leaveDays > 0))
+			return message('Please enter calculated leave days',ngToast);
+		else{
+			var obj = {};
+				obj.approver = $scope.user.email;
+				obj.approverName = $scope.user.name;
+				obj.leaveDays =  $('#leaveDays').val();
+				obj.leaveOldStatus = $scope.leave.status;
+				obj.oldLeaveDays = $scope.leave.leaveDays;
+				obj.leaveStatus = $scope.leaveOptStatus;
+				obj.leaveAppDeclineReason = $scope.leaveAppDeclineReason;
+				obj.leaveId = $scope.leave._id;
+			BackendService.leaveApproveOrDecline('?id='+$scope.leave.userId._id,obj).then(function(response){
+				console.log(response)
+				if(response.status == 200){
+					$scope.refreshLeave(response);
+					message('Leave Status successfully changed.',ngToast);
+				}else{
+					message(response.message,ngToast);
+				}
+			})
+		}
+	}
+	
+	$scope.applyLeave = function(){
+		if(!$scope.leaveType || $scope.leaveType == '' || ['Casual','Station'].indexOf($scope.leaveType) == -1)
+			message('Please enter leave type...Casual or Station',ngToast);
+		else if(!$scope.departDate || $scope.departDate =='')
+			message('Please select departure date',ngToast);
+		else if($('#timepicker').val() =='')
+			message('Please select departure time',ngToast);
+		else if(!$scope.arrivalDate || $scope.arrivalDate =='')
+			message('Please select arrival date',ngToast);
+		else if($('#timepicker1').val() =='')
+			message('Please select arrival time',ngToast);
+		else if(!$scope.reason || $scope.reason =='')
+			message('Please enter reason for leave',ngToast);
+		else if(!$scope.combiningFlag || $scope.combiningFlag =='')
+			message('Please fill Combining with Casual leave/Station leave (Yes/No) ',ngToast);
+		else if(!$scope.leaveStayAddress || $scope.leaveStayAddress =='')
+			message('Please enter address during leave',ngToast);
+		else{
+			var leave = {};
+			 leave.userId =  $scope.user._id;
+			 leave.leaveType = $scope.leaveType;
+			 leave.departDate = $scope.departDate;
+			 leave.departTime = $('#timepicker').val();
+			 leave.arrivalDate = $scope.arrivalDate;
+			 leave.arrivalTime = $('#timepicker1').val();
+			 leave.reason = $scope.reason;
+			 leave.combiningWithCusualStation = $scope.combiningFlag;
+			 leave.addressDuringLeave = $scope.leaveStayAddress;
+			 leave.userName = $scope.user.name;
+			BackendService.applyForLeave('?email='+$scope.user.email,leave).then(function(response){
+				console.log(response)
+				if(response.status == 200){
+					$scope.leaveType = '';
+					$scope.departDate = '';
+					$scope.departTime = '';
+					$scope.arrivalDate = '';
+					$scope.arrivalTime = '';
+					$scope.reason = '';
+					$scope.combiningFlag = '';
+					$scope.leaveStayAddress = '';
+				}
+				message(response.message,ngToast);
+			});
+		}
+	}
+	$( function() {
+		$( "#datepicker" ).datepicker({
+			minDate: new Date()
+		});
+		$( "#datepicker1" ).datepicker({
+			minDate: new Date()
+		});
+		$('#timepicker').mdtimepicker();
+		$('#timepicker1').mdtimepicker();
+	  } );
+})
+		
+ 
 
 	function message(message,ngToast,call){
 		ngToast.create(message);

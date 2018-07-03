@@ -10,6 +10,7 @@ const uuidV4 = require('uuid/v4');
 var util = require('util');
 var path = require('path');
 var async = require('async');
+const Event = require('./event');
 
 module.exports.postRegister = (req, res, next) => {
   //console.log('from reg',req.body.passwd)
@@ -50,7 +51,10 @@ module.exports.login = function(req,res){
           user.comparePassword(req.body.passwd, (err, isMatch) => {
            if(!err && isMatch){
             utility.secureUser(user._id,function(err,token){
-              var logUser = {email : user.email,_id : user._id,token : token,name : user.name};
+              if(user.isStudent)
+               var logUser = {email : user.email,_id : user._id,isStudent : user.isStudent,token : token,name : user.name,studentdata:user.studentdata,profilePic:user.profilePic,groupName : user.groupName,totalLeaves : user.totalLeave,leavesTaken:user.leavesTaken};
+              else
+               var logUser = {email : user.email,_id : user._id,isStudent : user.isStudent,token : token,name : user.name,facultydata:user.facultydata,profilePic:user.profilePic};
               res.send({status:200,message:'Success',data:logUser});            
             })
            }else{
@@ -80,6 +84,129 @@ module.exports.forgot = function(req,res){
         res.send({status:404,message:'User does not exist'});
     })
   }
+}
+
+module.exports.changePassword = function(req,res){
+  if(req.body.email){
+    User.findOne({ email: req.body.email },function(err,user){
+      if(!err)
+        if(user){
+            user.genPassword(req.body.passwd,function(err,hash){
+              if(!err){
+                User.update({email: user.email},{$set : {password:hash}},function(err){
+                  if(!err)
+                   res.send({status:200,message:'Success'});
+                  else
+                   res.send({status:101,message:'Error changing password'});
+                })
+              }else{
+                res.send({status:101,message:'Error changing password'});
+              }
+            })
+        }
+        else
+            res.send({status:404,message:'User does not exist'});
+      else
+        res.send({status:404,message:'User does not exist'});
+    })
+  }
+}
+
+module.exports.getBatch = function(req,res){
+  User.find({isStudent :  true},{password:0,facultydata:0},function(err,batchUsers){
+    if(!err)
+      res.send({status:200,data : batchUsers});
+    else
+     res.send({status:400,message:'Error getting batch users'});
+
+     
+  })
+}
+
+
+module.exports.getBirthdayAndEvents = function(req,res){
+  async.waterfall([
+    function(cb){
+      var obj = {email : req.query.email,group_name : req.query.groupName}
+      Event.getupcomingEvents(obj,cb);
+    },
+    function(evnt,cb){
+      var query = { "studentdata.month": {$gte : new Date().getMonth()+1},"studentdata.day": {$gte : new Date().getDate()}};
+     // console.log(query)
+      User.find(query,{name : 1,"studentdata.dob":1,profilePic:1,"studentdata.month":1,"studentdata.day":1},function(err,users){
+        var birthdays=[];
+        if(!err){
+          var newUsers = [];
+          users.forEach(function(item){
+            newUsers.push({name:item.name,dob:item.studentdata.dob,month:item.studentdata.month,day:item.studentdata.day,profilePic:item.profilePic})
+          })
+         var birthdays=  newUsers.sort(orderByProperty('month', 'day')); 
+         if(birthdays.length > 0)
+            birthdays = birthdays.slice(0,5)
+         cb(null,{events : evnt,birthdays : birthdays});
+       }else{
+        cb(null,{events : evnt,birthdays : birthdays});
+       }
+       
+      });
+    }
+  ],function(err,resp){
+     res.send({status:200,data:resp});
+  });
+}
+
+module.exports.importUsers = function(req,res){
+  var jsonContent = require("./data.json");
+  //console.log(jsonContent)
+	// Define to JSON type
+  //var jsonContent = JSON.parse(contents);
+  //fs.readFile('../controllers/data.json', 'utf8', function (err, data) {
+    //console.log(err)
+  // if(!err){
+   // var jsonContent = JSON.parse(data);
+    jsonContent.forEach(function(item){
+      //console.log(item["roll_no"])
+      var dob = new Date(item.dob);
+          //dob.setMonth(dob.getMonth()+1);
+          dob.setDate(dob.getDate()+1);
+      var lectureGroup = item["roll_no"].match(/[a-zA-Z]+/g);
+      const user = new User({
+        email: item.email,
+        password: item.email,
+        name: item.first_name+' '+item.middle_ame+' '+item.last_name,
+        profilePic : '',
+        isStudent : true,
+        studentdata : {
+          lectureGroup : lectureGroup[0],
+          gender : item.Gender,
+          dob : dob,
+          month : item.dob.split('/')[0],
+          day : item.dob.split('/')[1],
+          firstName : item.first_name,
+          middleName : item.middle_ame,
+          lastName : item.last_name,
+          degree :  item.degree_awarded +','+item["Degree Awarded"],
+          homeTown : item.home_town,
+          motherTongue : item.mother_Tongue,
+          mobile : item.mobile_number,
+          prevExp : item.prev_exp,
+          org : item.org1,
+          rollNumber : item["roll_no"],
+          houseName : '',
+          counsellorName : '',
+          morningActivityGroup : ''
+        }
+      });
+      user.save((err) => {
+        if (err)  
+          console.error(err)
+         
+      });
+    //})
+  // }
+});
+  
+  res.send({status:200,message:'Success'});
 }
 
 module.exports.getUserTags = function(req,res){
@@ -250,50 +377,6 @@ module.exports.getTrainingMaterialHome = function(req,res){
 
 
 module.exports.getFolderFiles = function(req,res){
-  //if (module.parent == undefined){
-   
-
-    // function dirTree(filename) {
-    //   var stats = fs.lstatSync(filename),
-    //       info = {
-    //           path: filename,
-    //           name: path.basename(filename)
-    //       };
-    
-    //   if (stats.isDirectory()) {
-    //       info.type = "folder";
-    //       info.children = fs.readdirSync(filename).map(function(child) {
-    //           return dirTree(filename + '/' + child);
-    //       });
-    //   } else {
-    //       // Assuming it's a file. In real life it could be a symlink or
-    //       // something else!
-    //       info.type = "file";
-    //   }
-    
-    //  return info;
-    // }
-
-    //if (module.parent == undefined) {
-      // var list =  util.inspect(dirTree('app/training-material'), false, null);
-      // setTimeout(function () {
-      //   console.log('boo',list);
-      //   list = JSON.parse(JSON.stringify(list))
-      //   res.send({status:200,data:JSON.parse(list)});
-      //   // var subjects = [];
-      //   // list = JSON.parse(list);
-      //   // if(list.children){
-      //   //   list.children.forEach(function(subject){
-      //   //     subjects.push(subject.name);
-      //   //   });
-      //   //   res.send({status:200,data:{folderFiles: list,allSubject:subjects}});
-      //   // }else{
-      //   //   res.send({status:200,data:{}});
-      //   // }
-      // }, 100)
-   // }
-
-
    var diretoryTreeToObj = function(dir, done) {
     var results = [];
 
@@ -362,10 +445,18 @@ async.waterfall([
   result.sessionSubjects = sessionSubjects;
   result.trainingSubjects = trainingSubjects;
   res.send({status:200,data:result})
-})
+})    
+}
 
-
-       
+function orderByProperty(prop) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return function (a, b) {
+    var equality = a[prop] - b[prop];
+    if (equality === 0 && arguments.length > 1) {
+      return orderByProperty.apply(null, args)(a, b);
+    }
+    return equality;
+  };
 }
 
  

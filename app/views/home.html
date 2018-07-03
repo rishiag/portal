@@ -33,79 +33,52 @@
 						<div ng-if="notices.length==0" class="no-material-notice">No Notice Available</div>
 					</div>
 		</div>
-		<!-- <div class="col-md-12" style="margin-top: 44px;" >
-			<div style="" class="col-md-6">
-				<div style="background: #007fff;border-radius: 6px;padding: 2%;color:#fff;text-align: -webkit-center;margin-top:10px;" class="col-md-5">
-					<div style="text-align: -webkit-center;">
-						<div style="width: 68px;background: #d8d8d8;height: 68px;border-radius: 34px"></div>
+		<div class="col-md-12" style="margin: 10px 0 20px 0;" >
+			<div style="color:#fff;" class="col-md-6">
+				<div class="academics-notices">Birthday/Events</div>
+				<div  class="col-md-6 padding-left-zero-b-box">
+					<div class="col-md-12 home-b-e-responsive" style="background: linear-gradient(to left, #00b6ff, #007fff);padding: 5px;border-radius:6px 6px 0px 0px;">
+						<div class="col-md-4 padding-left-zero">
+							<img src="profile-images/aa.jpg" style="width: 60px;height: 60px;border-radius: 50%;"/>
+						</div>
+						<div class="col-md-8 padding-zero ">
+							<div class="home-b-e-name" style="font-size:14px;padding: 5px 0 5px 0;">{{adv}}Happy Birthday!!</div>
+							<div class="home-b-e-name">{{bname}}</div>
+						</div>
 					</div>
-					<div style="">Happy Birthday!<br/> <span style="font-size:24px;">Mayak verma</span>
+					<div class="col-md-12 b-e-box" style="background-color: #007fff;" id="home-bday">
+						<div class="b-e-title">Upcoming Birthdays</div>
+						<div ng-repeat="birthday in birthdays" class="home-e-b-list">
+							<span>{{birthday.name}}</span><span style="float:right;">{{birthday.dob | date : "MMM d"}}</span>
+						</div>
 					</div>
 				</div>
-				<div style="background:#7ed321;border-radius:6px;padding: 2%;color:#fff;text-align: -webkit-center;margin-top:10px;" class="col-md-5 padding-left-zero event-mar">
-						<div style="text-align: -webkit-center;"><div style="width: 68px;background: #d8d8d8;height: 68px;border-radius: 34px"></div></div>
-					<div style="">Happy Holi!<br/> <span style="font-size:24px;">Gather @Hall</span></div>
+				<div class="col-md-6 padding-zero home-event-box-margin" >
+					<div class="col-md-12 home-b-e-responsive" style="background: linear-gradient(to left, #9ae846, #7ed321);padding: 5px;border-radius:6px 6px 0px 0px;" >
+							<div class="col-md-4 padding-left-zero ">
+								<img src="../images/event-infograph.jpg" style="width: 60px;height: 60px;border-radius: 50%;"/>
+							</div>
+							<div class="col-md-8 padding-zero ">
+								<div class="home-b-e-name" style="font-size:14px;padding: 5px 0 5px 0;">Happy Event!!</div>
+								<div class="home-b-e-name">Gather @ Hall</div>
+							</div>
+						</div>
+						<div class="col-md-12 b-e-box" style=" background-color: #7ed321;" id="home-event">
+							<div class="b-e-title">Upcoming Events</div>
+						<div ng-repeat="event in events" class="home-e-b-list" style="cursor: pointer;" ng-click="callFromHome(event,'clubs-society')">
+							<span>{{event.subject}} ({{event.eventVanue}})</span><span style="float:right;">{{event.eventDate | date : "MMM d"}}</span>
+							<br>
+						</div>
+						</div>
 				</div>
 			</div>
-		<div style="width:3%"></div>
-			<div  class="col-md-6 " style="color:#425364;border-top-left-radius: 6px;border-top-right-radius: 6px;margin-top:10px;">
-					<div class="col-md-12 home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;">{{training.fileName}}</div>
+		
+			<div  class="col-md-6 home-event-box-margin">
+				<div class="academics-notices">Quick Links</div>
+				<div style="height:204px;overflow-y:scroll;" id="quick-link">
+				   <div class="col-md-12 home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;" ng-class="{'quick-link' : $index == 0}">{{training.fileName}}</div>					
+				</div>	
 			</div>
-		</div> -->
+		</div>
 			
-</div>
-
-<div class="modal fade" id="myModal" role="dialog" >
-        <div class="modal-dialog" style="width:80%;background:#ccc;">
-        
-          <!-- Modal content-->
-          <div class="modal-content" style="background:#ccc;">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">{{title}}</h4>
-            </div>
-            <div class="modal-body">
-                    <div class="">
-                            <div class="row">
-                                <div class="col-md-12" >
-										<div class="col-md-12" ng-if="videoAvailable">
-												<player  videos=videoObj />
-										</div>
-										<div class="col-md-12">
-											<div ng-show="fileAvailable">
-												   
-											 <div style="display:-webkit-box;">
-													<div class="pdf-page-prev-next">
-														<span class="glyphicon glyphicon-triangle-left" style="padding:3px;float:left;" ng-click="goPrevious()"></span>
-														<span style="margin-left:12%;"> {{pageNum}}/{{pageCount}}</span>
-														<span class="glyphicon glyphicon-triangle-right" style="padding:3px;float:right;" ng-click="goNext()"></span>
-													</div>
-													<div class="pdf-zoom-in-out">
-															<span class="glyphicon glyphicon-zoom-in" style="padding:3px;float:left;" ng-click="zoomIn()"></span>
-															<!-- <span class="" style=""><span ng-click="fit()"><span>100%</span></span></span> -->
-															<span class="glyphicon glyphicon-zoom-out" style="padding:3px;float:right;" ng-click="zoomOut()"></span>  
-													</div>
-											</div>
-											<!-- <div ng-show="loadingPdf" style="text-align:-webkit-center;margin-top:20%;"><img src="../images/Loading_icon_with_fade.svg" style="width:50px;"></div> -->
-												<div class="wrapper" style="margin-top:5px;">
-													<!-- <div id="pdfdiv"></div> -->
-														<!-- <pdfjs-viewer src="{{pdfUrl }}"></pdfjs-viewer> -->
-														<!-- <iframe src="{{pdfUrl}}" 
-														style="width:500px; height:500px;" frameborder="0"></iframe> -->
-														<!-- <object type="application/pdf" data="{{pdfUrl}}" width="100%" height="500" style="height: 85vh;">No Support</object> -->
-														<!-- <embed src="{{pdfUrl}}" frameborder="0" width="100%" height="550px"> -->
-														<ng-pdf template-url="views/viewer.html" canvasid="pdf"  page=1 style="width: 90%;padding: 5%;margin-left:auto;"></ng-pdf>
-												</div>
-											</div>
-										</div>
-                                </div>
-                            </div>
-                        </div>
-            </div>
-            <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-danger pull-right" ng-click="sendEmail();">Send</button>
-            </div> -->
-          </div>
-          
-        </div>
-      </div>
+</div>       

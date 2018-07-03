@@ -47,6 +47,10 @@ mongoose.connection.on('error', (err) => {
  */
 const userController = require('./controllers/user');
 const notificationController = require('./controllers/notification');
+const timetableController = require('./controllers/timetable');
+const eventController = require('./controllers/event');
+const hallController = require('./controllers/hall');
+const leaveController = require('./controllers/leave');
 const Utils = require('./Utils/utility');
 const utility = new Utils();
 /**
@@ -55,13 +59,32 @@ const utility = new Utils();
 app.post('/api/register', userController.postRegister);
 app.post('/api/login', userController.login);
 app.post('/api/forgot', userController.forgot);
+app.post('/api/user',utility.authenticateUser, userController.changePassword);
+app.get('/api/birthevent',utility.authenticateUser, userController.getBirthdayAndEvents);
 app.get('/api/usertags', utility.authenticateUser,userController.getUserTags);
 app.post('/api/notification', multipartMiddleware,utility.authenticateUser,notificationController.saveNotification);
 app.get('/api/notification',utility.authenticateUser,notificationController.getNotification);
 app.get('/api/getTrainingMaterial',utility.authenticateUser, userController.getTrainingMaterial);
 app.get('/api/getTrainingSubject',utility.authenticateUser, userController.getTrainingSubject);
 app.get('/api/getTrainingMaterialHome',utility.authenticateUser, userController.getTrainingMaterialHome);
-app.get('/api/getTraining', userController.getFolderFiles);
+app.get('/api/getTraining', utility.authenticateUser,userController.getFolderFiles);
+app.post('/api/createtimetable', multipartMiddleware,utility.authenticateUser,timetableController.saveTimetable);
+app.get('/api/timetable', utility.authenticateUser,timetableController.getTimetable);
+app.get('/api/batch',utility.authenticateUser,userController.getBatch);
+
+app.get('/api/user',userController.importUsers);
+
+app.get('/api/event',utility.authenticateUser,eventController.getEvent);
+app.post('/api/event',multipartMiddleware,utility.authenticateUser,eventController.saveEvent);
+
+app.get('/api/hall',utility.authenticateUser,hallController.getHallOfFame);
+app.post('/api/hall',utility.authenticateUser,hallController.saveHallOfFame);
+app.post('/api/hallupdate',utility.authenticateUser,hallController.updateHallOfFame);
+app.delete('/api/hall',utility.authenticateUser,hallController.deleteteHallOfFame);
+
+app.get('/api/leave',utility.authenticateUser,leaveController.getLeaves);
+app.post('/api/leave',utility.authenticateUser,leaveController.saveLeave);
+app.post('/api/leaveupdate',utility.authenticateUser,leaveController.approveOrDecline);
 
 if(process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() == "production"){
 

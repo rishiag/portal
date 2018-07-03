@@ -1,0 +1,224 @@
+<div class="center page-wise-menu">
+    <ul class="ul-sub-menu1">
+        <li class="menu1 sub-sub-menu active-bottom" ng-click="activateClub('cultural');" id="cultural">Cultural Club</li>
+        <li class="menu1 sub-sub-menu" ng-click="activateClub('hobbies');" id="hobbies">Hobbies Club</li>
+    </ul>
+ </div>
+ <div class="club-select">
+        <select class="btn btn-primary dropdown-toggle club-select-pad"  ng-model="optEvent" ng-change="refreshData();" >
+                <option ng-repeat="opt in optsEvent">{{opt}}</option>
+        </select>
+    <select class="btn btn-info dropdown-toggle club-select-pad"  ng-model="optSelected" ng-change="refreshData();" >
+            <option ng-repeat="opt in opts">{{opt}}</option>
+      </select>
+ </div>
+
+ 
+
+ <div style="margin-top:3%;background:#f5f6fa !important;" class="col-md-12">
+        <div class="event-list event-list-menu col-md-4" >
+            <div class="create-event-button" data-toggle="modal" data-target="#myModal">
+                  + Create New Event
+            </div>
+            <div style="background:#fff;height:10px;"></div>
+               <div class="event-list-title">
+                   <span class="">Event Calendar</span>
+                   <!-- <span style="float:right;">{{commonArr.length}}</span> -->
+               </div>
+               <div class="club-side-list" id="club-side-list">
+                <div ng-repeat="event in commonArr" class="event-link" ng-click="openEvent(event)" id="{{event._id}}">
+                        <span style="font-size:12px;">{{event.subject}}</span>
+                        <div style="color:#8b8fa1;font-size:10px;">
+                               <span>{{event.eventVanue}}</span> <span style="float: right;margin-right:5px;">{{event.eventDate | date }}</span>                                
+                        </div>
+                   </div>
+               </div>
+        </div>
+        <div class="event-display-area col-md-8">
+           <div ng-show="commonArr.length"  class="col-md-12">
+                   <div ng-show="fileAvailable">
+                           <div style="display:-webkit-box;">
+                           <div class="pdf-page-prev-next">
+                                   <span class="glyphicon glyphicon-triangle-left" style="padding:3px;float:left;" ng-click="goPrevious()"></span>
+                                   <span style="margin-left:12%;"> {{pageNum}}/{{pageCount}}</span>
+                                   <span class="glyphicon glyphicon-triangle-right" style="padding:3px;float:right;" ng-click="goNext()"></span>  
+                           </div>
+   
+                           <div class="pdf-zoom-in-out">
+                                   <span class="glyphicon glyphicon-zoom-in" style="padding:3px;float:left;" ng-click="zoomIn()"></span>
+                                   <span class="" style=""></span>
+                                   <span class="glyphicon glyphicon-zoom-out" style="padding:3px;float:right;" ng-click="zoomOut()"></span>  
+                           </div>
+                               
+                            <!-- <span><a href="{{pdfUrl}}" target="_blank"><img src="../images/download.png" style="width:30px;"></a></span> -->
+                               
+                           </div>
+                           <div class="wrapper" style="margin-top:5px;">
+                                   <ng-pdf template-url="views/viewer.html" canvasid="pdf" scale="page-fit" page=1 style="width: 90%;height: 200px;padding: 5%;"></ng-pdf>
+                           </div>
+                    </div>
+                        <div ng-hide="fileAvailable" class="event-text-display">
+                               <div ><span style="font-weight:600;">From </span>: {{sender}}</div>
+                               <div><span style="font-weight:600;">Subject</span> : {{subject}}</div>
+                               <div><span style="font-weight:600;">Event Date</span> : {{eventDate | date}}</div>
+                               <div><span style="font-weight:600;">Event Vanue</span> : {{eventVanue}}</div>
+                               <div style="width:100%;height:1px;background:#ccc;margin:15px 0 15px 0;"></div>
+                               <div style="white-space:pre-wrap;">{{content}}
+                               </div>
+                               <div class="" ng-if="fileAttached" style="width:90px;">
+                                           <!-- <div style="font-weight:600;"></div> -->
+                                           <a href="{{fileAttached}}" target="_blank" style="text-decoration:none;">
+                                                   <div>Attachment</div>
+                                                   <div><img src="../images/download.png" style="width: 45px;"></div>
+                                           </a>
+                                </div>
+                        </div>
+           </div>
+           <div ng-hide="commonArr.length" class="event-text-display">
+                   <div style="text-align: -webkit-center;font-size: -webkit-xxx-large;
+                   ">No event Available</div>
+           </div>
+        </div>
+</div>
+
+<div class="col-md-12" style="margin-top:25px;padding:0;">
+        <div class="col-md-6">
+                <div class="panel panel-default panel-border"  >
+                    <div class="panel-heading club-info"style="background:#fff;">Dramatics Club Information</div>
+                    <div class="panel-body club-info-box" id="clubDesc">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    </div>
+                </div>
+        </div>
+        <div class="col-md-6">
+                <div class="panel panel-default panel-border" >
+                    <div class="panel-heading club-info" style="background:#fff;display:-webkit-box;">
+                            <div>Hall Of Fame</div>
+                            <div class="hall-title"><a data-toggle="modal" data-target="#hallOfFame" style="cursor: pointer;"><img src="../images/add_blue.png" style="width:20px;"> Add Hall of Fame</a></div>
+                            <!-- <div style="text-align:-webkit-right;width:70%;"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#hallOfFame">Add</button></div> -->
+                   </div>
+                    <div class="panel-body club-info-box" id="hall">
+                            <div ng-repeat="hall in hallOfFameArr">
+                                {{hall.hallOfFameContent}}
+                                <div>
+                                   <span style="color:#8b8fa1;font-weight:600;">Added By</span> : {{hall.creator.name}}
+                                </div>
+                                <div style="text-align:right;">
+                                        <button type="button" class="hall-btn btn btn-primary" ng-click="showEditModal(hall);">Edit</button>
+                                        <button type="button" class="hall-btn btn btn-danger" ng-click="deleteHallOfFame(hall._id);">Delete</button>  
+                                </div>
+                                <hr>
+                            </div>
+                            <div ng-hide="hallOfFameArr.length" style="text-align: -webkit-center;font-size: -webkit-large;height:200px;">
+                                    No Hall Of Fame Available
+                            </div>
+                    </div>
+                </div>
+        </div>
+</div>
+
+
+<div class="modal fade" id="hallOfFame" role="dialog">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Add Hall Of Fame</h4>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" id="exampleFormControlTextarea3" rows="10" ng-model="hallOfFameContent" placeholder="Write something....."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-right" ng-click="saveHallOfFame();">Send</button>
+             </div>
+          </div>
+          
+        </div>
+</div>
+
+<div class="modal fade" id="hallOfFameEdit" role="dialog">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Edit Hall Of Fame</h4>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" id="exampleFormControlTextarea3" rows="10" ng-model="hallOfFameContentEdit" placeholder="Write something....."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-right" ng-click="updateHallOfFame();">Save</button>
+             </div>
+          </div>
+          
+        </div>
+</div>
+
+    <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog" style="width:70%;">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <div class="modal-header center">
+                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                     <h4 class="modal-title">Create New Event</h4>
+                  </div>
+                  <div class="modal-body">
+                     <div class="">
+                        <div class="row">
+                           <div class="col-md-12">
+                              <form  name="emailForm" class="email-form">
+                                 <div class="form-group" style="/*display: -webkit-box;*/">
+                                    <div>
+                                       <div>
+                                          <span style="color:#4a4a4a">Event Heading</span><span style="color:red;"><sup>&#x2605;</sup></span>
+                                       </div>
+                                       <div>
+                                          <input type="text" class="form-control" placeholder="Input text"  ng-model="subjectInput">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="form-group">
+                                    <div class="col-md-6 padding-left-zero">
+                                        <div>
+                                                <span style="color:#4a4a4a">Event Date</span><span style="color:red;"><sup>&#x2605;</sup></span>
+                                        </div>
+                                        <div>
+                                                <input type="text" class="form-control" id="datepicker" placeholder="event date" ng-model="eventDateInput">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 padding-zero">
+                                        <div>
+                                                <span style="color:#4a4a4a">Event Venue</span><span style="color:red;"><sup>&#x2605;</sup></span>
+                                        </div>
+                                        <div>
+                                                <input type="text" class="form-control"  placeholder="event venue" ng-model="eventVanueInput">
+                                        </div>
+                                    </div>
+                                 </div>
+                                 <div class="form-group">
+                                    <div>
+                                       <span style="color:#494949"> Addresses</span><span style="color:red;"><sup>&#x2605;</sup></span>
+                                    </div>
+                                    <tags-input ng-model="tags" add-on-paste="true">
+                                       <auto-complete source="loadTags($query)"></auto-complete>
+                                    </tags-input>
+                                 </div>
+                                 <textarea class="form-control" id="exampleFormControlTextarea3" rows="10" ng-model="contentInput" placeholder="Write something....."></textarea>
+                                 <button type="button" class="btn btn-primary attach-file" ng-click="openFileWindow();">+ Attach File</button>
+                                 {{fileName}}
+                                 <div class="center space">
+                                    <input type="file" onchange="angular.element(this).scope().upload(this)"  id="fileUpload" style="display : none"></input>
+                                 </div>
+                              </form>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-danger pull-right" ng-click="sendEmail();">Send</button>
+                  </div>
+               </div>
+            </div>
+         </div>
