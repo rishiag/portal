@@ -19,6 +19,7 @@ var express 			= require('express'),
 		app.use(expressValidator());
 		app.use(bodyParser.json());
 		app.use(bodyParser.urlencoded({ extended: false }));
+		
 		const fs = require('fs');
 		var _ = require('underscore');
 
@@ -51,6 +52,7 @@ const timetableController = require('./controllers/timetable');
 const eventController = require('./controllers/event');
 const hallController = require('./controllers/hall');
 const leaveController = require('./controllers/leave');
+const sessionController = require('./controllers/week');
 const Utils = require('./Utils/utility');
 const utility = new Utils();
 /**
@@ -64,6 +66,7 @@ app.get('/api/birthevent',utility.authenticateUser, userController.getBirthdayAn
 app.get('/api/usertags', utility.authenticateUser,userController.getUserTags);
 app.post('/api/notification', multipartMiddleware,utility.authenticateUser,notificationController.saveNotification);
 app.get('/api/notification',utility.authenticateUser,notificationController.getNotification);
+app.put('/api/notification', multipartMiddleware,utility.authenticateUser,notificationController.updateNotifStatus);
 app.get('/api/getTrainingMaterial',utility.authenticateUser, userController.getTrainingMaterial);
 app.get('/api/getTrainingSubject',utility.authenticateUser, userController.getTrainingSubject);
 app.get('/api/getTrainingMaterialHome',utility.authenticateUser, userController.getTrainingMaterialHome);
@@ -71,8 +74,10 @@ app.get('/api/getTraining', utility.authenticateUser,userController.getFolderFil
 app.post('/api/createtimetable', multipartMiddleware,utility.authenticateUser,timetableController.saveTimetable);
 app.get('/api/timetable', utility.authenticateUser,timetableController.getTimetable);
 app.get('/api/batch',utility.authenticateUser,userController.getBatch);
+app.get('/api/user/faculty',utility.authenticateUser,userController.getFaculty);
 
 app.get('/api/user',userController.importUsers);
+app.get('/api/faculty',userController.importFaculty);
 
 app.get('/api/event',utility.authenticateUser,eventController.getEvent);
 app.post('/api/event',multipartMiddleware,utility.authenticateUser,eventController.saveEvent);
@@ -85,6 +90,13 @@ app.delete('/api/hall',utility.authenticateUser,hallController.deleteteHallOfFam
 app.get('/api/leave',utility.authenticateUser,leaveController.getLeaves);
 app.post('/api/leave',utility.authenticateUser,leaveController.saveLeave);
 app.post('/api/leaveupdate',utility.authenticateUser,leaveController.approveOrDecline);
+app.delete('/api/leave',utility.authenticateUser,leaveController.deleteLeave);
+
+app.get('/api/weeksession',utility.authenticateUser,sessionController.getWeekSession);
+app.post('/api/weeksession',utility.authenticateUser,sessionController.createNewSession);
+app.delete('/api/weeksession',utility.authenticateUser,sessionController.removeSession);
+app.post('/api/weeksession/update',utility.authenticateUser,sessionController.actWeekSession);
+app.post('/api/feedback',utility.authenticateUser,sessionController.createSessionFeedback);
 
 if(process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() == "production"){
 
@@ -98,7 +110,7 @@ if(process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() == "production"){
 }else{
 
 	console.log('Running is development environment')
-
+	
 	app.use("/", express.static('app'));
 	app.use("/", express.static('bower_components'));
 

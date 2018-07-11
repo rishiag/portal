@@ -52,23 +52,31 @@ module.exports.getNotification = function (req, res) {
         res.send({ status: 200, message: 'Success', data: [] });
 
     function getNots() {
-        if (req.query.notificationHash) {
-            Notification.update({ _id: req.query.notificationHash }, { $set: { status: 'read' } }, function (err) {
-                Notification.find(query, function (err, notifs) {
-                    if (!err)
-                        res.send({ status: 200, message: 'Success', data: notifs });
-                    else
-                        res.send({ status: 404, message: 'Error finding Notifications' });
-                }).sort({ 'createdAt': -1 });
-            });
-        }
-        else
+        if(req.query.home){
+            Notification.find(query, function (err, notifs) {
+                if (!err)
+                    res.send({ status: 200, message: 'Success', data: notifs });
+                else
+                    res.send({ status: 404, message: 'Error finding Notifications' });
+            }).sort({ 'createdAt': -1 }).limit(10);
+        }else{
             Notification.find(query, function (err, notifs) {
                 if (!err)
                     res.send({ status: 200, message: 'Success', data: notifs });
                 else
                     res.send({ status: 404, message: 'Error finding Notifications' });
             }).sort({ 'createdAt': -1 });
+        }
+           
     }
 
+}
+
+module.exports.updateNotifStatus = function(req,res){
+    Notification.update({ _id: req.query.notificationHash }, { $set: { status: 'read' } }, function (err) {
+            if (!err)
+                res.send({ status: 200, message: 'Success', data: [] });
+            else
+                res.send({ status: 404, message: 'Error updating Notification status' });
+    });
 }

@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   name: String,
   isStudent : {type : Boolean},
+  isAdmin : {type : Boolean,default:false},
   groupName : {type : String},
   totalLeave : Number,
   leavesTaken : Number,
@@ -28,7 +29,12 @@ const userSchema = new mongoose.Schema({
     mobile : {type : String},
     prevExp : {type : String},
     org : {type : String},
-    rollNumber : {type :String}
+    rollNumber : {type :String},
+    postHeld : {type : String},
+    pay : {type : String},
+    department : {type : String},
+    allowances : {type :String},
+    batch : {type :String}
   },
   facultydata : {
     areaOfSpecializaion : {type : String},
@@ -36,8 +42,7 @@ const userSchema = new mongoose.Schema({
     designation : {type : String},
     officeAddress : {type : String},
     mailingAddress : {type : String},
-    firstName : {type : String},
-    lastName : {type : String},
+    comment : {type : String},
     contact : {
       phone :{type : String},
       fax:{type : String}

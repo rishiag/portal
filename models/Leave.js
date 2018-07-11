@@ -15,7 +15,8 @@ const leaveSchema = new mongoose.Schema({
   leaveAppDeclineReason : String,
   approver : String,
   approvalDate : Date,
-  leaveDays : {type : Number, default:0}
+  leaveDays : {type : Number, default:0},
+  lastApprovedLeaveDetails : {type : Object}
 }, { timestamps: true });
 
 const Leave = mongoose.model('Leave', leaveSchema);

@@ -92,6 +92,7 @@ angular.module('testApp')
 		// 						{fileName : 'Minute to minute program of Mr bipin rawat'},
 		// 						{fileName : 'Minute to minute program of Mr bipin rawat'}];
 
+		
 		$scope.fileAvailable = false;
 		$scope.videoAvailable = false;
 
@@ -123,9 +124,11 @@ angular.module('testApp')
 				if ($scope.birthdays.length > 0 && $scope.birthdays[0].month == new Date().getMonth() + 1 && $scope.birthdays[0].day == new Date().getDay()) {
 					$scope.adv = '';
 					$scope.bname = $scope.birthdays[0].name;
+					$scope.bpic = $scope.birthdays[0].profilePic;
 				} else if ($scope.birthdays.length > 0) {
 					$scope.adv = 'Advance ';
 					$scope.bname = $scope.birthdays[0].name;
+					$scope.bpic = $scope.birthdays[0].profilePic;
 				} else {
 					$scope.adv = '';
 				}
@@ -247,6 +250,16 @@ angular.module('testApp')
 			}
 		});
 
+		var updateNotif = function(query){
+			BackendService.updateNotifStatus(query).then(function(response){
+				console.log('',response);
+			})
+		}
+
+		if($rootScope.notice && $rootScope.notice.status == 'unread'){
+			updateNotif('?notificationHash=' + $rootScope.notice._id)
+		}
+
 		BackendService.getNotifications($rootScope.notice ? ('&notificationHash=' + $rootScope.notice._id) : null).then(function (response) {
 			var folderName = 'notice-files/';
 			$scope.personal = [];
@@ -293,6 +306,13 @@ angular.module('testApp')
 				}
 			}
 		})
+
+		// $scope.downloadFile = function(filePath){
+		// 	BackendService.downloadFile('?path='+filePath).then(function(response){
+				
+		// 	})
+		// }
+
 
 		$scope.publishOptions = ['Immediately', 'Later'];
 		$scope.selectedPublish = $scope.publishOptions[0];
@@ -406,6 +426,10 @@ angular.module('testApp')
 
 		$scope.openNotice = function (link, fileOrText, id) {
 			//console.log('hhhhh',link,fileOrText,id)
+			if(link && link.status == 'unread'){
+			//	console.log('notice to be checked...',notice)
+				updateNotif('?notificationHash='+link._id);
+			}
 			$timeout(function () {
 				$('.notice-link').removeClass('notice-active');
 				$('#' + id).addClass('notice-active');
@@ -422,8 +446,10 @@ angular.module('testApp')
 			}
 		}
 	})
-	.controller('ClassroomCntrl', function ($scope, $location, $window, $sce, BackendService, $rootScope, $timeout) {
+	.controller('ClassroomCntrl', function ($scope, $location, $window, $sce, BackendService, $rootScope, $timeout,ngToast) {
 		$('.header-class').removeClass("top-two-header");
+		$scope.user = JSON.parse(window.sessionStorage.user);
+		$scope.sessionFalg = false;
 		$scope.fileAvailable = false;
 		$scope.videoAvailable = false;
 		$scope.displayAreaFlag = true;
@@ -432,13 +458,125 @@ angular.module('testApp')
 			$('#' + evt.target.id).addClass('active-bottom');
 		});
 
-		// BackendService.getBatch().then(function(response){
-		// 	console.log('getBatch',response);
-		// 	if(response.status == 200){
-		// 		$scope.batchArr = response.data;
-		// 		$scope.batch = $scope.batchArr[0];
-		// 	}
-		// });
+		var getWeekSession = function(){
+			if($scope.user.isStudent){
+				var query = '?id='+$scope.user._id;
+			}else if($scope.user.isStudent == false && $scope.user.admin){
+				var query = '?email='+$scope.user.email+'&type=admin';
+			}else if(!$scope.user.isStudent){
+				var query = '?email='+$scope.user.email+'&type=faculty';
+			}
+			//var query = '?email='+$scope.user.email+'&type=faculty';
+			BackendService.getWeekSession(query).then(function(response){
+				console.log('weeksession....',response);
+				if(response.status == 200){
+					if(!$scope.user.isStudent && !$scope.user.admin){
+						$scope.weeksessionObj = response.data;
+						$scope.weeksession = Object.keys($scope.weeksessionObj);
+						$scope.optWeek =  $scope.weeksession[0];
+						$scope.refreshChartData($scope.weeksessionObj[$scope.optWeek])
+					}else{
+						$scope.refreshWeekSession(response.data);						
+					}
+				}
+			});
+		}
+
+		getWeekSession();
+
+		$scope.refreshWeekSession = function(response,week){
+			console.log(response)
+			$scope.weeksessionObj = response;
+			$scope.weeksession = Object.keys($scope.weeksessionObj);
+			if($scope.user.isStudent){
+				$scope.weeksessionArr = [];
+				$scope.weeksessionObj[week ? week : $scope.weeksession[0]].forEach(function(item){
+					$scope.weeksessionArr.push(item);
+					$scope.weeksessionArr.push({});
+				})
+			}else{
+				$scope.weeksessionArr = $scope.weeksessionObj[week ? week : $scope.weeksession[0]];
+			}
+			$scope.optWeek = week ? week : $scope.weeksession[0];
+		}
+
+		$scope.changeWeek = function(week){
+			if($scope.user.isStudent || $scope.user.admin){
+				$scope.refreshWeekSession($scope.weeksessionObj,week);
+			}else{
+				$scope.refreshChartData($scope.weeksessionObj[week])
+				
+			}
+			//$scope.weeksessionArr = $scope.weeksessionObj[week];
+		}
+
+		$scope.refreshChartData = function(sessionArr){
+			
+			$scope.sessionArr = sessionArr;
+			 	$scope.labels = ['0', '1', '2', '3', '4'];
+			 	$scope.series = ['Content feedback', 'Presentation feedback'];
+				$scope.colours= [
+                    {
+                        backgroundColor: '#FF4242',
+                        borderColor: '#FF4242',
+                        hoverBackgroundColor: '#FF4242',
+                        hoverBorderColor: '#FF4242'
+                    },
+                    {
+                        backgroundColor: '#2291ff',
+                        borderColor: '#2291ff',
+                        hoverBackgroundColor: '#2291ff',
+                        hoverBorderColor: '#2291ff'
+                    }
+                ]
+				$scope.options = {
+					legend: {
+					  display: false,
+					},
+					scales: {
+					  yAxes: [{
+						id: 'y-axis-1',
+						type: 'linear',
+						display: true,
+						position: 'left',
+						scaleLabel: {
+						  display: true,
+						  fontSize: 18,
+						  labelString: 'Number of Users'
+						}
+					  }],
+					  xAxes: [{
+						scaleLabel: {
+						  display: true,
+						  fontSize: 18,
+						  labelString: 'Rating',
+						  id: 'x-axis-0'
+						}
+					  }]
+					}
+				  };
+		}
+
+		$scope.submitFeedback = function(id){
+			var contentRating = $('#content-'+id).attr('abc');
+			var presentRating = $('#present-'+id).attr('abc');
+			var remark =  $('#remark-'+id).val();
+			$("#button-"+id).attr("disabled", "disabled");
+			$("#button-"+id).css({"opacity" : "0.5"});
+			$("#remark-"+id).attr('readonly', 'readonly');
+			BackendService.sessionFeedback({contentRating : contentRating,presentRating:presentRating,id:id,userId : $scope.user._id,remark :remark}).then(function(response){
+				console.log('----',response);
+			})
+		}
+
+		$scope.deleteSession = function(week){
+			BackendService.deleteSession('?id='+week._id).then(function(response){
+				$scope.weeksessionArr.forEach(function(item,index){
+					if(item._id == week._id)
+						$scope.weeksessionArr.splice(index,1);
+				})
+			})
+		}
 
 		//getTrainingMaterial
 		BackendService.getTraining($rootScope.classroom ? $rootScope.classroom.subject : null).then(function (response) {
@@ -487,7 +625,11 @@ angular.module('testApp')
 		}
 
 		$scope.activateTrainingOrSession = function (tab) {
-			$scope.displayAreaFlag = true;
+			if(tab == 'sessionfeedback'){
+				$scope.sessionFalg = true;
+			}else{
+				$scope.sessionFalg = false;
+				$scope.displayAreaFlag = true;
 			$scope.fileAvailable = false;
 			$scope.pdfUrl = null;
 			$scope.videoAvailable = false;
@@ -511,7 +653,7 @@ angular.module('testApp')
 				$scope.selectedSubject = 'No subject Available';
 				$scope.subjectOptions = ['No subject Available'];
 			}
-
+			}
 		}
 
 
@@ -569,6 +711,7 @@ angular.module('testApp')
 		}
 
 		$scope.openMaterial = function (obj) {
+			var vExtArr = ['m4v', 'avi','mpg','mp4', 'webm'];
 			$rootScope.classroom = null;
 			$scope.displayAreaFlag = false;
 			var extArr = obj.link.split('.');
@@ -580,12 +723,13 @@ angular.module('testApp')
 				$scope.videoAvailable = false;
 				$scope.pdfUrl = obj.link;
 			}
-			else if (extArr[extArr.length - 1] == 'ppt')
-				console.log('ppt');
-			else {
+			else if (vExtArr.indexOf(extArr[extArr.length - 1]) > -1){
 				$scope.fileAvailable = false;
 				$scope.videoAvailable = true;
 				$scope.videos = [{ "type": "mp4", "src": obj.link, "poster": "http://www.videojs.com/img/poster.jpg", "captions": "http://www.videojs.com/vtt/captions.vtt" }];
+			}
+			else {
+				window.open(obj.link, 'Download');
 			}
 
 			$timeout(function () {
@@ -594,408 +738,70 @@ angular.module('testApp')
 			})
 		}
 
+		$scope.createWeekSession = function(){
+			if(!$scope.weekName || $scope.weekName == '')
+			  return message('Please enter week name...',ngToast)
+			else if(!$scope.sessionName || $scope.sessionName == '')
+			  return message('Please enter session name...',ngToast)
+			else if(!$scope.facultyName || $scope.facultyName == '')
+			  return message('Please enter faculty name...',ngToast)
+			else if(!$scope.facultyEmail || $scope.facultyEmail == '')
+			  return message('Please enter faculty email...',ngToast)
+			else{
+				var obj = {};
+				obj.weekName = $scope.weekName;
+				obj.sessionName = $scope.sessionName;
+				obj.facultyName = $scope.facultyName;
+				obj.facultyEmail = $scope.facultyEmail;
+				BackendService.createWeekSession(obj).then(function(response){
+					console.log('week....',response)
+					if(response.status == 200){
+						$scope.refreshWeekSession(response.data);
+						$scope.weekName = '';
+						$scope.sessionName = '';
+						$scope.facultyName = '';
+						$scope.facultyEmail = '';
+						message('Session successfully created...',ngToast)
+					}else{
+						message(response.message,ngToast)
+					}
+				});
+			}
+		}
+
+		$scope.actWeekSession = function(id){
+			var status;
+			if($('#'+id). prop("checked") == true){
+				status = true;
+			}else{
+				status = false;
+			}
+			BackendService.actWeekSession('?id='+id,{'status':status}).then(function(response){
+				console.log(response.status)
+			})
+		}
+
 
 	})
 	.controller('CourseframeworkCntrl', function ($scope, ngToast, $location, BackendService, Upload, $timeout, $stateParams) {
 
-		$scope.facultyArr = [{
-			firstName: 'Chirag',
-			lastName: 'Gupta',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '9988454538',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Pankaj',
-			lastName: 'Gupta',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '07125623',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/aa.jpg'
-		}, {
-			firstName: 'Ashish',
-			lastName: 'Gupta',
-			typeOfFaculty: 'In house faculty',
-			designation: 'Deputy Director, ACD NADT, Nagpur',
-			officeAddress: 'Course Director (71st Batch IRS), NADT Nagpur',
-			mailingAddress: 'Room No. 215, Admin Building, NADT Nagpur',
-			contact: {
-				phone: '0712589999',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/ab.jpg'
-		}, {
-			firstName: 'Abdul',
-			lastName: 'Hannan',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '0712992871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Sagar',
-			lastName: 'Gupta',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '8812582871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Aseem',
-			lastName: 'dalal',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '0712582822',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Rishi',
-			lastName: 'Agarwal',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '712582871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'PC',
-			lastName: 'Yadav',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '012582871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Virat',
-			lastName: 'Kohli',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '072582871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Yuvraj',
-			lastName: 'Singh',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '071582871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Suresh',
-			lastName: 'Raina',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '071282871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Harbhajan',
-			lastName: 'Singh',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '071252871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Sachin',
-			lastName: 'Tendulekar',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '071258871',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'Virendra',
-			lastName: 'Singh',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '071258271',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}, {
-			firstName: 'MS',
-			lastName: 'Dhoni',
-			typeOfFaculty: 'Guest',
-			designation: 'Pr. DGIT',
-			location: 'National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '071258281',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			comments: '',
-			isStudent: false,
-			batchName: '',
-			gender: '',
-			dob: '',
-			maritalStatus: '',
-			eduQualification: '',
-			hometown: '',
-			state: '',
-			profilePic: 'profile-images/abc.jpeg'
-		}];
+		
+		BackendService.getFacultyData().then(function(response){
+			console.log('faculty',response)
+			if (response.status == 200) {
+				$scope.facultyArr = response.data;
+				$scope.faculty = $scope.facultyArr[0];
+			}else{
+				$scope.facultyArr = [];
+				$scope.faculty = {};
+			}
+		})
 
+		
 		$scope.facultydiv = true;
 		$scope.batchdiv = false;
 		$scope.profilediv = false;
 		$scope.timetablediv = false;
-
-
-		$scope.faculty = {
-			profilePic: 'profile-images/abc.jpeg',
-			profileDesc: "Dr. Pushpinder Singh Puniha is an IRS officer of the 39th Batch. He did his schooling from Delhi Public School, R.K. Puram, New Delhi. In the 1979 CBSE Examination of 10+2, he secured 9th position in the All India Merit List. He has graduated from St. Stephen's College, Delhi University with Hons. in Economics in 1982 and did an MA in Economics from Delhi School of Economics. He also holds a master's degree in Public Policy from University of Southern California, Los Angeles, U.S.A. He is also an awardee of Ph.D degree in Development Finance from Sol Price School of Public Policy, University of Southern California, USA. In the Department, he has long years of experience in Assessment, Administration, Appeals and Investigation divisions. He has been posted at Ludhiana, Chandigarh, New Delhi, Bangalore and Mumbai in the department. He has published 7 articles and papers and one book chapter in an international publication. He has also edited the CBDT's Investigation report for the last five years. Dr. Pushpinder Singh Puniha is married to Mrs. Harinder and they have two sons, Uday and Abhay.",
-			areaOfSpecializaion: '',
-			firstName: 'Pushpinder Singh',
-			lastName: 'Puniha',
-			typeOfFaculty: 'In house faculty',
-			designation: 'Pr. DGIT National Academy of Direct Taxes',
-			officeAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			mailingAddress: 'NADT, Chhindwara Road, Nagpur-440030',
-			contact: {
-				phone: '071258287',
-				fax: ''
-			},
-			email: 'dg@nadt.gov.in',
-		};
 
 
 		var folder = '';
@@ -1054,14 +860,15 @@ angular.module('testApp')
 			// $('#profile').css({'display':'none'});
 			// $('#training-calender-div').css({'display':'none'});
 			// $('#'+childId).css({'display':'block'});
-			if (childId === 'timetable-div' || childId === 'training-calender-div') {
+			if (childId == 'timetable-div' || childId == 'training-calender-div') {
 				$scope.showtimetable = $scope.timetableArr && $scope.timetableArr.length > 0 ? true : false;
 				$scope.pdfUrl = $scope.timetableArr && $scope.timetableArr.length > 0 ? folder + $scope.timetableArr[0].fileName : null;
-				$timeout(function () {
-					$('.notice-link').removeClass('notice-active');
-					if (+$scope.timetableArr && +$scope.timetableArr.length > 0)
+				if ($scope.timetableArr && $scope.timetableArr.length > 0)
+					$timeout(function () {
+						$('.notice-link').removeClass('notice-active');
 						$('#' + $scope.timetableArr[0]._id).addClass('notice-active');
-				})
+						console.log('from high light time-table',$scope.timetableArr[0]._id)
+					},2)
 				//console.log('$scope.pdfUrl',$scope.pdfUrl)
 			}
 		}
@@ -1197,7 +1004,6 @@ angular.module('testApp')
 
 
 		$scope.refreshData = function (id) {
-			//console.log($scope.optEvent,$scope.optsEvent[1])
 			if ($scope.optEvent == $scope.optsEvent[1]) {
 				$scope.commonArr = $scope.pastEvents[$scope.activeCategoty] && $scope.pastEvents[$scope.activeCategoty][$scope.optSelected] ? $scope.pastEvents[$scope.activeCategoty][$scope.optSelected] : [];
 				$('.create-event-button').css({ 'display': 'none' });
@@ -1231,6 +1037,8 @@ angular.module('testApp')
 				$timeout(function () {
 					$('#' + event._id).addClass('event-active');
 				})
+			}else{
+				console.log('from else of common event.....',$scope.commonArr)
 			}
 			$scope.refreshHallOfFameData();
 		}
@@ -1286,7 +1094,7 @@ angular.module('testApp')
 					to.push(tag.text);
 				})
 				Upload.upload({
-					url: '/api/event',
+					url: '/api/event?email='+creator.email+'&group_name=' + groupName,
 					data: {
 						to: to,
 						subject: $scope.subjectInput,
@@ -1305,8 +1113,13 @@ angular.module('testApp')
 					$scope.fileName = '';
 					$scope.eventDateInput = '';
 					$scope.eventVanueInput = '';
-					if (resp.status == 200)
-						return message('Mail successfully sent....', ngToast);
+					if (resp.data.status == 200) {
+						$scope.events = resp.data.data;
+						$scope.refreshData();
+						//$scope.commonArr = $scope.events[$scope.activeCategoty][$scope.optSelected];
+						message('Event Successfully created', ngToast)
+						
+					}
 					else
 						return message(response.message, ngToast);
 				}, function (resp) {
@@ -1382,7 +1195,8 @@ angular.module('testApp')
 	.controller('LeaveCntrl', function ($scope, BackendService, ngToast, $timeout) {
 		$scope.user = JSON.parse(window.sessionStorage.user);
 		$scope.totalLeaves = $scope.user.totalLeaves;
-
+		$scope.preview = false;
+		$scope.station = true;
 		$scope.optsLeave = ['Casual', 'Station'];
 		$scope.leaveType = $scope.optsLeave[0];
 		$scope.optsCombining = ['Yes', 'No'];
@@ -1445,6 +1259,31 @@ angular.module('testApp')
 			$scope.leaveOptStatus = $scope.optsStatusLeave[0]; //$scope.optsStatusLeave[$scope.optsStatusLeave.indexOf(leave.status)];
 			$('#leaveStatusModal').modal('show');
 		}
+		$scope.cancelLeave = function(leave){
+			if(leave.status == 'Approved'){
+				message('Approved leave can not be cancel.', ngToast);
+				return false;				
+			}
+			BackendService.cancelLeave('?id='+leave._id+'&email='+$scope.user.email).then(function(response){
+				if (response.status == 200) {
+					$('#myModal').modal('hide');
+					message('Leave successfully cancelled.', ngToast);
+					$scope.refreshLeave(response);
+				
+				} else {
+					message(response.message, ngToast);
+				}
+			})
+		}
+
+		$scope.openLeaveModal = function(leave,prev,type){
+			$scope.leave = leave;
+			$scope.station = type == 'station' ? true : false;
+			$scope.leaveType = $scope.station ? $scope.optsLeave[0] :'Earned'
+			$scope.preview = prev ? prev :false;
+			$('#myModal').modal('show');
+		}
+
 		$scope.leaveStatusSelected = function () {
 			if ($scope.leaveOptStatus != 'Declined') {
 				$scope.showLeaveDays = true;
@@ -1468,8 +1307,8 @@ angular.module('testApp')
 				BackendService.leaveApproveOrDecline('?id=' + $scope.leave.userId._id, obj).then(function (response) {
 					console.log(response)
 					if (response.status == 200) {
-						$scope.refreshLeave(response);
 						message('Leave Status successfully changed.', ngToast);
+						$scope.refreshLeave(response);
 					} else {
 						message(response.message, ngToast);
 					}
@@ -1478,19 +1317,19 @@ angular.module('testApp')
 		}
 
 		$scope.applyLeave = function () {
-			if (!$scope.leaveType || $scope.leaveType == '' || ['Casual', 'Station'].indexOf($scope.leaveType) == -1)
-				message('Please enter leave type...Casual or Station', ngToast);
+			if (!$scope.leaveType || $scope.leaveType == '')
+				message('Please enter leave type...', ngToast);
 			else if (!$scope.departDate || $scope.departDate == '')
 				message('Please select departure date', ngToast);
-			else if ($('#timepicker').val() == '')
+			else if ($('#timepicker').val() == '' && $scope.station)
 				message('Please select departure time', ngToast);
 			else if (!$scope.arrivalDate || $scope.arrivalDate == '')
 				message('Please select arrival date', ngToast);
-			else if ($('#timepicker1').val() == '')
+			else if ($('#timepicker1').val() == '' && $scope.station)
 				message('Please select arrival time', ngToast);
 			else if (!$scope.reason || $scope.reason == '')
 				message('Please enter reason for leave', ngToast);
-			else if (!$scope.combiningFlag || $scope.combiningFlag == '')
+			else if ((!$scope.combiningFlag || $scope.combiningFlag == '') && $scope.station)
 				message('Please fill Combining with Casual leave/Station leave (Yes/No) ', ngToast);
 			else if (!$scope.leaveStayAddress || $scope.leaveStayAddress == '')
 				message('Please enter address during leave', ngToast);
@@ -1498,35 +1337,63 @@ angular.module('testApp')
 				var leave = {};
 				leave.userId = $scope.user._id;
 				leave.leaveType = $scope.leaveType;
-				leave.departDate = $scope.departDate;
-				leave.departTime = $('#timepicker').val();
-				leave.arrivalDate = $scope.arrivalDate;
-				leave.arrivalTime = $('#timepicker1').val();
+				leave.departDate =  $scope.station ? $('#datepicker').val() : $('#datepicker2').val();
+				leave.departTime = $scope.station ? $('#timepicker').val() : '';
+				leave.arrivalDate = $scope.station ? $('#datepicker1').val() : $('#datepicker3').val();
+				leave.arrivalTime = $scope.station ? $('#timepicker1').val() : '';
+				 if(new Date(leave.departDate) > new Date(leave.arrivalDate)){
+					message("Please ensure that the Arrival Date is greater than the Departure Date.",ngToast);
+					return false;					
+				 }
 				leave.reason = $scope.reason;
-				leave.combiningWithCusualStation = $scope.combiningFlag;
+				leave.combiningWithCusualStation = $scope.station ? $scope.combiningFlag : false;
 				leave.addressDuringLeave = $scope.leaveStayAddress;
 				leave.userName = $scope.user.name;
+				leave.lastApprovedLeaveDepartDate = $scope.lastApprovedLeave.departDate;
+				leave.lastApprovedLeaveDepartTime=$scope.lastApprovedLeave.departTime;
+				leave.lastApprovedLeaveArrivalDate=$scope.lastApprovedLeave.arrivalDate;
+				leave.lastApprovedLeaveArrivalTime=$scope.lastApprovedLeave.arrivalTime;
+				leave.lastApprovedLeaveType=$scope.lastApprovedLeave.leaveType;
 				BackendService.applyForLeave('?email=' + $scope.user.email, leave).then(function (response) {
-					console.log(response)
 					if (response.status == 200) {
-						$scope.leaveType = '';
 						$scope.departDate = '';
 						$scope.departTime = '';
 						$scope.arrivalDate = '';
 						$scope.arrivalTime = '';
 						$scope.reason = '';
-						$scope.combiningFlag = '';
 						$scope.leaveStayAddress = '';
+						message('Leave successfully applied.', ngToast);
+						$('#myModal').modal('hide');
+						$scope.refreshLeave(response);
+					} else {
+						message(response.message, ngToast);
 					}
-					message(response.message, ngToast);
 				});
 			}
 		}
+		$('#myModal').on('hidden.bs.modal', function (e) {
+			$scope.leave = null;
+			$scope.departDate = '';
+			$scope.departTime = '';
+			$scope.arrivalDate = '';
+			$scope.arrivalTime = '';
+			$scope.reason = '';
+			$scope.leaveStayAddress = '';
+			$scope.preview = false;
+			$scope.station = true;
+			$scope.leaveType = $scope.optsLeave[0];
+		  })
 		$(function () {
 			$("#datepicker").datepicker({
 				minDate: new Date()
 			});
 			$("#datepicker1").datepicker({
+				minDate: new Date()
+			});
+			$("#datepicker2").datepicker({
+				minDate: new Date()
+			});
+			$("#datepicker3").datepicker({
 				minDate: new Date()
 			});
 			$('#timepicker').mdtimepicker();

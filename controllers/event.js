@@ -32,7 +32,7 @@ module.exports.saveEvent = function (req, res) {
         event.save(function (err) {
             console.log(err);
             if (!err)
-                res.send({ status: 200, message: "Event successfully created..." });
+            module.exports.getEvent(req,res);
             else
                 res.send({ status: 400, message: 'Error creating event....' });
         })

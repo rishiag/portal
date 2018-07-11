@@ -20,7 +20,8 @@ angular
 		'ngTagsInput',
 		'ngFileUpload',
 		'ngToast',
-		'pdf'
+		'pdf',
+		'chart.js'
 	])
 	.config(function($stateProvider, $locationProvider,$urlRouterProvider) {
 		$stateProvider
@@ -98,6 +99,57 @@ angular
 	.config(['$httpProvider',function($httpProvider) {
 		$httpProvider.interceptors.push('apiCheck');
 	}])
+	.directive('starRating', function () {
+		return {
+			restrict: 'A',
+			template: '<ul class="rating" id="{{starId}}" abc="{{count}}">' +
+				'<li ng-repeat="star in stars" ng-class="star " ng-click="ratingFlag && toggle($index)" >' +
+				'\u2605' +
+				'</li>' +
+				'</ul>',
+			scope: {
+				ratingValue: '=',
+				ratingFlag : '=',
+				starId : '=',
+				max: '=',
+				onRatingSelected: '&'
+			},
+			controller : ['$scope','$rootScope', function ($scope,$rootScope) {
+				$scope.rating = 0;
+				//$scope.count = 0;
+				$scope.getSelectedRating = function (rating) {
+					//console.log('eeeeeeeeee',rating);
+				}
+			}],
+			link: function (scope, elem, attrs) {
+				//scope.count = 0;
+				var updateStars = function () {
+					scope.stars = [];
+					scope.count = 0;
+					for (var i = 0; i < scope.max; i++) {
+						scope.count = i < scope.ratingValue ? scope.count+1 : scope.count;
+						scope.stars.push({
+							filled: i < scope.ratingValue
+						});
+					}
+					scope.getSelectedRating(scope.count);
+				};
+	
+				scope.toggle = function (index) {
+					scope.ratingValue = index + 1;
+					scope.onRatingSelected({
+						rating: index + 1
+					});
+				};
+	
+				scope.$watch('ratingValue', function (oldVal, newVal) {
+					if (newVal) {
+						updateStars();
+					}
+				});
+			}
+		}
+	})
 	.service('apiCheck', ['$location',function($location) {
 		this.request = function(config) {
 			if(window.sessionStorage && window.sessionStorage.user && config.url.indexOf('/api') > -1){
@@ -108,8 +160,7 @@ angular
 	
 		this.response = function(response) {
 		  if( response && response.data && response.data.status && response.data.status == 403){
-			console.log(response)	 
-			// window.location.href = '/logout';
+			 window.location.href = '/logout';
 		  }else
 				   return response ;
 		}

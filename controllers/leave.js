@@ -6,34 +6,14 @@ const async = require('async');
 
 module.exports.saveLeave = function (req, res) {
     async.waterfall([
-        // function(cb){
-        //     var reqLeave = req.body.leave.arrivalDate - req.body.leave.departDate;
-        //     User.findOne({email : req.query.email},{totalLeave:1,leaveTaken:1},function(err,user){
-        //         if(!err && user){
-        //             if(user.totalLeave - user.leaveTaken >= reqLeave)
-        //                 cb(null);
-        //             else
-        //                 res.send({status:101,message :"Your required leaves are less than the available leaves"});
-        //         }else{
-        //             res.send({status:404,message :"Unkwown User"});
-        //         }
-        //     })
-        // },
-        // function(cb){
-        //     User.update({_id : req.body.leave.userId},{$inc : {leaveTaken : 1}},function(err){
-        //         if(!err){
-        //             cb(null);
-        //         }else{
-        //             res.send({status:101,message :"Error saving leave request"});
-        //         }
-        //     });
-        // },
         function (cb) {
             var leave = req.body;
+            //console.log(leave)
             var newLeave = new Leave({
                 userId: leave.userId, leaveType: leave.leaveType, departDate: leave.departDate, departTime: leave.departTime,
                 arrivalDate: leave.arrivalDate, arrivalTime: leave.arrivalTime, reason: leave.reason, combiningWithCusualStation: leave.combiningWithCusualStation,
-                addressDuringLeave: leave.addressDuringLeave, status: "Pending", to: ['']
+                addressDuringLeave: leave.addressDuringLeave, status: "Pending", to: ['dg@nadt.gov.in'],lastApprovedLeaveDetails : {departDate : req.body.lastApprovedLeaveDepartDate,departTime:req.body.lastApprovedLeaveDepartTime,
+                arrivalDate : req.body.lastApprovedLeaveArrivalDate,arrivalTime:req.body.lastApprovedLeaveArrivalTime,leaveType:req.body.lastApprovedLeaveType}
             });
             newLeave.save(function (err) {
                 if (!err) {
@@ -44,7 +24,7 @@ module.exports.saveLeave = function (req, res) {
             })
         }
     ], function (error, result) {
-        res.send({ status: 200, message: "Leave successfully Applied" });
+        module.exports.getLeaves(req, res);
     })
 }
 
@@ -54,7 +34,7 @@ module.exports.getLeaves = function (req, res) {
             if (user && user.isStudent) {
                 async.parallel({
                     getLeaves: function (cb) {
-                        Leave.find({ userId: user._id }).populate('userId', 'name totalLeave leavesTaken')
+                        Leave.find({ userId: user._id }).populate('userId', 'name totalLeave leavesTaken studentdata.firstName studentdata.middleName studentdata.lastName email studentdata.mobile studentdata.rollNumber studentdata.batch studentdata.department studentdata.postHeld studentdata.allowances studentdata.pay')
                             .exec(function (err, leaves) {
                                 if (!err)
                                     cb(null, leaves);
@@ -75,7 +55,7 @@ module.exports.getLeaves = function (req, res) {
                 });
             } else if (user) {
                 Leave.find({ to: { $all: [req.query.email] } })
-                    .populate('userId', 'name totalLeave leavesTaken')
+                    .populate('userId', 'name totalLeave leavesTaken studentdata.firstName studentdata.middleName studentdata.lastName email studentdata.mobile studentdata.rollNumber studentdata.batch studentdata.department studentdata.postHeld studentdata.allowances studentdata.pay')
                     .exec(function (err, leaves) {
                         console.log(err)
                         if (!err)
@@ -136,15 +116,15 @@ module.exports.approveOrDecline = function (req, res) {
         function (cb) {
             if (req.body.leaveOldStatus == 'Approved' && req.body.leaveStatus == 'Declined') {
                 var updateObj = { $inc: { leavesTaken: -req.body.oldLeaveDays } };
-            } else if (req.body.leaveOldStatus == 'Pending' && req.body.leaveOldStatus == 'Declined') {
+            } else if (req.body.leaveOldStatus == 'Pending' && req.body.leaveStatus == 'Declined') {
                 var updateObj = { $inc: { leavesTaken: 0 } };
-            } else if (req.body.leaveOldStatus == 'Pending' && req.body.leaveOldStatus == 'Approved') {
+            } else if (req.body.leaveOldStatus == 'Pending' && req.body.leaveStatus == 'Approved') {
                 var updateObj = { $inc: { leavesTaken: req.body.leaveDays } };
             } else if (req.body.leaveOldStatus == 'Declined' && req.body.leaveStatus == 'Approved') {
                 var updateObj = { $inc: { leavesTaken: req.body.leaveDays } };
             }
             User.update({ _id: req.query.id }, updateObj, function (err, change) {
-                //console.log('user leaves updates...',err,change)
+               // console.log('user leaves updates...',err,change)
                 if (err) {
                     Leave.update({ _id: req.body.leaveId }, { $set: { status: '', leaveAppDeclineReason: '', approver: '' } }, function (err) {
                         if (!err)
@@ -162,5 +142,15 @@ module.exports.approveOrDecline = function (req, res) {
     ], function (error, result) {
         req.query.email = req.body.approver;
         module.exports.getLeaves(req, res);
+    })
+}
+
+module.exports.deleteLeave = function(req,res){
+    Leave.remove({ _id: req.query.id }, function (err) {
+        if (!err)
+            module.exports.getLeaves(req, res);
+        else 
+            res.send({ status: 101, message: "Error saving leave request" });
+        
     })
 }

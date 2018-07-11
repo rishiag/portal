@@ -7,14 +7,17 @@ angular
 			login: login,
 			forgot: forgot,
 			getNotifications: getNotifications,
+			updateNotifStatus : updateNotifStatus,
 			register: register,
 			getTrainingMaterial: getTrainingMaterial,
 			getTrainingSubject: getTrainingSubject,
 			getTrainingMaterialHome: getTrainingMaterialHome,
+			downloadFile : downloadFile,
 			getTraining: getTraining,
 			changePass: changePass,
 			getTimetable: getTimetable,
 			getBatch: getBatch,
+			getFacultyData : getFacultyData,
 			getEvent: getEvent,
 			saveHallOfFame: saveHallOfFame,
 			getHallOfFame: getHallOfFame,
@@ -24,8 +27,43 @@ angular
 			getPastEvent: getEvent,
 			applyForLeave: applyForLeave,
 			getLeaves: getLeaves,
-			leaveApproveOrDecline: leaveApproveOrDecline
+			leaveApproveOrDecline: leaveApproveOrDecline,
+			cancelLeave : cancelLeave,
+			createWeekSession : createWeekSession,
+			getWeekSession : getWeekSession,
+			actWeekSession : actWeekSession,
+			sessionFeedback : sessionFeedback,
+			deleteSession : deleteSession
 		};
+
+		
+		function downloadFile(query){
+			return $http.get('/api/download'+query).then(handleSuccess, handleError);
+		}
+
+		function deleteSession(query){
+			return $http.delete('/api/weeksession'+query).then(handleSuccess, handleError);
+		}
+
+		function sessionFeedback(obj){
+			return $http.post('/api/feedback', obj).then(handleSuccess, handleError);
+		}
+
+		function actWeekSession(query,obj){
+			return $http.post('/api/weeksession/update'+query, obj).then(handleSuccess, handleError);
+		}
+
+		function createWeekSession(obj){
+			return $http.post('/api/weeksession', obj).then(handleSuccess, handleError);
+		}
+
+		function getWeekSession(query){
+			return $http.get('/api/weeksession'+query).then(handleSuccess, handleError);
+		}
+
+		function cancelLeave(query, ) {
+			return $http.delete('/api/leave' + query).then(handleSuccess, handleError);
+		}
 
 		function applyForLeave(query, obj) {
 			return $http.post('/api/leave' + query, obj).then(handleSuccess, handleError);
@@ -51,6 +89,19 @@ angular
 			var request = {
 				method: 'GET',
 				url: '/api/batch',
+				timeout: cancel.promise, // cancel promise, standard thing in $http request
+				cancel: cancel // this is where we do our magic
+			};
+			return $http(request).then(handleSuccess, handleError);
+		}
+
+		
+
+		function getFacultyData() {
+			var cancel = $q.defer();
+			var request = {
+				method: 'GET',
+				url: '/api/user/faculty',
 				timeout: cancel.promise, // cancel promise, standard thing in $http request
 				cancel: cancel // this is where we do our magic
 			};
@@ -123,6 +174,10 @@ angular
 
 		function getNotifications(hash) {
 			return $http.get('/api/notification?email=' + JSON.parse(window.sessionStorage.user).email + (hash ? hash : '')).then(handleSuccess, handleError);
+		}
+
+		function updateNotifStatus(query){
+			return $http.put('/api/notification'+query).then(handleSuccess, handleError);
 		}
 
 		// private functions

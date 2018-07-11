@@ -214,6 +214,7 @@ h6 {
 		background: #95a9c0;
 		margin-left: 2%;
 		margin-top: 10px;
+		padding-bottom: 35px;
 	}
 
 	.notice-list-title{
@@ -747,6 +748,32 @@ h6 {
 	cursor: pointer;
 }
 
+.create-session-button{
+	width:200px;
+	height: 38px;
+	border-radius: 3px;
+	background-color: #eb4a74;
+	border: solid 1px #d0021b;
+	color : #fff;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 36px;
+	font-weight: bolder;
+	cursor: pointer;
+}
+
+.create-session-button:hover{
+	opacity : .8;
+}
+
+.margin-center{
+	margin-left: auto;
+	margin-right: auto;
+}
+.padding-all{
+	padding: 10px;
+}
+
 .event-list-title{
 	background-color: #fff;
 	color: #007fff;
@@ -951,6 +978,8 @@ h6 {
   line-height: normal;
   letter-spacing: normal;
   color: #ffffff;
+  max-height: 30px;
+  overflow: hidden;
 }
 
 .b-e-title{
@@ -1068,6 +1097,26 @@ h6 {
 	height: 30px;
 }
 
+.session-name{
+	font-size: 20px;
+	padding: 10px;
+	color:#007fff;
+}
+.back-white{
+	background : #fff;
+}
+
+.font-small{
+	font-size: small;
+}
+.width-full{
+	width: 100%;
+}
+
+.align-right{
+	text-align: right;
+}
+
 
 .home-e-b-list{
   font-family: OpenSans;
@@ -1098,6 +1147,82 @@ h6 {
 .leave-blank-row{
 	height:12px;
 }
+
+.week-select{
+	padding: 10px;
+	width:200px;
+}
+.dropbtn {
+	background: #fff;
+    color: #007fff;
+    border: none;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+	position: absolute;
+	left:-10px;
+    background-color: #f1f1f1;
+    min-width: 170px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    /* color: #8b8fa1; */
+    padding: 12px 12px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.leave-apply-block:hover .dropdown-content {display: block;}
+
+
+.session-feedback-row{
+		width: 100%;
+		height: 84px;
+		border-radius: 4px;
+		box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.1);
+		background-color: #ffffff;
+		border: solid 1px #e0e6ef;
+}
+
+.session-feedback-td{
+		font-size: 14px;
+		font-weight: 500;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: normal;
+		letter-spacing: 0.1px;
+		color: #007fff;
+		vertical-align: middle !important;
+}
+
+.session-feedback-th{
+	color: #2968b1;
+	font-size: 16px;
+	font-weight: 500;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: normal;
+	letter-spacing: 0.1px;
+}
+
+.feedback-button{
+	background: #007fff;
+	color:#fff;
+	border-radius: 4px;
+	border: solid 1px #e0e6ef;
+	padding:5px 10px 5px 10px;
+}
+
 @media(max-width:990px){
 	.event-mar{
 		margin-left:0;

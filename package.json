@@ -43,6 +43,7 @@
     "debug": "~2.2.0",
     "directory-exists": "^2.0.0",
     "dotenv": "^4.0.0",
+    "download-file": "^0.1.5",
     "express": "4.13.4",
     "express-validator": "^3.2.1",
     "jade": "~1.11.0",

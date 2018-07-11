@@ -5,12 +5,21 @@
         <div class="leave-top-block-element" style="color: #fe6b29;">Total leave taken : {{leavesTaken}}</div>
         <div class="leave-top-block-element" style="color: #1bcb7b;">Total leave left : {{totalLeaves-leavesTaken}}</div>
     </div>
-    <div class="leave-apply-block" data-toggle="modal" data-target="#myModal">
+    <!-- <div class="leave-apply-block" ng-click="openLeaveModal();">
         + Request For Leave
+    </div> -->
+    <div class="leave-apply-block">
+        <div class="dropdown">
+            <button class="dropbtn"> + Request For Leave</button>
+            <div class="dropdown-content">
+              <a ng-click="openLeaveModal(null,false,'station');">Station/Casual Leave</a>
+              <a ng-click="openLeaveModal(null,false,'earned');">Earned Leave</a>
+            </div>
+          </div>
     </div>
 </div>
 <div class="col-md-12" style="font-size:16px;font-weight:900;color:#4a4a4a;margin:20px 0px 14px 0px;padding-left:30px;">List of Leaves {{user.isStudent ? 'You' : 'Others'}} Requested</div>
-<div class="col-md-12 padding-left-zero">
+<div class="col-md-12 padding-left-zero" ng-show="leaves.length > 0">
     <div class="col-md-12 table-responsive">
         <table class="table">
             <thead class="leave-table" ng-if="user.isStudent">
@@ -35,30 +44,34 @@
             <tbody>
                 <tr ng-repeat="leave in leaves" ng-class="($index % 2 == 1) ? 'leave-blank-row': 'leave-list-tr'" ng-if="user.isStudent">
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.leaveType}} Leave</td>
-                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.departDate | date : "dd.MM.y"}}({{leave.departTime}})</td>
-                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.arrivalDate | date : "dd.MM.y"}}({{leave.arrivalTime}})</td>
+                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.departDate | date : "dd.MM.y"}}{{leave.departTime ? '('+leave.departTime+')' : ''}}</td>
+                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.arrivalDate | date : "dd.MM.y"}}{{leave.arrivalTime ? '('+leave.arrivalTime+')' : ''}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.to}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.reason}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0" ng-class="leave.status == 'Pending' ? 'leave-pending' : (leave.status == 'Approved' ? 'leave-approved' : 'leave-decline')">{{leave.status}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">
-                        <!-- <button type="button" class="btn btn-default btn-sm leave-action" >
-                                <span class="glyphicon glyphicon-share-alt"></span>
+                        <button type="button" class="btn btn-default btn-sm leave-action" ng-click="openLeaveModal(leave,true,leave.leaveType == 'Station' || leave.leaveType == 'Casual' ? 'station' : 'earned');">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                        </button>
+                        
+                        <!-- <button type="button" class="btn btn-default btn-sm leave-action" ng-click="openLeaveModal(leave,true,leave.leaveType == 'Station' || leave.leaveType == 'Casual' ? 'station' : 'earned');">
+                            view
                         </button> -->
-                        <button type="button" class="btn btn-default btn-sm leave-action">
-                            <span class="glyphicon glyphicon-pencil"></span>
+                        
+                        <button type="button" class="btn btn-default btn-sm leave-action" ng-if="user.isStudent" ng-click="cancelLeave(leave);">
+                            <span class="glyphicon glyphicon-trash"></span>
                         </button>
                         <button type="button" class="btn btn-default btn-sm" style="background:#fdbb30;color:#fff;font-weight:900;" ng-if="leave.leaveAppDeclineReason && leave.leaveAppDeclineReason != ''"
                             ng-click="viewComment(null,leave);">
                             <span class="">View Reason</span>
                         </button>
-
                     </td>
                 </tr>
 
                 <tr ng-repeat="leave in leaves" ng-class="($index % 2 == 1) ? 'leave-blank-row': 'leave-list-tr'" ng-if="!user.isStudent">
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.leaveType}} Leave</td>
-                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.departDate | date : "dd.MM.y"}}({{leave.departTime}})</td>
-                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.arrivalDate | date : "dd.MM.y"}}({{leave.arrivalTime}})</td>
+                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.departDate | date : "dd.MM.y"}}{{leave.departTime ? '('+leave.departTime+')' : ''}}</td>
+                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.arrivalDate | date : "dd.MM.y"}}{{leave.arrivalTime ? '('+leave.arrivalTime+')' : ''}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.createdAt | date : "dd.MM.y"}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.userId.name}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.commentToShow ? leave.commentToShow : leave.reason}}
@@ -72,6 +85,9 @@
                         <button type="button" class="btn btn-default btn-sm leave-action" ng-click="changeLeaveStatus(leave);">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>
+                        <button type="button" class="btn btn-default btn-sm leave-action" ng-click="openLeaveModal(leave,true,leave.leaveType == 'Station' || leave.leaveType == 'Casual' ? 'station' : 'earned');">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                        </button>
                         <a ui-sref="course({ username: leave.userId.name })">
                             <button type="button" class="btn btn-default btn-sm leave-action">
                                 <span class="">View Profile</span>
@@ -84,6 +100,11 @@
         </table>
     </div>
 </div>
+<div class="col-md-12 center" ng-hide="leaves.length > 0">
+    <div class="card">
+        No Leave to display
+    </div>
+</div>
 
 <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
@@ -93,14 +114,14 @@
                 <h4 class="modal-title center">Leave Application</h4>
             </div>
             <div class="modal-body">
-                <div class="">
+                <div class="" ng-show="station">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="col-md-12">
                                 To
                                 <br>The Course Director
                                 <br>
-                                <input type="text" ng-model="batchNumber" class="leave-app" style="width:auto;" />,
+                                <input type="text" ng-model="user.name.studentdata.batch" class="leave-app" style="width:auto;" ng-readonly="true"/>,
                                 <br>NADT, Nagpur
                                 <br>
                                 <br>
@@ -120,21 +141,24 @@
                                 <div class="row leave-app-input">
                                     <div class="col-sm-5 ">Name Of The Officer Trainee :</div>
                                     <div class="col-sm-7">
-                                        <input type="text" ng-model="user.name" class="leave-app" ng-readonly="true" />
+                                        <input type="text" ng-model="user.name" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                        <input type="text" ng-value="leave.userId.name" class="leave-app" ng-readonly="true" ng-if="preview"/>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-5 ">Roll Number :</div>
                                     <div class="col-sm-7">
-                                        <input type="text" ng-model="user.studentdata.rollNumber" class="leave-app" ng-readonly="true" />
+                                        <input type="text" ng-model="user.studentdata.rollNumber" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                        <input type="text" ng-value="leave.userId.studentdata.rollNumber" class="leave-app" ng-readonly="true" ng-if="preview"/>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-5 ">Station Leave/Casual Leave :</div>
                                     <div class="col-sm-7">
-                                        <select class="btn btn-primary dropdown-toggle" ng-model="leaveType">
+                                        <select class="btn btn-primary dropdown-toggle" ng-model="leaveType"  ng-if="!preview">
                                             <option ng-repeat="opt in optsLeave">{{opt}}</option>
                                         </select>
+                                        <input type="text" ng-value="leave.leaveType" class="leave-app" ng-readonly="true"  ng-if="preview"/>
                                         <!-- <input type="text" ng-model="leaveType" class="leave-app"/> -->
                                     </div>
                                 </div>
@@ -142,13 +166,15 @@
                                     <div class="col-md-6 padding-zero">
                                         <div class="col-sm-6">Departure Date :</div>
                                         <div class="col-sm-6">
-                                            <input type="text" class="leave-app" id="datepicker" ng-model="departDate">
+                                            <input type="text" class="leave-app" id="datepicker" ng-model="departDate" ng-hide="preview">
+                                            <input type="text" class="leave-app"  ng-value="leave.departDate | date:'dd/MM/yyyy'" ng-readonly="true" ng-show="preview">
                                         </div>
                                     </div>
                                     <div class="col-md-6 padding-zero">
                                         <div class="col-sm-6">Departure Time :</div>
                                         <div class="col-sm-6">
-                                            <input type="text" class="leave-app" ng-model="departTime" id="timepicker">
+                                            <input type="text" class="leave-app" ng-model="departTime" id="timepicker" ng-hide="preview">
+                                            <input type="text" class="leave-app" ng-value="leave.departTime" ng-readonly="true" ng-show="preview">
                                         </div>
                                     </div>
                                 </div>
@@ -156,35 +182,66 @@
                                     <div class="col-md-6 padding-zero">
                                         <div class="col-sm-6">Arrival Date :</div>
                                         <div class="col-sm-6">
-                                            <input type="text" class="leave-app" id="datepicker1" ng-model="arrivalDate">
+                                            <input type="text" class="leave-app" id="datepicker1" ng-model="arrivalDate" ng-hide="preview">
+                                            <input type="text" class="leave-app"  ng-value="leave.arrivalDate | date:'dd/MM/yyyy'" ng-readonly="true" ng-show="preview">
                                         </div>
                                     </div>
                                     <div class="col-md-6 padding-zero">
                                         <div class="col-sm-6">Arrival Time :</div>
                                         <div class="col-sm-6">
-                                            <input type="text" ng-model="arrivalTime" class="leave-app" id="timepicker1" />
+                                            <input type="text" ng-model="arrivalTime" class="leave-app" id="timepicker1" ng-hide="preview"/>
+                                            <input type="text" ng-value="leave.arrivalTime" class="leave-app" ng-readonly="true" ng-show="preview"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input"  ng-if="(leave.status != 'Pending' && preview)">
+                                    <div class="col-md-12 padding-zero">
+                                        <div class="col-sm-6">Leave Status<span style="color:red;font-size:10px;">(By Approver)</span> :</div>
+                                        <div class="col-sm-6">
+                                            <input type="text" ng-value="leave.status" class="leave-app" ng-readonly="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input"   ng-if="(leave.status != 'Pending' && preview)">
+                                    <div class="col-md-12 padding-zero">
+                                        <div class="col-sm-6">Number of Days<span style="color:red;font-size:10px;">(By Approver)</span> :</div>
+                                        <div class="col-sm-2">
+                                            <input type="number"  ng-value="leave.leaveDays" class="leave-app" ng-readonly="true">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input"  ng-if="(leave.status != 'Pending' && preview)">
+                                    <div class="col-md-12 padding-zero">
+                                        <div class="col-sm-6">Decline/Approve Reason<span style="color:red;font-size:10px;">(By Approver)</span> :</div>
+                                        <div class="col-sm-6">
+                                            <textarea class="leave-app" rows="1" ng-model="leave.leaveAppDeclineReason" ng-readonly="true"></textarea>
+                                           
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-7">Reason For Station leave/Casual leave :</div>
                                     <div class="col-sm-5">
-                                        <textarea class="leave-app" rows="1" ng-model="reason"></textarea>
+                                        <textarea class="leave-app" rows="1" ng-model="reason" ng-hide="preview"></textarea>
+                                        <textarea class="leave-app" rows="1" ng-value="leave.reason" ng-readonly="true" ng-show="preview"></textarea>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-8">Combining with Casual leave/Station leave or not:</div>
                                     <div class="col-sm-4 padding-left-zero">
-                                        <select class="btn btn-primary dropdown-toggle" ng-model="combiningFlag">
+                                        <select class="btn btn-primary dropdown-toggle" ng-model="combiningFlag" ng-hide="preview">
                                             <option ng-repeat="opt in optsCombining">{{opt}}</option>
                                         </select>
+                                        <input type="text" ng-value="leave.combiningWithCusualStation ? 'Yes' : 'No'" class="leave-app" ng-readonly="true" ng-show="preview"/>
                                         <!-- <input type="text" ng-model="combiningFlag" class="leave-app"/> -->
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-6">Address (Stay during leave period):</div>
                                     <div class="col-sm-6">
-                                        <textarea class="leave-app" rows="1" ng-model="leaveStayAddress"></textarea>
+                                        <textarea class="leave-app" rows="1" ng-model="leaveStayAddress" ng-hide="preview"></textarea>
+                                        <textarea class="leave-app" rows="1" ng-value="leave.addressDuringLeave" ng-readonly="true" ng-show="preview"></textarea>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
@@ -197,34 +254,41 @@
                                 <div class="row leave-app-input">
                                     <div class="col-sm-3">Name of leave :</div>
                                     <div class="col-sm-4">
-                                        <input type="text" ng-value="lastApprovedLeave.leaveType" class="leave-app" ng-readonly="true" />
+                                        <input type="text" ng-value="lastApprovedLeave.leaveType ? lastApprovedLeave.leaveType : 'Not yet taken'" class="leave-app" ng-readonly="true"  ng-hide="preview"/>
+                                        <input type="text" ng-value="leave.lastApprovedLeaveDetails.leaveType" class="leave-app" ng-readonly="true"  ng-show="preview"/>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-3">Period of leave :</div>
                                     <span class="col-sm-9">
-                                        <span class="leave-app">
-                                            {{lastApprovedLeave.departDate | date}}({{lastApprovedLeave.departTime}}) - {{lastApprovedLeave.arrivalDate | date}}({{lastApprovedLeave.arrivalTime}})
-
+                                        <span class="leave-app" ng-hide="preview">
+                                            {{lastApprovedLeave.departDate ? (lastApprovedLeave.departDate | date) : 'Not yet taken'}} {{lastApprovedLeave.departTime ? '('+lastApprovedLeave.departTime+')-' : ''}}{{lastApprovedLeave.arrivalDate | date}}{{lastApprovedLeave.arrivalTime ? '('+lastApprovedLeave.arrivalTime+')' : ''}}
+                                            <!-- <input type="text"  class="leave-app" ng-readonly="true" ng-if="!lastApprovedLeave.departDate"/> -->
+                                        </span>
+                                        <span class="leave-app" ng-show="preview">
+                                            {{leave.lastApprovedLeaveDetails.departDate ? (leave.lastApprovedLeaveDetails.departDate | date) : 'Not yet taken'}}{{leave.lastApprovedLeaveDetails.departTime ? '('+leave.lastApprovedLeaveDetails.departTime+')-' : ''}}{{leave.lastApprovedLeaveDetails.arrivalDate | date}}{{leave.lastApprovedLeaveDetails.arrivalTime ? '('+leave.lastApprovedLeaveDetails.arrivalTime+')' : ''}}
                                         </span>
                                     </span>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-3">Date of Return :</div>
                                     <div class="col-sm-4">
-                                        <input type="text" ng-value="lastApprovedLeave.arrivalDate | date" class="leave-app" />
+                                        <input type="text" ng-value="lastApprovedLeave.arrivalDate ? (lastApprovedLeave.arrivalDate | date) : 'Not yet taken'" class="leave-app" ng-if="!preview" ng-readonly="true"/>
+                                        <input type="text" ng-value="leave.lastApprovedLeaveDetails.arrivalDate | date" class="leave-app" ng-readonly="true" ng-if="preview"/>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-3">Mobile Number :</div>
                                     <div class="col-sm-4">
-                                        <input type="text" ng-model="user.studentdata.mobile" class="leave-app" ng-readonly="true" />
+                                        <input type="text" ng-model="user.studentdata.mobile" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                        <input type="text" ng-value="leave.userId.studentdata.mobile" class="leave-app" ng-readonly="true" ng-if="preview"/>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input">
                                     <div class="col-sm-3">Email Address :</div>
                                     <div class="col-sm-4">
-                                        <input type="text" ng-model="user.email" class="leave-app" ng-readonly="true" />
+                                        <input type="text" ng-model="user.email" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                        <input type="text" ng-value="leave.userId.email" class="leave-app" ng-readonly="true" ng-if="preview"/>
                                     </div>
                                 </div>
                                 <div class="row leave-app-input leave-sign">
@@ -240,13 +304,187 @@
                                     <div class="leave-app-input">
                                         <div class="col-sm-5 padding-zero">Name :</div>
                                         <div class="col-sm-7 padding-zero">
-                                            <input type="text" ng-model="user.name" class="leave-app" ng-readonly="true" />
+                                            <input type="text" ng-model="user.name" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                            <input type="text" ng-value="leave.userId.name" class="leave-app" ng-readonly="true" ng-if="preview"/>
                                         </div>
                                     </div>
                                     <div class="leave-app-input">
                                         <div class="col-sm-5 padding-zero">Roll No :</div>
                                         <div class="col-sm-7 padding-zero">
-                                            <input type="text" ng-model="user.studentdata.rollNumber" class="leave-app" ng-readonly="true" />
+                                            <input type="text" ng-model="user.studentdata.rollNumber" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                            <input type="text" ng-value="leave.userId.studentdata.rollNumber" class="leave-app" ng-readonly="true" ng-if="preview"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="" ng-hide="station">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-12 center">
+                                <u>
+                                    <b>APPLICATION FOR LEAVE OR FOR EXTENSION OF LEAVE </b>
+                                </u>
+                                <br>
+                                <br>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row leave-app-input">
+                                    <div class="col-sm-5 ">Name Of Applicant :</div>
+                                    <div class="col-sm-7">
+                                        <input type="text" ng-model="user.name" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                        <input type="text" ng-value="leave.userId.name" class="leave-app" ng-readonly="true" ng-if="preview"/>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                    <div class="col-sm-5 ">Post held :</div>
+                                    <div class="col-sm-7">
+                                        <input type="text"  ng-model="user.studentdata.postHeld" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                        <input type="text" ng-value="leave.userId.studentdata.postHeld" class="leave-app" ng-readonly="true" ng-if="preview"/>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                    <div class="col-sm-5 ">Department, Office and Section :</div>
+                                    <div class="col-sm-7">
+                                            <input type="text" ng-value="user.studentdata.department" class="leave-app" ng-readonly="true"  ng-if="!preview"/>
+                                        <input type="text" ng-value="leave.userId.studentdata.department" class="leave-app" ng-readonly="true"  ng-if="preview"/>
+                                        <!-- <input type="text" ng-model="leaveType" class="leave-app"/> -->
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                    <div class="col-md-12 padding-zero">
+                                        <div class="col-sm-5">Pay :</div>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="leave-app"  ng-model="user.studentdata.pay" ng-hide="preview" ng-readonly="true">
+                                            <input type="text" class="leave-app"  ng-value="leave.userId.studentdata.pay" ng-readonly="true" ng-show="preview">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                        <div class="col-md-12 padding-zero">
+                                            <div class="col-sm-6">House rent or other compensatory allowances drawn in the present post :</div>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="leave-app" ng-model="user.studentdata.allowances"  ng-hide="preview" ng-readonly="true">
+                                                <input type="text" class="leave-app" ng-value="leave.userId.studentdata.allowances" ng-readonly="true" ng-show="preview">
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                        <div class="col-sm-5 "> Leave Type :</div>
+                                        <div class="col-sm-7">
+                                            <input type="text" ng-model="leaveType" class="leave-app" ng-readonly="true"  ng-hide="preview"/>
+                                            <input type="text" ng-value="leave.leaveType" class="leave-app" ng-readonly="true"  ng-show="preview"/>
+                                            <!-- <input type="text" ng-model="leaveType" class="leave-app"/> -->
+                                        </div>
+                                    </div>
+                                    <div class="row leave-app-input">
+                                        <div class="col-md-6 padding-zero">
+                                            <div class="col-sm-6">Departure Date :</div>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="leave-app" id="datepicker2" ng-model="departDate" ng-hide="preview">
+                                                <input type="text" class="leave-app"  ng-value="leave.departDate | date:'dd/MM/yyyy'" ng-readonly="true" ng-show="preview">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 padding-zero">
+                                                <div class="col-sm-6">Arrival Date :</div>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="leave-app" id="datepicker3" ng-model="arrivalDate" ng-hide="preview">
+                                                    <input type="text" class="leave-app"  ng-value="leave.arrivalDate | date:'dd/MM/yyyy'" ng-readonly="true" ng-show="preview">
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="row leave-app-input" ng-if="(leave.status != 'Pending' && preview)">
+                                        <div class="col-md-12 padding-zero">
+                                            <div class="col-sm-6">Leave Status<span style="color:red;font-size:10px;">(By Approver)</span> :</div>
+                                            <div class="col-sm-6">
+                                                <input type="text" ng-value="leave.status" class="leave-app" ng-readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row leave-app-input"   ng-if="(leave.status != 'Pending' && preview)">
+                                        <div class="col-md-12 padding-zero">
+                                            <div class="col-sm-6">Number of Days<span style="color:red;font-size:10px;">(By Approver)</span> :</div>
+                                            <div class="col-sm-2">
+                                                <input type="number"  ng-value="leave.leaveDays" class="leave-app" ng-readonly="true">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row leave-app-input"  ng-if="(leave.status != 'Pending' && preview)">
+                                        <div class="col-md-12 padding-zero">
+                                            <div class="col-sm-6">Decline/Approve Reason<span style="color:red;font-size:10px;">(By Approver)</span> :</div>
+                                            <div class="col-sm-6">
+                                                <textarea class="leave-app" rows="1" ng-model="leave.leaveAppDeclineReason" ng-readonly="true"></textarea>
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                <div class="row leave-app-input">
+                                    <div class="col-sm-5">Reason For leave :</div>
+                                    <div class="col-sm-7">
+                                        <textarea class="leave-app" rows="1" ng-model="reason" ng-hide="preview"></textarea>
+                                        <textarea class="leave-app" rows="1" ng-value="leave.reason" ng-readonly="true" ng-show="preview"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                    <div class="col-sm-5">Address (during leave):</div>
+                                    <div class="col-sm-7">
+                                        <textarea class="leave-app" rows="1" ng-model="leaveStayAddress" ng-hide="preview"></textarea>
+                                        <textarea class="leave-app" rows="1" ng-value="leave.addressDuringLeave" ng-readonly="true" ng-show="preview"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                    <div class="col-md-12">
+                                        <u>
+                                            <b>Date of return from last leave</b>
+                                        </u>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                    <div class="col-sm-3">Name of leave :</div>
+                                    <div class="col-sm-4">
+                                        <input type="text" ng-value="lastApprovedLeave.leaveType" class="leave-app" ng-readonly="true"  ng-hide="preview"/>
+                                        <input type="text" ng-value="leave.lastApprovedLeaveDetails.leaveType" class="leave-app" ng-readonly="true"  ng-show="preview"/>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input">
+                                    <div class="col-sm-3">Period of leave :</div>
+                                    <span class="col-sm-9">
+                                        <span class="leave-app" ng-hide="preview">
+                                            {{lastApprovedLeave.departDate ? (lastApprovedLeave.departDate | date) : 'Not yet taken'}} 
+                                            <!-- <input type="text"  class="leave-app" ng-readonly="true" ng-if="!lastApprovedLeave.departDate"/> -->
+                                        </span>
+                                        <span class="leave-app" ng-show="preview">
+                                            {{leave.lastApprovedLeaveDetails.departDate ? (leave.lastApprovedLeaveDetails.departDate | date) : 'Not yet taken'}}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="row leave-app-input">
+                                    <div class="col-sm-3">Date of Return :</div>
+                                    <div class="col-sm-4">
+                                        <input type="text" ng-value="lastApprovedLeave.arrivalDate ? (lastApprovedLeave.arrivalDate | date) : 'Not yet taken'" class="leave-app" ng-if="!preview" ng-readonly="true"/>
+                                        <input type="text" ng-value="leave.lastApprovedLeaveDetails.arrivalDate | date" class="leave-app" ng-readonly="true" ng-if="preview"/>
+                                    </div>
+                                </div>
+                                <div class="row leave-app-input leave-sign">
+                                    <div class="leave-app-input">
+                                        <div class="col-sm-12 center">Yours faithfully,</div>
+                                    </div>
+                                    <div class="leave-app-input">
+                                        <div class="col-sm-5 padding-zero">Name :</div>
+                                        <div class="col-sm-7 padding-zero">
+                                            <input type="text" ng-model="user.name" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                            <input type="text" ng-value="leave.userId.name" class="leave-app" ng-readonly="true" ng-if="preview"/>
+                                        </div>
+                                    </div>
+                                    <div class="leave-app-input">
+                                        <div class="col-sm-5 padding-zero">Roll No :</div>
+                                        <div class="col-sm-7 padding-zero">
+                                            <input type="text" ng-model="user.studentdata.rollNumber" class="leave-app" ng-readonly="true" ng-if="!preview"/>
+                                            <input type="text" ng-value="leave.userId.studentdata.rollNumber" class="leave-app" ng-readonly="true" ng-if="preview"/>
                                         </div>
                                     </div>
                                 </div>
@@ -256,12 +494,16 @@
                 </div>
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-success" ng-click="applyLeave();">Apply</button>
+                <button type="button" class="btn btn-success" ng-click="applyLeave();" ng-if="!preview">Apply</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="preview">Close</button>
+               
             </div>
         </div>
 
     </div>
 </div>
+
+
 
 <div class="modal fade" id="comment" role="dialog">
     <div class="modal-dialog">

@@ -11,6 +11,7 @@ var util = require('util');
 var path = require('path');
 var async = require('async');
 const Event = require('./event');
+const download = require('download-file')
 
 module.exports.postRegister = (req, res, next) => {
   //console.log('from reg',req.body.passwd)
@@ -54,7 +55,7 @@ module.exports.login = function (req, res) {
                 if (user.isStudent)
                   var logUser = { email: user.email, _id: user._id, isStudent: user.isStudent, token: token, name: user.name, studentdata: user.studentdata, profilePic: user.profilePic, groupName: user.groupName, totalLeaves: user.totalLeave, leavesTaken: user.leavesTaken };
                 else
-                  var logUser = { email: user.email, _id: user._id, isStudent: user.isStudent, token: token, name: user.name, facultydata: user.facultydata, profilePic: user.profilePic };
+                  var logUser = { email: user.email, _id: user._id, isStudent: user.isStudent, token: token, name: user.name, facultydata: user.facultydata, profilePic: user.profilePic,admin:user.isAdmin};
                 res.send({ status: 200, message: 'Success', data: logUser });
               })
             } else {
@@ -123,6 +124,26 @@ module.exports.getBatch = function (req, res) {
   })
 }
 
+module.exports.getFaculty = function (req, res) {
+  User.find({ isStudent: false }, { password: 0, studentdata:0 }, function (err, faculties) {
+    if (!err){
+      var facultyArr = [];
+      //console.log(faculties)
+      faculties.forEach(function(item){
+        facultyArr.push({name:item.name,email:item.email,isStudent:false,areaOfSpecializaion : item.facultydata.areaOfSpecializaion,
+          typeOfFaculty : item.facultydata.typeOfFaculty,designation:item.facultydata.designation,officeAddress:item.facultydata.officeAddress,
+        mailingAddress:item.facultydata.mailingAddress,contact:item.facultydata.contact,profileDesc:item.facultydata.profileDesc,
+      profilePic:item.profilePic,comment : item.facultydata.comment})
+      })
+      res.send({ status: 200, data: facultyArr });
+    }
+    else
+      res.send({ status: 400, message: 'Error getting batch users' });
+
+
+  })
+}
+
 
 module.exports.getBirthdayAndEvents = function (req, res) {
   async.waterfall([
@@ -131,14 +152,14 @@ module.exports.getBirthdayAndEvents = function (req, res) {
       Event.getupcomingEvents(obj, cb);
     },
     function (evnt, cb) {
-      var query = { "studentdata.month": { $gte: new Date().getMonth() + 1 }, "studentdata.day": { $gte: new Date().getDate() } };
+      var query = { "studentdata.month": { $gte: new Date().getMonth() + 1 }, "studentdata.day": { $gte: new Date().getDate() } ,isStudent:true};
       // console.log(query)
-      User.find(query, { name: 1, "studentdata.dob": 1, profilePic: 1, "studentdata.month": 1, "studentdata.day": 1 }, function (err, users) {
+      User.find(query, { name: 1, "studentdata.dob": 1,profilePic: 1, "studentdata.month": 1, "studentdata.day": 1 }, function (err, users) {
         var birthdays = [];
         if (!err) {
           var newUsers = [];
           users.forEach(function (item) {
-            newUsers.push({ name: item.name, dob: item.studentdata.dob, month: item.studentdata.month, day: item.studentdata.day, profilePic: item.profilePic })
+            newUsers.push({ name: item.name, dob: item.studentdata.dob, month: item.studentdata.month, day: item.studentdata.day, profilePic: item.profilePic})
           })
           var birthdays = newUsers.sort(orderByProperty('month', 'day'));
           if (birthdays.length > 0)
@@ -170,11 +191,12 @@ module.exports.importUsers = function (req, res) {
     //dob.setMonth(dob.getMonth()+1);
     dob.setDate(dob.getDate() + 1);
     var lectureGroup = item["roll_no"].match(/[a-zA-Z]+/g);
+    var serialNo = item["roll_no"].match(/\d+/g);
     const user = new User({
       email: item.email,
       password: item.email,
       name: item.first_name + ' ' + item.middle_ame + ' ' + item.last_name,
-      profilePic: '',
+      profilePic : lectureGroup[0]+'-'+serialNo[0]+'.jpg',
       isStudent: true,
       studentdata: {
         lectureGroup: lectureGroup[0],
@@ -194,7 +216,55 @@ module.exports.importUsers = function (req, res) {
         rollNumber: item["roll_no"],
         houseName: '',
         counsellorName: '',
-        morningActivityGroup: ''
+        morningActivityGroup: '',
+        postHeld : 'Assistant Commissioner of Income Tax(UT)',
+        pay : '56100/- (level 10)',
+        allowances : 'Not Applicable',
+        department:'Department of Revenue, Ministry of Finance',
+        batch : '71st'
+       }
+    });
+    user.save((err) => {
+      if (err)
+        console.error(err)
+
+    });
+    //})
+    // }
+  });
+
+  res.send({ status: 200, message: 'Success' });
+}
+
+module.exports.importFaculty = function (req, res) {
+  var jsonContent = require("./faculty.json");
+  //console.log(jsonContent)
+  // Define to JSON type
+  //var jsonContent = JSON.parse(contents);
+  //fs.readFile('../controllers/data.json', 'utf8', function (err, data) {
+  //console.log(err)
+  // if(!err){
+  // var jsonContent = JSON.parse(data);
+  jsonContent.forEach(function (item) {
+    const user = new User({
+      email: item.email,
+      password: item.email,
+      name: item.name,
+      profilePic : item.pic,
+      isStudent: false,
+      admin : item.email == 'rajeev855@gmail.com' ? true : false,
+      facultydata : {
+        areaOfSpecializaion : item.special,
+        typeOfFaculty : '',
+        designation : item.degn,
+        officeAddress : item.ofcAdd,
+        mailingAddress : item.mailAdd,
+        comment : '',
+        contact : {
+          phone : item.contact,
+          fax :''
+        },
+        profileDesc : item.profile
       }
     });
     user.save((err) => {
@@ -372,6 +442,7 @@ module.exports.getTrainingMaterialHome = function (req, res) {
     count++;
   });
 
+  data = data.length > 11 ? data.slice(0,11) : data;
   // console.log(data)
 
   res.send({ status: 200, data: data });
@@ -449,6 +520,8 @@ module.exports.getFolderFiles = function (req, res) {
     res.send({ status: 200, data: result })
   })
 }
+
+
 
 function orderByProperty(prop) {
   var args = Array.prototype.slice.call(arguments, 1);

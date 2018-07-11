@@ -1,5 +1,6 @@
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
+const User = require('../models/User');
 
 function Utility(){  }
 
@@ -8,8 +9,14 @@ Utility.prototype.authenticateUser = function(req,res,next){
         jwt.verify(token, 'portal', function(err, decoded){
             if(err)
                 res.send({status:403,message:'Un-Authorized user'});
-            else
-                 next();
+            else{
+                User.findOne({_id:decoded.token},function(err,user){
+                    if(!err && user)
+                        next();
+                    else
+                        res.send({status:403,message:'Un-Authorized user'});
+                })
+            }
         });
     
 }
@@ -18,7 +25,7 @@ Utility.prototype.authenticateUser = function(req,res,next){
 
 Utility.prototype.secureUser = function(id,callback){
     var token = jwt.sign({ token: id },'portal', {
-      expiresIn: '24h' // expires in 24 hours
+      expiresIn: '2h' // expires in 24 hours
     });
     callback(null,token)
 }

@@ -2,9 +2,10 @@
         <ul class="ul-sub-menu1">
                 <li class="menu1 sub-sub-menu active-bottom" ng-click="activateTrainingOrSession('training');" id="training">Training Material</li>
                 <li class="menu1 sub-sub-menu" ng-click="activateTrainingOrSession('session');" id="session">Session Recorded Videos</li>
+                <li class="menu1 sub-sub-menu" ng-click="activateTrainingOrSession('sessionfeedback');" id="sessionfeedback">Session Feedback</li>
         </ul>
 </div>
-<div style="margin-top: 20px;" class="col-md-12">
+<div style="margin-top: 20px;" class="col-md-12" ng-hide="sessionFalg">
         <div style="" class="col-md-3 padding-right-zero padding-left-zero">
                 <div style="background: #4a90e2;border-radius: 4px;padding: 8px;color:#fff;" class="col-md-12 padding-right-zero padding-left-zero">
                         <div style="margin:7px;" class="col-md-4">List of : </div>
@@ -41,8 +42,7 @@
                                                                                 <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(week1.name);" class="col-md-12 padding-left-zero">
                                                                                         <div class="col-md-8 padding-right-zero padding-left-zero">{{week1.name}}</div>
                                                                                         <div style="text-align: -webkit-center;" class="col-md-3">
-                                                                                                <i class="fas fa-chevron-down {{week1.name}}"
-                                                                                                        style="color:#007fff"></i>
+                                                                                                <i class="fas fa-chevron-down {{week1.name}}" style="color:#007fff"></i>
                                                                                         </div>
                                                                                 </div>
                                                                                 <div id="{{week1.name}}" style="display:none;">
@@ -53,8 +53,7 @@
                                                                                                         <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(subject1.name);" class="col-md-12 padding-left-zero">
                                                                                                                 <div class="col-md-8 padding-right-zero padding-left-zero">{{subject1.name}}</div>
                                                                                                                 <div style="text-align: -webkit-center;" class="col-md-3">
-                                                                                                                        <i class="fas fa-chevron-down {{subject1.name}}"
-                                                                                                                                style="color:#007fff"></i>
+                                                                                                                        <i class="fas fa-chevron-down {{subject1.name}}" style="color:#007fff"></i>
                                                                                                                 </div>
                                                                                                         </div>
                                                                                                         <div id="{{subject1.name}}" style="display:none;">
@@ -66,9 +65,7 @@
                                                                                                                                 <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(week2.name);" class="col-md-12 padding-left-zero">
                                                                                                                                         <div class="col-md-8 padding-right-zero padding-left-zero">{{week2.name}}</div>
                                                                                                                                         <div style="text-align: -webkit-center;" class="col-md-3">
-                                                                                                                                                <i
-                                                                                                                                                        class="fas fa-chevron-down {{week2.name}}"
-                                                                                                                                                        style="color:#007fff"></i>
+                                                                                                                                                <i class="fas fa-chevron-down {{week2.name}}" style="color:#007fff"></i>
                                                                                                                                         </div>
                                                                                                                                 </div>
                                                                                                                                 <div id="{{week2.name}}" style="display:none;">
@@ -80,9 +77,7 @@
                                                                                                                                                         <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(subject2.name);" class="col-md-12 padding-left-zero">
                                                                                                                                                                 <div class="col-md-8 padding-right-zero padding-left-zero">{{subject2.name}}</div>
                                                                                                                                                                 <div style="text-align: -webkit-center;" class="col-md-3">
-                                                                                                                                                                        <i
-                                                                                                                                                                                class="fas fa-chevron-down {{subject2.name}}"
-                                                                                                                                                                                style="color:#007fff"></i>
+                                                                                                                                                                        <i class="fas fa-chevron-down {{subject2.name}}" style="color:#007fff"></i>
                                                                                                                                                                 </div>
                                                                                                                                                         </div>
                                                                                                                                                         <div id="{{subject2.name}}" style="display:none;">
@@ -94,9 +89,7 @@
                                                                                                                                                                                 <div style="margin: 5px 0 5px 0;cursor:pointer;" ng-click="toggleWeek(week3.name);" class="col-md-12 padding-left-zero">
                                                                                                                                                                                         <div class="col-md-8 padding-right-zero padding-left-zero">{{week3.name}}</div>
                                                                                                                                                                                         <div style="text-align: -webkit-center;" class="col-md-3">
-                                                                                                                                                                                                <i
-                                                                                                                                                                                                        class="fas fa-chevron-down {{week3.name}}"
-                                                                                                                                                                                                        style="color:#007fff"></i>
+                                                                                                                                                                                                <i class="fas fa-chevron-down {{week3.name}}" style="color:#007fff"></i>
                                                                                                                                                                                         </div>
                                                                                                                                                                                 </div>
                                                                                                                                                                                 <div id="{{week3.name}}" style="display:none">
@@ -162,5 +155,173 @@
                         <div style="text-align: -webkit-center;font-size: -webkit-xxx-large;
                 ">Training Material Display Area</div>
                 </div>
+        </div>
+</div>
+<div class="col-md-12"  style="margin-top:10px;" ng-show="sessionFalg">
+        <div class="col-md-12" ng-if="(!user.isStudent && user.admin)">
+                <div class="col-md-6">
+                        <div class="create-session-button" data-toggle="modal" data-target="#myModal" style="margin-left:auto">
+                                + Create New Session
+                        </div>
+                </div>
+                <div class="col-md-6" ng-if="weeksession.length > 0">
+                        <select class="btn btn-primary dropdown-toggle week-select" ng-model="optWeek" ng-change="changeWeek(optWeek);">
+                                <option ng-repeat="opt in weeksession">{{opt}}</option>
+                        </select>
+                </div>
+        </div>
+        <div class="col-md-12" ng-if="(!user.admin)">
+                <div class="col-md-12">
+                        <div class="col-md-12 center" ng-if="weeksession.length > 0">
+                                <select class="btn btn-primary dropdown-toggle week-select" ng-model="optWeek" ng-change="changeWeek(optWeek);">
+                                        <option ng-repeat="opt in weeksession">{{opt}}</option>
+                                </select>
+                        </div>
+                </div>
+        </div>
+        <div class="col-md-12" ng-if="(user.isStudent)">
+                <div class="col-md-12 table-responsive" ng-if="(user.isStudent)">
+                        <table class="table">
+                            <thead class="session-feedback-th">
+                                <th>Session Name</th>
+                                <th>Faculty Name</th>
+                                <th>Content Feedback</th>
+                                <th>Presenatation  Feedback</th>
+                                <th>Remark</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="session in weeksessionArr" ng-class="($index % 2 == 1) ? 'leave-blank-row': 'session-feedback-row'">
+                                    <td class="session-feedback-td" ng-if="$index % 2 == 0">{{session.sessionName}} </td>
+                                    <td class="session-feedback-td" ng-if="$index % 2 == 0">{{session.facultyName}}</td>
+                                    <td class="session-feedback-td" ng-if="$index % 2 == 0">
+                                                <div star-rating rating-value="-1" max="4"  ng-hide="session.feedback" on-rating-selected="getSelectedRating()" rating-flag="true" star-id="'content-' + session._id"></div>
+                                                <div star-rating rating-value="session.feedback.contentFeedback == 0 ? -1 :session.feedback.contentFeedback" max="4" on-rating-selected="getSelectedRating(rating)" ng-show="session.feedback" rating-flag="!session.feedback"></div>
+                                        </td>
+                                        <td class="session-feedback-td" ng-if="$index % 2 == 0">
+                                                        <div star-rating rating-value="-1" max="4" on-rating-selected="getSelectedRating(rating)" ng-hide="session.feedback" rating-flag="true" star-id="'present-' + session._id"></div>
+                                                        <div star-rating rating-value="session.feedback.presentationFeedback == 0 ? -1 : session.feedback.presentationFeedback" max="4" on-rating-selected="getSelectedRating()" ng-show="session.feedback" rating-flag="!session.feedback"></div>
+                                                </td>
+                                    <td class="session-feedback-td" ng-if="$index % 2 == 0">
+                                            <textarea class="form-control" id="{{'remark-' +session._id}}"  placeholder="Write something....." ng-hide="session.feedback"></textarea>
+                                            <textarea class="form-control"  ng-value="session.feedback.remark" ng-show="session.feedback" ng-readonly="true"></textarea>
+                                        </td>
+                                    <td class="session-feedback-td" ng-if="$index % 2 == 0">
+                                        <button type="button" class="feedback-button" ng-style="{ 'opacity' : (session.feedback) ? '0.5' : '1' }" ng-click="submitFeedback(session._id);" ng-disabled="session.feedback" id="{{'button-' +session._id}}">
+                                            <span class="">Submit</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="card center" ng-hide="weeksessionArr.length" style="margin-top:10px;">
+                                No Session Data Available
+                        </div>
+                </div>
+                
+        </div>
+        <div class="col-md-12" ng-if="(!user.isStudent && user.admin)">
+                <table class="table table-striped" ng-show="weeksessionArr.length > 0">
+                        <thead>
+                                <tr>
+                                        <th>Week Name</th>
+                                        <th>Session Name</th>
+                                        <th>Faculty Name</th>
+                                        <th>Faculty Email</th>
+                                        <th>Created On</th>
+                                        <th>Action</th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                                <tr ng-repeat="week in weeksessionArr">
+                                        <td>{{week.weekName}}</td>
+                                        <td>{{week.sessionName}}</td>
+                                        <td>{{week.facultyName}}</td>
+                                        <td>{{week.facultyEmail}}</td>
+                                        <td>{{week.createdAt | date}}</td>
+                                        <td>
+                                                <input type="checkbox" id="{{week._id}}" ng-checked="week.sessionStatus"  ng-click="actWeekSession(week._id)">
+                                                <button type="button" class="btn btn-danger pull-right" ng-click="deleteSession(week);">
+                                                                <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                        </td>
+                                </tr>
+                        </tbody>
+                </table>
+                <div class="card center" ng-hide="weeksessionArr.length > 0" style="margin-top:10px;">
+                        No Session Data Available
+                </div>
+        </div>
+        <div class="col-md-12" ng-if="(!user.isStudent && !user.admin)">
+                <div class="col-md-12" ng-repeat="sessionObj in sessionArr" style="margin-top:10px;">
+                       <div class="col-md-7 back-white">
+                               <div class="center session-name">
+                                       <u>{{sessionObj.sessionName}}</u>
+                               </div>
+                        <canvas  id="bar" class="chart chart-bar" chart-series="series" chart-data="[sessionObj.feedback.cont,sessionObj.feedback.pres]" chart-labels="labels"  chart-colors="colours" chart-options="options"> 
+                        </canvas>
+                       </div>
+                        <div class="col-md-4" style="height:200px;">
+                                <div ng-repeat="remark in sessionObj.feedback.remark" style="color:#007fff;" class="back-white">
+                                               <div class=" width-full" style="padding:5px;">
+                                                <span>&#8594;</span> {{remark.content}}
+                                               </div>
+                                                <div class="align-right font-small width-full" style="padding:2px 8px;">
+                                                        {{remark.remarkDate | date}}
+                                                </div>
+                                                <div class="width-full" style="height:1px;background:lightgray;"></div>
+                                </div>
+                        </div>
+
+                </div>
+                <div class="card center" ng-hide="sessionArr.length" style="margin-top:10px;">
+                        No Session Feedback Data Available
+                </div>
+        </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                        <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title center">Create New Session</h4>
+                        </div>
+                        <div class="modal-body" style="margin-left:30px;">
+                                <div class="row padding-all">
+                                        <label for="staticEmail" class="col-sm-3 col-form-label">Week Name :</label>
+                                        <div class="col-sm-6">
+                                                <input type="text" class="form-control" placeholder="Enter week name" ng-model="weekName">
+                                        </div>
+                                </div>
+                                <div class="row padding-all">
+                                        <label for="staticEmail" class="col-sm-3 col-form-label">Session Name :</label>
+                                        <div class="col-sm-6">
+                                                <input type="text" class="form-control" placeholder="Enter session name" ng-model="sessionName">
+                                        </div>
+                                </div>
+                                <div class="row padding-all">
+                                        <label for="staticEmail" class="col-sm-3 col-form-label">Faculty Name :</label>
+                                        <div class="col-sm-6">
+                                                <input type="text" class="form-control" placeholder="Enter session name" ng-model="facultyName">
+                                        </div>
+                                </div>
+                                <div class="row padding-all">
+                                        <label for="staticEmail" class="col-sm-3 col-form-label">Faculty Email :</label>
+                                        <div class="col-sm-6">
+                                                <input type="text" class="form-control" placeholder="Enter session name" ng-model="facultyEmail">
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                                <button type="button" class="btn btn-danger pull-right" ng-click="createWeekSession();">Save</button>
+                        </div>
+                </div>
+
         </div>
 </div>
