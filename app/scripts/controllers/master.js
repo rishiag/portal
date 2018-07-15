@@ -264,7 +264,7 @@ angular.module('testApp')
 			var folderName = 'notice-files/';
 			$scope.personal = [];
 			$scope.official = [];
-			console.log(response)
+			//console.log(response)
 			if (response.status == 200) {
 				$scope.notices = response.data;
 				$scope.notices.forEach(function (item) {
@@ -466,11 +466,10 @@ angular.module('testApp')
 			}else if(!$scope.user.isStudent){
 				var query = '?email='+$scope.user.email+'&type=faculty';
 			}
-			//var query = '?email='+$scope.user.email+'&type=faculty';
 			BackendService.getWeekSession(query).then(function(response){
-				console.log('weeksession....',response);
 				if(response.status == 200){
 					if(!$scope.user.isStudent && !$scope.user.admin){
+						$scope.allFeed = response.all ? response.all : [];
 						$scope.weeksessionObj = response.data;
 						$scope.weeksession = Object.keys($scope.weeksessionObj);
 						$scope.optWeek =  $scope.weeksession[0];
@@ -485,7 +484,6 @@ angular.module('testApp')
 		getWeekSession();
 
 		$scope.refreshWeekSession = function(response,week){
-			console.log(response)
 			$scope.weeksessionObj = response;
 			$scope.weeksession = Object.keys($scope.weeksessionObj);
 			if($scope.user.isStudent){
@@ -565,7 +563,7 @@ angular.module('testApp')
 			$("#button-"+id).css({"opacity" : "0.5"});
 			$("#remark-"+id).attr('readonly', 'readonly');
 			BackendService.sessionFeedback({contentRating : contentRating,presentRating:presentRating,id:id,userId : $scope.user._id,remark :remark}).then(function(response){
-				console.log('----',response);
+				//console.log('----',response);
 			})
 		}
 
@@ -729,7 +727,8 @@ angular.module('testApp')
 				$scope.videos = [{ "type": "mp4", "src": obj.link, "poster": "http://www.videojs.com/img/poster.jpg", "captions": "http://www.videojs.com/vtt/captions.vtt" }];
 			}
 			else {
-				window.open(obj.link, 'Download');
+				window.open(obj.link, '_self');
+				$scope.displayAreaFlag = true;
 			}
 
 			$timeout(function () {
@@ -754,7 +753,7 @@ angular.module('testApp')
 				obj.facultyName = $scope.facultyName;
 				obj.facultyEmail = $scope.facultyEmail;
 				BackendService.createWeekSession(obj).then(function(response){
-					console.log('week....',response)
+					//console.log('week....',response)
 					if(response.status == 200){
 						$scope.refreshWeekSession(response.data);
 						$scope.weekName = '';
@@ -777,7 +776,7 @@ angular.module('testApp')
 				status = false;
 			}
 			BackendService.actWeekSession('?id='+id,{'status':status}).then(function(response){
-				console.log(response.status)
+				//console.log(response.status)
 			})
 		}
 
@@ -787,7 +786,7 @@ angular.module('testApp')
 
 		
 		BackendService.getFacultyData().then(function(response){
-			console.log('faculty',response)
+			//console.log('faculty',response)
 			if (response.status == 200) {
 				$scope.facultyArr = response.data;
 				$scope.faculty = $scope.facultyArr[0];
@@ -867,7 +866,7 @@ angular.module('testApp')
 					$timeout(function () {
 						$('.notice-link').removeClass('notice-active');
 						$('#' + $scope.timetableArr[0]._id).addClass('notice-active');
-						console.log('from high light time-table',$scope.timetableArr[0]._id)
+						//console.log('from high light time-table',$scope.timetableArr[0]._id)
 					},2)
 				//console.log('$scope.pdfUrl',$scope.pdfUrl)
 			}
@@ -1038,7 +1037,7 @@ angular.module('testApp')
 					$('#' + event._id).addClass('event-active');
 				})
 			}else{
-				console.log('from else of common event.....',$scope.commonArr)
+				//console.log('from else of common event.....',$scope.commonArr)
 			}
 			$scope.refreshHallOfFameData();
 		}
@@ -1204,7 +1203,7 @@ angular.module('testApp')
 		$scope.optsStatusLeave = ['Declined', 'Approved'];
 
 		BackendService.getLeaves('?email=' + $scope.user.email).then(function (response) {
-			console.log('response', response)
+			//console.log('response', response)
 			$scope.leaves = [];
 			if (response.status == 200) {
 				$scope.refreshLeave(response);
@@ -1215,7 +1214,7 @@ angular.module('testApp')
 			$scope.leaves = [];
 			$scope.lastApprovedLeave = response.lastApprovedLeave && response.lastApprovedLeave.length ? response.lastApprovedLeave[0] : {};
 			if (response.data.length && $scope.user.isStudent) {
-				console.log('from leaves....', response.data[0])
+				//console.log('from leaves....', response.data[0])
 				$scope.leavesTaken = response.data[0].userId.leavesTaken;
 			} else if ($scope.user.isStudent) {
 				$scope.leavesTaken = 0;
@@ -1305,7 +1304,7 @@ angular.module('testApp')
 				obj.leaveAppDeclineReason = $scope.leaveAppDeclineReason;
 				obj.leaveId = $scope.leave._id;
 				BackendService.leaveApproveOrDecline('?id=' + $scope.leave.userId._id, obj).then(function (response) {
-					console.log(response)
+					//console.log(response)
 					if (response.status == 200) {
 						message('Leave Status successfully changed.', ngToast);
 						$scope.refreshLeave(response);

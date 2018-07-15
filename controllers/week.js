@@ -109,7 +109,7 @@ module.exports.getWeekSession = function(req,res){
                         });
                         sessionData[key] = sessionArr;
                     });
-                    res.send({ status: 200, data : sessionData});
+                    res.send({ status: 200, data : sessionData,all:allFeed});
                 }else{
                     res.send({ status: 200, data : weekSession});
                 }
