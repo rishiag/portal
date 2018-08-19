@@ -8,7 +8,7 @@
     <!-- <div class="leave-apply-block" ng-click="openLeaveModal();">
         + Request For Leave
     </div> -->
-    <div class="leave-apply-block">
+    <div class="leave-apply-block" ng-if = "leave_apply">
         <div class="dropdown">
             <button class="dropbtn"> + Request For Leave</button>
             <div class="dropdown-content">
@@ -27,7 +27,7 @@
                 <th>From(Date)</th>
                 <th>To(Date)</th>
                 <th>Approver</th>
-                <th>Comment</th>
+                <th>Reason</th>
                 <th>Status</th>
                 <th>Actions</th>
             </thead>
@@ -37,7 +37,7 @@
                 <th>To(Date)</th>
                 <th>Requested on</th>
                 <th>Requester</th>
-                <th>Comment</th>
+                <th>Reason</th>
                 <th>Status</th>
                 <th>Actions</th>
             </thead>
@@ -53,10 +53,6 @@
                         <button type="button" class="btn btn-default btn-sm leave-action" ng-click="openLeaveModal(leave,true,leave.leaveType == 'Station' || leave.leaveType == 'Casual' ? 'station' : 'earned');">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                         </button>
-                        
-                        <!-- <button type="button" class="btn btn-default btn-sm leave-action" ng-click="openLeaveModal(leave,true,leave.leaveType == 'Station' || leave.leaveType == 'Casual' ? 'station' : 'earned');">
-                            view
-                        </button> -->
                         
                         <button type="button" class="btn btn-default btn-sm leave-action" ng-if="user.isStudent" ng-click="cancelLeave(leave);">
                             <span class="glyphicon glyphicon-trash"></span>
@@ -74,8 +70,8 @@
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.arrivalDate | date : "dd.MM.y"}}{{leave.arrivalTime ? '('+leave.arrivalTime+')' : ''}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.createdAt | date : "dd.MM.y"}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.userId.name}}</td>
-                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{leave.commentToShow ? leave.commentToShow : leave.reason}}
-                        <span style="color:#007fff;cursor: pointer;font-weight:500;" ng-if="leave.commentToShow" ng-click="viewComment(leave.reason);">View</span>
+                    <td class="leave-table-td" ng-if="$index % 2 == 0">{{ leave.reason}}
+                        <!-- <span style="color:#007fff;cursor: pointer;font-weight:500;" ng-if="leave.commentToShow" ng-click="viewComment(leave.reason);">View</span> -->
                     </td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0" ng-class="leave.status == 'Pending' ? 'leave-pending' : (leave.status == 'Approved' ? 'leave-approved' : 'leave-decline')">{{leave.status}}</td>
                     <td class="leave-table-td" ng-if="$index % 2 == 0">
@@ -91,6 +87,11 @@
                         <a ui-sref="course({ username: leave.userId.name })">
                             <button type="button" class="btn btn-default btn-sm leave-action">
                                 <span class="">View Profile</span>
+                            </button>
+                        </a>
+                        <a ng-click="commentOnLeave( leave._id )">
+                            <button type="button" class="btn btn-default btn-sm leave-action">
+                                <span class="">Comment</span>
                             </button>
                         </a>
                     </td>
@@ -128,7 +129,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                Madam,
+                                Sir/Madam,
                             </div>
                             <div class="col-md-12 center">
                                 <u>
@@ -514,9 +515,44 @@
                 <h4 class="modal-title center">{{leaveApplyOrDecApprReason}}</h4>
             </div>
             <div class="modal-body">
-                <div style="white-space:pre-wrap;color:#8b8fa1;font-size:12px;">{{comm}}
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Comment</th>
+                        <th>Given By</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="comment in leaveAdminComment">
+                        <td>{{comment.comment}}</td>
+                        <td>{{comment.commentor}}</td>
+                        <td>{{comment.date | date}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="modal fade" id="admincomment" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title center">Comment on Leave Request</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <textarea   rows="4" ng-model="commentonleave" placeholder="Type your comment here......" style="width:100%;"></textarea>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-success pull-right" ng-click="submitLeaveComment();">Send</button>
                 </div>
             </div>
         </div>
@@ -543,20 +579,20 @@
                     <div class="row ">
                         <div class="col-sm-6 ">From(Date) :</div>
                         <div class="col-sm-6">
-                            {{leave.departDate | date : "dd.MM.y"}}({{leave.departTime}})
+                            {{leave.departDate | date : "dd.MM.y"}} {{leave.departTime}}
                         </div>
                     </div>
 
                     <div class="row ">
                         <div class="col-sm-6 ">To(Date) :</div>
                         <div class="col-sm-6">
-                            {{leave.arrivalDate | date : "dd.MM.y"}}({{leave.arrivalTime}})
+                            {{leave.arrivalDate | date : "dd.MM.y"}} {{leave.arrivalTime}}
                         </div>
                     </div>
                     <div class="row " ng-if="showLeaveDays" style="padding:5px 0 5px 0;">
-                        <div class="col-sm-6 ">Leave Days :</div>
+                        <div class="col-sm-6">Leave Days : </div>
                         <div class="col-sm-6">
-                            <input type="number" id="leaveDays" class="form-control">
+                            <input type="number" min="0" id="leaveDays" value = "leaveDaysCalculated"}}>
                         </div>
                     </div>
                     <div class="row ">

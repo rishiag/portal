@@ -24,17 +24,28 @@
 		<![endif]-->
 </head>
 
+<!-- <header ng-include="'views/top-bar.html'" class="top-two-header header-class" ng-style="position: fixed">
+</header> -->
+
 <body ng-app="testApp">
 	<title update-title></title>
 	<div header></div>
 	<toast></toast>
-	<div ng-include="'views/top-bar.html'" class="top-two-header header-class">
-	</div>
-
+	<div>
+			<header-directive></header-directive>
+		<!-- <div ng-include="'views/top-bar.html'" class="top-two-header header-class "></div> -->
 	<div class="main-container main-body" ui-view></div>
-	<div footer></div>
+	<footer-directive></footer-directive>
+	
 	<div class="load-wait" id="loading"></div>
+	</div>
 	<script src="js/jquery.min.js"></script>
+	<script>
+			// MDB Lightbox Init
+		$(function () {
+			$("#mdb-lightbox-ui").load("mdb-addons/mdb-lightbox-ui.html");
+		});
+		</script>
 	<script src="js/jquery-ui.js"></script>
 	<script src="angular/angular.min.js"></script>
 	<script src="js/Chart.min.js"></script>

@@ -29,7 +29,7 @@
     "mobile_number": "8010610066",
     "email": "abhishekjjain9@gmail.com",
     "degree_awarded": "B. TECH.",
-    "Degree Awarded": " ",
+    "Degree Awarded": "",
     "prev_exp": "",
     "org1": "",
     "org_type": ""
@@ -55,7 +55,7 @@
 {
     "first_name": "AKANKSHA",
     "roll_no": "A04",
-    "middle_ame": " ",
+    "middle_ame": "",
     "last_name": "VERMA",
     "Gender": "Female",
     "dob": "12/28/1989",
@@ -65,7 +65,7 @@
     "mobile_number": "9650047223",
     "email": "akki2880@gmail.com",
     "degree_awarded": "BACHELOR OF TECHNOLOGY",
-    "Degree Awarded": " ",
+    "Degree Awarded": "",
     "prev_exp": "YES",
     "org1": "IDBI BANK",
     "org_type": "PUBLIC SECTOR BANK"
@@ -91,7 +91,7 @@
 {
     "first_name": "AMAN",
     "roll_no": "A06",
-    "middle_ame": ".",
+    "middle_ame": "",
     "last_name": "BISHLA",
     "Gender": "Male",
     "dob": "9/9/1991",
@@ -109,7 +109,7 @@
 {
     "first_name": "Amitabh",
     "roll_no": "A07",
-    "middle_ame": "`",
+    "middle_ame": "",
     "last_name": "Mishra",
     "Gender": "Male",
     "dob": "1/2/1991",
@@ -125,14 +125,14 @@
     "org_type": "Private Organization"
 },
 {
-    "first_name": "A ND",
+    "first_name": "Anand",
     "roll_no": "A08",
-    "middle_ame": " ",
-    "last_name": " ",
+    "middle_ame": "",
+    "last_name": "Ratkal",
     "Gender": "Male",
     "dob": "10/8/1989",
     "marital_status": "Unmarried",
-    "mother_Tongue": "KAN DA",
+    "mother_Tongue": "KANDA",
     "home_town": "GULBARGA",
     "mobile_number": "9945141601",
     "email": "anandratkal@gmail.com",
@@ -181,7 +181,7 @@
 {
     "first_name": "Aseem",
     "roll_no": "A11",
-    "middle_ame": " ",
+    "middle_ame": "",
     "last_name": "Dalal",
     "Gender": "Male",
     "dob": "9/25/1991",

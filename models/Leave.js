@@ -12,7 +12,7 @@ const leaveSchema = new mongoose.Schema({
   combiningWithCusualStation : Boolean,
   addressDuringLeave : String,
   status : String,
-  leaveAppDeclineReason : String,
+  leaveAppDeclineReason : [],
   approver : String,
   approvalDate : Date,
   leaveDays : {type : Number, default:0},

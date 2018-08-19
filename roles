@@ -1,0 +1,15 @@
+roles = {"create_timetable", "create_event", "create_hall", "edit_hall", "delete_hall"
+"update_club_info","leave_apply", "leave_approve", "leave_comment", "create_session_feedback", 
+"delete_session_feedback"}
+
+
+type_of_user = {student, faculty, admin, CourseDirector, ACD, ADG_training, HobbiesclubSecretary, CulturalclubSecretary}
+
+student_roles = {"leave_apply"}
+faculty_roles = {"create_event"}
+admin_roles = roles
+CourseDirector_roles = {"leave_approve", "leave_comment", "create_session_feedback", "delete_session_feedback", "create_event"}
+ACD_roles = {"leave_comment", "create_event", "create_session_feedback", "delete_session_feedback"}
+ADG_training_roles = CourseDirector_roles
+HobbiesclubSecretary_roles = {"create_event", "create_hall", "edit_hall", "delete_hall", "update_club_info"}
+CulturalclubSecretary_roles = HobbiesclubSecretary_roles

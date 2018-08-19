@@ -109,7 +109,7 @@ module.exports.getWeekSession = function(req,res){
                         });
                         sessionData[key] = sessionArr;
                     });
-                    res.send({ status: 200, data : sessionData,all:allFeed});
+                    res.send({ status: 200, data : sessionData});
                 }else{
                     res.send({ status: 200, data : weekSession});
                 }
@@ -127,23 +127,22 @@ module.exports.getWeekSession = function(req,res){
         var projection = {feedback : 0};
         getSession();
     }else{
-        Week.aggregate([
-            {
-                
-                $unwind : {path : '$feedback',"preserveNullAndEmptyArrays": true}
-            },
-            {
-                
-            $match : {$or : [{"feedback.userId" : req.query.id},
-            {"feedback" :null}]}   
+
+
+        Week.find({},function(err,weekSession){
+            if(!err){
+                var sessionArr = [];
+   
+                weekSession.forEach(function(session){
+                    var feedArr = session.feedback.find(function(feedback){
+                        return feedback.userId == req.query.id;
+                    });
+                    sessionArr.push({feedback:(feedArr && feedArr.length ? feedArr[0] : feedArr),facultyEmail : session.facultyEmail,facultyName:session.facultyName,sessionName:session.sessionName,sessionStatus:session.sessionStatus,weekName:session.weekName,_id:session._id});
+                    });
+                sessionArr = underscore.sortBy(sessionArr,'weekName')
+                sessionArr = underscore.groupBy(sessionArr, 'weekName');
+                res.send({ status: 200, data : sessionArr});
             }
-            
-        ],function(err,weekSession){
-            if (!err){
-                weekSession = underscore.sortBy(weekSession,'weekName')
-                weekSession = underscore.groupBy(weekSession, 'weekName');
-                res.send({ status: 200, data : weekSession});
-            }  
             else
                 res.send({ status: 101, message: 'Error in getting week-session....' });
         });

@@ -32,17 +32,19 @@
        "email":"adg2nadt@gmail.com",
        "pic":"ADG2_Nausheen_Ansari.jpg"
     },
+
     {  
-       "name":"Leena Srivastava",
-       "degn":"Addl. Director General III",
-       "ofcAdd":"ATC Building, NADT, Chhindwara Road, Nagpur",
-       "mailAdd":"ATC Building, NADT, Chhindwara Road, Nagpur",
-       "profile":"Smt. Leena Srivastav hails from Lucknow, UP. She belongs to 1992 Batch of Indian Revenue Service. She graduated in BA (Honours) from Lady Sriram College, New Delhi and completed her MA (Political Science) from Lucknow University. She has extensive work experience in Assessment, Audit, Salary Assessment, TDS, IT & Systems etc. She has worked in Delhi, Amravati, Akola, Lucknow, Aurangabad, Jalgaon, Dhule & Pune. She has attended various training programmes related to Stock Exchange/ Share Market, Investigation, IT Projects & Systems, TDS & Assessment. She has attended Mid Career training in MDI Gurgaon and Duke University, USA; she enjoys Music, Outdoor sports, Travelling, Reading and wild life Photography with driving as an all time passion. She was National level Badminton player. Presently, she is looking after Planning & Research and ICT at NADT. She is in charge of all the in-service and international courses conducted by NADT.",
-       "special":"",
-       "contact":"",
-       "email":"l@l.com",
-       "pic":"ADG3_leena_srivastava.jpg"
-    },
+        "name":"Leena Srivastava",
+        "degn":"Addl. Director General III",
+        "ofcAdd":"ATC Building, NADT, Nagpur",
+        "mailAdd":"ATC Building, NADT, Nagpur",
+        "profile":"Smt. Leena Srivastav hails from Lucknow, UP. She belongs to 1992 Batch of Indian Revenue Service. She graduated in BA (Honours) from Lady Sriram College, New Delhi and completed her MA (Political Science) from Lucknow University. She has extensive work experience in Assessment, Audit, Salary Assessment, TDS, IT & Systems etc. She has worked in Delhi, Amravati, Akola, Lucknow, Aurangabad, Jalgaon, Dhule & Pune. She has attended various training programmes related to Stock Exchange/ Share Market, Investigation, IT Projects & Systems, TDS & Assessment. She has attended Mid Career training in MDI Gurgaon and Duke University, USA; she enjoys Music, Outdoor sports, Travelling, Reading and wild life Photography with driving as an all time passion. She was National level Badminton player. Presently, she is looking after Planning & Research and ICT at NADT. She is in charge of all the in-service and international courses conducted by NADT",
+        "special":"",
+        "contact":"2322201",
+        "email":"adg3nadt@gmail.com",
+        "pic":"ADG3_leena_srivastava.jpg"
+     },
+
     {  
        "name":"Sunil A. Umap",
        "degn":"Additional Director",
@@ -76,17 +78,18 @@
        "email":"rajghosh123@gmail.com",
        "pic":"Rajkumar_Ghosh.jpg"
     },
+
     {  
-       "name":"Sarita Kumari",
-       "degn":"Additional Director, CD",
-       "ofcAdd":"Course Director 71st Batch,ATC Bldg, NADT",
-       "mailAdd":"#2, Type V, NADT Nagpur",
-       "profile":"Smt. Sarita Kumari is an officer of the 2002 Batch of IRS and she hails from Allahabad, Uttar Pradesh. She has done his post graduation in Sanskrit from Central University of Allahabad , Uttar Pradesh.\nShe has served the Department in the fields of Assessment, Investigation, ITAT, System, TDS before joining NADT as the Addl Director (P&R) in June 2016. She has a poetic heart and is passionate about Hindi literature.She has authored three books of hindi poetry and many of her poems and short stories have been  published by various national daily newspapers. She has attended MDP phase II at IIM, Lucknow and IBFD, Amsterdam, Netherland. In between she was on deputation as Director (DT) in C&AG office for two years from 2013 to 2015.",
-       "special":"",
-       "contact":"",
-       "email":"deepsa27@yahoo.com",
-       "pic":"sarita_kumari.jpg"
-    },
+        "name":"Sarita Kumari",
+        "degn":"Additional Director, Course Coordinator 71st",
+        "ofcAdd":"ATC Building, NADT, Nagpur",
+        "mailAdd":"ATC Building, NADT, Nagpur",
+        "profile":"Sarita Kumari is an officer of the 2002 Batch of IRS and she hails from Allahabad, Uttar Pradesh. She has done his post graduation in Sanskrit from Central University of Allahabad , Uttar Pradesh. She has served the Department in the fields of Assessment, Investigation, ITAT, System, TDS before joining NADT as the Addl Director (P&R) in June 2016. She has a poetic heart and is passionate about Hindi literature.She has authored three books of hindi poetry and many of her poems and short stories have been  published by various national daily newspapers. She has attended MDP phase II at IIM, Lucknow and IBFD, Amsterdam, Netherland. In between she was on deputation as Director (DT) in C&AG office for two years from 2013 to 2015.",
+        "special":"",
+        "contact":"2322201",
+        "email":"",
+        "pic":"sarita_kumari.jpg"
+     },
     {  
        "name":"V. Roy Jose",
        "degn":"Additional Director (Admin)",

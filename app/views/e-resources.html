@@ -1,0 +1,24 @@
+<div class="col-md-12" style="padding:50px;" id="batch-div">
+
+    <div class="search-batch">
+            <input type="text" ng-model="query" class="form-control" style="color:#4a90e2;border-radius:15px;" placeholder="Search E Resource">
+        </div>
+
+    <div style="margin-top: 40px" >
+        <div ng-repeat="item in Eresources | filter : query" ng-style="margin-top: 40px">
+            <div class="col-sm-3">
+                <div class="card">
+                    <img src = "{{item.image}}">
+                    <h5 class="card-title" style="font-weight: bold">{{item.product_name}} </h5>
+                    <!-- <p class="card-text">{{item.product_description}}</p> -->
+                    <p class="card-text" ng-if = "item.credentials[0]" ng-repeat="cred in item.credentials">Username : {{cred.username}} Password : {{cred.password}}</p>
+                    <p class="card-text">Website – {{item.website}}</p>
+                    <p class="card-text">{{item.duration}}</p>
+                    <a href="http://www.IndianJournals.com/ijor.aspx" target="_blank" class="btn btn-primary">Go to Website</a>
+                </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+

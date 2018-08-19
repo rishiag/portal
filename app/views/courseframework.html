@@ -84,12 +84,6 @@
                             <div class="panel-body" id="profileDesc" style="font-size:10pt;">{{faculty.profileDesc}}</div>
                         </div>
                     </div>
-                    <div class="col-md-12 card" style="margin-top:5px;">
-                        <div class="panel panel-default panel-border">
-                            <div class="panel-heading">Comment
-                            </div>
-                            <div class="panel-body" id="profileDesc" style="font-size:10pt;">{{faculty.comment}}</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -302,8 +296,8 @@
 
 <div style="margin-left: auto;margin-right: auto;margin-top:3%;background:#f5f6fa !important;" class="col-md-12" id="timetable-div"
     ng-if="timetablediv">
-    <div class="notice-list col-md-4">
-        <div class="create-notice-button" data-toggle="modal" data-target="#myModal">
+    <div class="notice-list col-md-2">
+        <div class="create-notice-button" ng-if = "create_timetable" data-toggle="modal" data-target="#myModal">
             + Upload Time Table
         </div>
         <div style="background:#f5f6fa;height:10px;"></div>
@@ -318,7 +312,7 @@
         </div>
     </div>
 
-    <div class="notice-display-area col-md-7">
+    <div class="notice-display-area col-md-9">
         <div class="col-md-12 center" ng-if="timetableArr.length">
             <a href="{{pdfUrl}}" target="_blank">
                 <span class="glyphicon glyphicon-save" style="font-size:16pt;color:#fff;padding:10px;"></span>

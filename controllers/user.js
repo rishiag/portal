@@ -195,11 +195,9 @@ module.exports.importUsers = function (req, res) {
     const user = new User({
       email: item.email,
       password: item.email,
-      name: item.first_name + ' ' + item.middle_ame + ' ' + item.last_name,
+      name: item.first_name + '' + item.middle_ame + ' ' + item.last_name,
       profilePic : lectureGroup[0]+'-'+serialNo[0]+'.jpg',
       isStudent: true,
-      totalLeave : 10,
-      leavesTaken : 0,
       studentdata: {
         lectureGroup: lectureGroup[0],
         gender: item.Gender,

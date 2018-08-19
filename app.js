@@ -76,6 +76,7 @@ app.get('/api/timetable', utility.authenticateUser,timetableController.getTimeta
 app.get('/api/batch',utility.authenticateUser,userController.getBatch);
 app.get('/api/user/faculty',utility.authenticateUser,userController.getFaculty);
 
+// app.get('/api/e-resources', utility.authenticateUser, userController.getFaculty)
 app.get('/api/user',userController.importUsers);
 app.get('/api/faculty',userController.importFaculty);
 
@@ -91,6 +92,7 @@ app.get('/api/leave',utility.authenticateUser,leaveController.getLeaves);
 app.post('/api/leave',utility.authenticateUser,leaveController.saveLeave);
 app.post('/api/leaveupdate',utility.authenticateUser,leaveController.approveOrDecline);
 app.delete('/api/leave',utility.authenticateUser,leaveController.deleteLeave);
+app.post('/api/leave/comment',utility.authenticateUser,leaveController.commentOnLeave);
 
 app.get('/api/weeksession',utility.authenticateUser,sessionController.getWeekSession);
 app.post('/api/weeksession',utility.authenticateUser,sessionController.createNewSession);

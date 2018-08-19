@@ -82,8 +82,11 @@ angular.module('testApp')
 			// '</div>'
 		};
 	}])
-	.controller('HomeCtrl', function ($scope, $uibModal, BackendService, ngToast, Upload, $filter, $rootScope, $location, $timeout, $compile) {
+	.controller('HomeCtrl', function (broadcastService,$scope, $uibModal, BackendService, ngToast, Upload, $filter, $rootScope, $location, $timeout, $compile) {
 		$('.header-class').removeClass("top-two-header");
+		broadcastService.broadcast('ShowFooter', {
+			some: 'data'
+		});
 		// $scope.trainingArr = [];
 		// 						{fileName : 'Minute to minute program of Mr bipin rawat'},
 		// 						{fileName : 'Minute to minute program of Mr bipin rawat'}];
@@ -110,8 +113,6 @@ angular.module('testApp')
 						item.fileName = folderName + item.fileName;
 					//$scope.notices.push(item);
 				});
-
-
 
 				$scope.noNoticeAvailableMeassage = 'No Official Notice Available.';
 			}
@@ -150,8 +151,9 @@ angular.module('testApp')
 			$location.url('/' + url);
 		}
 	})
-	.controller('LoginCtrl', function ($scope, ngToast, $location, BackendService, $rootScope) {
+	.controller('LoginCtrl', function (broadcastService,$scope, ngToast, $location, BackendService, $rootScope) {
 		$('.header-class').addClass("top-two-header");
+		broadcastService.broadcast('HideFooter');
 		sessionStorage.clear();
 		$rootScope.loggedin = false;
 		$scope.links = [
@@ -186,8 +188,9 @@ angular.module('testApp')
 				})
 		}
 	})
-	.controller('ForgotCntrl', function ($scope, ngToast, $location, BackendService) {
+	.controller('ForgotCntrl', function (broadcastService,$scope, ngToast, $location, BackendService) {
 		$('.header-class').addClass("top-two-header");
+		broadcastService.broadcast('HideFooter');
 		$scope.forgotP = function () {
 			if (!$scope.email || $scope.email == '')
 				return message('Please enter email', ngToast);
@@ -202,14 +205,17 @@ angular.module('testApp')
 				})
 		}
 	})
-	.controller('LogoutCntrl', function ($scope, $location, $rootScope) {
+	.controller('LogoutCntrl', function (broadcastService,$scope, $location, $rootScope) {
 		$('.header-class').addClass("top-two-header");
+		broadcastService.broadcast('HideFooter');
 		sessionStorage.clear();
 		$rootScope.loggedin = false;
 		$location.path("/login");
 	})
-	.controller('RegisterCtrl', function ($scope, $location, $rootScope, BackendService, ngToast) {
+	.controller('RegisterCtrl', function (broadcastService,$scope, $location, $rootScope, BackendService, ngToast) {
 		$('.header-class').addClass("top-two-header");
+		broadcastService.broadcast('HideFooter');
+		
 		sessionStorage.clear();
 		$rootScope.loggedin = false;
 		$scope.signup = function () {
@@ -230,8 +236,11 @@ angular.module('testApp')
 		}
 
 	})
-	.controller('Dashboard', function ($scope, $location) {
+	.controller('Dashboard', function (broadcastService,$scope, $location) {
 		$('.header-class').removeClass("top-two-header");
+		broadcastService.broadcast('ShowFooter', {
+			some: 'data'
+		});
 		$('.ul-sub-menu').click(function (evt) {
 			$('.ul-sub-menu li.active').removeClass('active');
 			$('#' + evt.target.id).addClass('active');
@@ -242,8 +251,11 @@ angular.module('testApp')
 			//window.location.href = '/'+path;
 		}
 	})
-	.controller('Notice', function ($scope, BackendService, $location, ngToast, Upload, $filter, $timeout, $rootScope) {
+	.controller('Notice', function (broadcastService,$scope, BackendService, $location, ngToast, Upload, $filter, $timeout, $rootScope) {
 		$('.header-class').removeClass("top-two-header");
+		broadcastService.broadcast('ShowFooter', {
+			some: 'data'
+		});
 		BackendService.getTags().then(function (response) {
 			if (response.status == 200) {
 				$scope.allTags = response.data;
@@ -264,7 +276,7 @@ angular.module('testApp')
 			var folderName = 'notice-files/';
 			$scope.personal = [];
 			$scope.official = [];
-			//console.log(response)
+			console.log(response)
 			if (response.status == 200) {
 				$scope.notices = response.data;
 				$scope.notices.forEach(function (item) {
@@ -446,8 +458,11 @@ angular.module('testApp')
 			}
 		}
 	})
-	.controller('ClassroomCntrl', function ($scope, $location, $window, $sce, BackendService, $rootScope, $timeout,ngToast) {
+	.controller('ClassroomCntrl', function (broadcastService,$scope, $location, $window, $sce, BackendService, $rootScope, $timeout,ngToast) {
 		$('.header-class').removeClass("top-two-header");
+		broadcastService.broadcast('ShowFooter', {
+			some: 'data'
+		});
 		$scope.user = JSON.parse(window.sessionStorage.user);
 		$scope.sessionFalg = false;
 		$scope.fileAvailable = false;
@@ -466,10 +481,11 @@ angular.module('testApp')
 			}else if(!$scope.user.isStudent){
 				var query = '?email='+$scope.user.email+'&type=faculty';
 			}
+			//var query = '?email='+$scope.user.email+'&type=faculty';
 			BackendService.getWeekSession(query).then(function(response){
+				console.log('weeksession....',response);
 				if(response.status == 200){
 					if(!$scope.user.isStudent && !$scope.user.admin){
-						$scope.allFeed = response.all ? response.all : [];
 						$scope.weeksessionObj = response.data;
 						$scope.weeksession = Object.keys($scope.weeksessionObj);
 						$scope.optWeek =  $scope.weeksession[0];
@@ -484,6 +500,7 @@ angular.module('testApp')
 		getWeekSession();
 
 		$scope.refreshWeekSession = function(response,week){
+			console.log(response)
 			$scope.weeksessionObj = response;
 			$scope.weeksession = Object.keys($scope.weeksessionObj);
 			if($scope.user.isStudent){
@@ -563,7 +580,7 @@ angular.module('testApp')
 			$("#button-"+id).css({"opacity" : "0.5"});
 			$("#remark-"+id).attr('readonly', 'readonly');
 			BackendService.sessionFeedback({contentRating : contentRating,presentRating:presentRating,id:id,userId : $scope.user._id,remark :remark}).then(function(response){
-				//console.log('----',response);
+				console.log('----',response);
 			})
 		}
 
@@ -727,8 +744,7 @@ angular.module('testApp')
 				$scope.videos = [{ "type": "mp4", "src": obj.link, "poster": "http://www.videojs.com/img/poster.jpg", "captions": "http://www.videojs.com/vtt/captions.vtt" }];
 			}
 			else {
-				window.open(obj.link, '_self');
-				$scope.displayAreaFlag = true;
+				window.open(obj.link, 'Download');
 			}
 
 			$timeout(function () {
@@ -753,7 +769,7 @@ angular.module('testApp')
 				obj.facultyName = $scope.facultyName;
 				obj.facultyEmail = $scope.facultyEmail;
 				BackendService.createWeekSession(obj).then(function(response){
-					//console.log('week....',response)
+					console.log('week....',response)
 					if(response.status == 200){
 						$scope.refreshWeekSession(response.data);
 						$scope.weekName = '';
@@ -776,17 +792,19 @@ angular.module('testApp')
 				status = false;
 			}
 			BackendService.actWeekSession('?id='+id,{'status':status}).then(function(response){
-				//console.log(response.status)
+				console.log(response.status)
 			})
 		}
 
 
 	})
-	.controller('CourseframeworkCntrl', function ($scope, ngToast, $location, BackendService, Upload, $timeout, $stateParams) {
-
+	.controller('CourseframeworkCntrl', function (broadcastService,$scope, ngToast, $location, BackendService, Upload, $timeout, $stateParams) {
+		broadcastService.broadcast('ShowFooter', {
+			some: 'data'
+		});
 		
 		BackendService.getFacultyData().then(function(response){
-			//console.log('faculty',response)
+			console.log('faculty',response)
 			if (response.status == 200) {
 				$scope.facultyArr = response.data;
 				$scope.faculty = $scope.facultyArr[0];
@@ -796,7 +814,10 @@ angular.module('testApp')
 			}
 		})
 
-		
+		$scope.isStudent = JSON.parse(window.sessionStorage.user).isStudent
+		$scope.create_timetable = true;
+		if($scope.isStudent == true)
+			$scope.create_timetable = false;
 		$scope.facultydiv = true;
 		$scope.batchdiv = false;
 		$scope.profilediv = false;
@@ -837,7 +858,6 @@ angular.module('testApp')
 
 		$scope.activateCouserFrame = function (id, childId) {
 			$scope.pdfUrl = null;
-			$scope.showtimetable = false;
 			$('.course-menu').removeClass('active-bottom');
 			$('#' + id).addClass('active-bottom');
 			$scope.facultydiv = false;
@@ -866,7 +886,7 @@ angular.module('testApp')
 					$timeout(function () {
 						$('.notice-link').removeClass('notice-active');
 						$('#' + $scope.timetableArr[0]._id).addClass('notice-active');
-						//console.log('from high light time-table',$scope.timetableArr[0]._id)
+						console.log('from high light time-table',$scope.timetableArr[0]._id)
 					},2)
 				//console.log('$scope.pdfUrl',$scope.pdfUrl)
 			}
@@ -906,7 +926,13 @@ angular.module('testApp')
 		}
 
 		$scope.sendEmail = function () {
-			if ($scope.subject == '' || !$scope.subject)
+			if(JSON.parse(window.sessionStorage.user).isStudent == true)
+			{
+				console.log("here");
+				message('OT is not authorized to create a timetable', ngToast);
+				return false;
+			}
+			else if ($scope.subject == '' || !$scope.subject)
 				return message('Please enter time table heading', ngToast);
 			else if (!$scope.file) {
 				return message('Please attach time table', ngToast);
@@ -949,24 +975,55 @@ angular.module('testApp')
 			$scope.fileName = element.files[0].name;
 		}
 	})
-	.controller('ClubCntrl', function ($scope, ngToast, $location, BackendService, $timeout, Upload, $rootScope) {
+	.controller('ClubCntrl', function (broadcastService,$scope, ngToast, $location, BackendService, $timeout, Upload, $rootScope) {
+		broadcastService.broadcast('ShowFooter', {
+			some: 'data'
+		});
 		$scope.cultOpts = ['Dramatics Club', 'Fine Arts Club', 'Music and Dance Club'];
 		$scope.hobbOpts = ['Astronomy Club', 'Adventure Club', 'Social Welfare Club', 'ICT Club', 'Extra Mural Club', 'Literary Club', 'Photography and Movies Club', 'Nature and Wildlife Club'];
 		$scope.optsEvent = ['Active-Events', 'Past-Events'];
 		$scope.optEvent = $scope.optsEvent[0];
+		$scope.club_information_data = {'Dramatics Club' : "Vision of Dramatics and Theatre club is to develop the culture of acting and overall personality development within the officer trainees. This club will play a major role in helping officer trainees in the field where they will have to interact with a number of people. The basic functions and activities related to Dramatics and Theatre club are as follows. Arranging inter house drama or skit competitions within NADT. Conducting workshops on drama and theatre. Arranging professional drama shows for all officer trainees. Organizing Street Plays on socially important issues.", 
+		'Fine Arts Club' : "The purpose of Fine arts club is create and develop art forms. Art is a way of expressing inner thoughts and feelings and this club provides avenues and opportunities for the same in various ways. The basic functions includes organizing sessions, workshops, interactive sessions and classes within the academy and experts from outside for various types of Fine Arts which includes Painting, Sketching, Calligraphy, Origami Collage making etc,",
+		'Music and Dance Club' : "Vision of dance and music club is to develop the culture of dance and music within the officer trainees for the purpose of recreation and enhance overall culture in the academy. The basic functions and activities related to dance and music club are as follows. Organizing cultural events for the participation of Officer Trainees like Cultural Evenings, Music and Dance competitions, Celebration of Festivals, Fetes, and Dance Parties etc. Inviting eminent personalities in the fields of music and dance to perform at NADT. Gathering and disseminating information on Cultural events taking place in and around Nagpur City and facilitating participation, entry tickets etc for the Officer Trainees. Facilitating learning of various music and dance forms, musical instruments by the Officer Trainees through regular classes organized at NADT.",
+		'Astronomy Club' : "Astronomy Club tries to develop new interests in space and help officer trainees to culture of learning and discussing space. The various activities includes, Organizing introductory Workshop including introduction to instruments and computer software as well as basic concepts of astronomy. Demonstration on Sky gazing on select nights. Visit to planetarium. Covering Special occurrences such as eclipses, transits etc. Exhibitions of the photographs taken by members. Outing/Camping at suitable locations for night observations",
+		'Adventure Club' : "Astronomy Club tries to develop new interests in space and help officer trainees to culture of learning and discussing space. The various activities includes Organizing introductory Workshop including introduction to instruments and computer software as well as basic concepts of astronomy. Demonstration on Sky gazing on select nights. Visit to planetarium. Covering Special occurrences such as eclipses, transits etc. Exhibitions of the photographs taken by members. Outing/Camping at suitable locations for night observations",
+		'Social Welfare Club': "",
+		'ICT Club' : "",
+		'Extra Mural Club' : "National Academy of Direct Taxes is a Premier Academy for Training of officers of Prestigious Indian Revenue Service. The Officer Trainees will be very fortunate and will have a great learning experience and exposure if eminent personalities and experts come at academy to deliver a lecture and share their experience. This will provide them motivation to contribute towards Nation Building and give their best in their respective capacities. Hence the main activities would be to invite eminent personalities from various arena like administration, economics, law, tax, film, theatre, social activities, journalism etc to have the chance to be a part of their rich experience which would be valuable for all the Officer Trainees to have the glimpse of different aspects of life which is indispensable to become all round personalities.",
+		'Literary Club' : "The basic objective of this club, as the name say is to develop a culture of reading and writing, which is an Integral part of personality of Officer Trainee. The basic functions of this club includes To publish in House Journal at periodic intervals throughout the year. To publish supplementary issues with focus on special events of the training course within and outside NADT at suitable opportunities. Organising debate on issues of various aspects of contemporary India and the world. Conducting of various theme based literary competitions. Conducting workshops and lectures will be conducted at suitable times."
+	}
+	
 		if ($rootScope['clubs-society']) {
 			$scope.opts = $rootScope['clubs-society'].eventCategory == 'cultural' ? $scope.cultOpts : $scope.hobbOpts;
 			$scope.activeCategoty = $rootScope['clubs-society'].eventCategory == 'cultural' ? 'cultural' : 'hobbies';
 			$scope.optSelected = $rootScope['clubs-society']["eventSubCategory"];
+			$scope.club_title = $scope.optSelected;
+			$scope.club_information = $scope.club_information_data[$scope.optSelected];
 			$('.ul-sub-menu1 li.active-bottom').removeClass('active-bottom');
 			$('#' + $scope.activeCategoty).addClass('active-bottom');
+
 		} else {
 			$scope.opts = $scope.cultOpts;
 			$scope.optSelected = $scope.opts[0];
 			$scope.activeCategoty = 'cultural';
+			$scope.club_title = $scope.optSelected;
+			$scope.club_information = $scope.club_information_data[$scope.optSelected];
 		}
 
 		var creator = { name: JSON.parse(window.sessionStorage.user).name, email: JSON.parse(window.sessionStorage.user).email }
+		$scope.create_event = true;
+		$scope.create_hall = true;
+		$scope.edit_hall = true;
+		$scope.delete_hall = true;
+		if(JSON.parse(window.sessionStorage.user).isStudent == true){
+
+			$scope.create_event = false;
+			$scope.create_hall = false;
+			$scope.edit_hall = false;
+			$scope.delete_hall = false;
+		}
+
 		var groupName = JSON.parse(window.sessionStorage.user).groupName;
 		BackendService.getTags().then(function (response) {
 			if (response.status == 200) {
@@ -1011,6 +1068,9 @@ angular.module('testApp')
 				$('.create-event-button').css({ 'display': 'block' });
 			}
 
+			$scope.club_title = $scope.optSelected;
+			$scope.club_information = $scope.club_information_data[$scope.optSelected];
+
 			if ($scope.commonArr && $scope.commonArr.length) {
 				var event;
 				if (id) {
@@ -1037,7 +1097,7 @@ angular.module('testApp')
 					$('#' + event._id).addClass('event-active');
 				})
 			}else{
-				//console.log('from else of common event.....',$scope.commonArr)
+				console.log('from else of common event.....',$scope.commonArr)
 			}
 			$scope.refreshHallOfFameData();
 		}
@@ -1075,7 +1135,14 @@ angular.module('testApp')
 			return $scope.allTags.filter(o => o.text.toLowerCase().indexOf(query.toLowerCase()) > -1);
 		};
 
+		
+
 		$scope.sendEmail = function () {
+			// if(JSON.parse(window.sessionStorage.user).isStudent == true)
+			// {
+			// 	message('Not authorized to create event', ngToast);
+			// 	return false;
+			// }
 			if ($scope.subjectInput == '' || !$scope.subjectInput)
 				return message('Please enter event heading', ngToast);
 			else if ($scope.eventDateInput == '' || !$scope.eventDateInput)
@@ -1142,6 +1209,11 @@ angular.module('testApp')
 		}
 
 		$scope.saveHallOfFame = function () {
+			if(JSON.parse(window.sessionStorage.user).isStudent == true)
+			{
+				message('Not authorized to create Hall of fame', ngToast);
+				return false;
+			}
 			if ($scope.hallOfFameContent && $scope.hallOfFameContent != '') {
 				var obj = { hallOfFameContent: $scope.hallOfFameContent, name: JSON.parse(window.sessionStorage.user).name, email: JSON.parse(window.sessionStorage.user).email, category: $scope.activeCategoty, subCategory: $scope.optSelected }
 				$scope.hallOfFameContent = '';
@@ -1158,6 +1230,11 @@ angular.module('testApp')
 		}
 
 		$scope.deleteHallOfFame = function (id) {
+			if(JSON.parse(window.sessionStorage.user).isStudent == true)
+			{
+				message('Not authorized to delete event', ngToast);
+				return false;
+			}
 			BackendService.deleteHallOfFame(id).then(function (response) {
 				if (response.status == 200) {
 					$scope.hallOfFame = response.data;
@@ -1174,6 +1251,11 @@ angular.module('testApp')
 		}
 
 		$scope.updateHallOfFame = function () {
+			if(JSON.parse(window.sessionStorage.user).isStudent == true)
+			{
+				message('Not authorized to edit event', ngToast);
+				return false;
+			}
 			BackendService.updateHallOfFame({ id: $scope.hall._id, hallOfFameContent: $scope.hallOfFameContentEdit }).then(function (response) {
 				$scope.hall = null;
 				if (response.status == 200) {
@@ -1191,8 +1273,13 @@ angular.module('testApp')
 			});
 		});
 	})
-	.controller('LeaveCntrl', function ($scope, BackendService, ngToast, $timeout) {
+	.controller('LeaveCntrl', function (broadcastService,$scope, BackendService, ngToast, $timeout) {
 		$scope.user = JSON.parse(window.sessionStorage.user);
+		broadcastService.broadcast('ShowFooter', {
+			some: 'data'
+		});
+		if($scope.user.isStudent == true)
+			$scope.leave_apply = true;
 		$scope.totalLeaves = $scope.user.totalLeaves;
 		$scope.preview = false;
 		$scope.station = true;
@@ -1201,9 +1288,9 @@ angular.module('testApp')
 		$scope.optsCombining = ['Yes', 'No'];
 		$scope.combiningFlag = $scope.optsCombining[0];
 		$scope.optsStatusLeave = ['Declined', 'Approved'];
-
+		$scope.leaveDaysCalculated = 0;
 		BackendService.getLeaves('?email=' + $scope.user.email).then(function (response) {
-			//console.log('response', response)
+			console.log('response', response)
 			$scope.leaves = [];
 			if (response.status == 200) {
 				$scope.refreshLeave(response);
@@ -1214,7 +1301,7 @@ angular.module('testApp')
 			$scope.leaves = [];
 			$scope.lastApprovedLeave = response.lastApprovedLeave && response.lastApprovedLeave.length ? response.lastApprovedLeave[0] : {};
 			if (response.data.length && $scope.user.isStudent) {
-				//console.log('from leaves....', response.data[0])
+				console.log('from leaves....', response.data[0])
 				$scope.leavesTaken = response.data[0].userId.leavesTaken;
 			} else if ($scope.user.isStudent) {
 				$scope.leavesTaken = 0;
@@ -1243,20 +1330,37 @@ angular.module('testApp')
 			$scope.comm = '';
 			$scope.leaveApplyOrDecApprReason = '';
 			if (leave) {
-				$scope.comm = leave.leaveAppDeclineReason;
+				$scope.leaveAdminComment = leave.leaveAppDeclineReason;
 				$scope.leaveApplyOrDecApprReason = 'Leave Decline/Approve Reason';
 			} else {
-				$scope.comm = comment;
+				$scope.leaveAdminComment = comment;
 				$scope.leaveApplyOrDecApprReason = 'Leave Application Reason';
 			}
 
 			$('#comment').modal('show');
 		}
 
+		$scope.commentOnLeave = function (leaveId) {
+			$scope.leaveId = leaveId;
+			$scope.commentonleave = ''; //$scope.optsStatusLeave[$scope.optsStatusLeave.indexOf(leave.status)];
+			$('#admincomment').modal('show');
+		}
+
+		$scope.submitLeaveComment = function () {
+			BackendService.submitLeaveComment('?id='+$scope.leaveId,{comment:$scope.commentonleave,commentor:$scope.user.email}).then(function(response){
+				if (response.status == 200) {
+					$('#admincomment').modal('hide');
+					message('Comment successfully submitted.', ngToast);
+				} else {
+					message(response.message, ngToast);
+				}
+			})
+		}
+
 		$scope.changeLeaveStatus = function (leave) {
 			$scope.leave = leave;
 			$scope.leaveOptStatus = $scope.optsStatusLeave[0]; //$scope.optsStatusLeave[$scope.optsStatusLeave.indexOf(leave.status)];
-			$('#leaveStatusModal').modal('show');
+			$('#leaveStatusModal').modal('show'); //pop-up
 		}
 		$scope.cancelLeave = function(leave){
 			if(leave.status == 'Approved'){
@@ -1304,7 +1408,7 @@ angular.module('testApp')
 				obj.leaveAppDeclineReason = $scope.leaveAppDeclineReason;
 				obj.leaveId = $scope.leave._id;
 				BackendService.leaveApproveOrDecline('?id=' + $scope.leave.userId._id, obj).then(function (response) {
-					//console.log(response)
+					console.log(response)
 					if (response.status == 200) {
 						message('Leave Status successfully changed.', ngToast);
 						$scope.refreshLeave(response);
@@ -1340,10 +1444,30 @@ angular.module('testApp')
 				leave.departTime = $scope.station ? $('#timepicker').val() : '';
 				leave.arrivalDate = $scope.station ? $('#datepicker1').val() : $('#datepicker3').val();
 				leave.arrivalTime = $scope.station ? $('#timepicker1').val() : '';
-				 if(new Date(leave.departDate) > new Date(leave.arrivalDate)){
+				if(new Date(leave.departDate) > new Date(leave.arrivalDate)){
 					message("Please ensure that the Arrival Date is greater than the Departure Date.",ngToast);
 					return false;					
-				 }
+				}
+				
+				$scope.calculateNoOfDays = function getBusinessDatesCount(startDate, endDate) {
+					var count = 0;
+					var curDate = startDate;
+					while (curDate <= endDate) {
+						var dayOfWeek = curDate.getDay();
+						if(!((dayOfWeek == 6) || (dayOfWeek == 0)))
+						   count++;
+						curDate.setDate(curDate.getDate() + 1);
+					}
+					return count
+				}
+
+				$scope.leaveDaysCalculated = $scope.calculateNoOfDays(new Date(leave.departDate), new Date(leave.arrivalDate))
+				console.log($scope.leaveDaysCalculated)
+			
+				if(leave.leaveType == 'Earned' && $scope.leaveDaysCalculated > 3){
+					message("Can not apply more than 3 Earned Leaves", ngToast);
+					return false;					
+				}
 				leave.reason = $scope.reason;
 				leave.combiningWithCusualStation = $scope.station ? $scope.combiningFlag : false;
 				leave.addressDuringLeave = $scope.leaveStayAddress;
@@ -1353,6 +1477,24 @@ angular.module('testApp')
 				leave.lastApprovedLeaveArrivalDate=$scope.lastApprovedLeave.arrivalDate;
 				leave.lastApprovedLeaveArrivalTime=$scope.lastApprovedLeave.arrivalTime;
 				leave.lastApprovedLeaveType=$scope.lastApprovedLeave.leaveType;
+						
+				$scope.CLwithEL = function(){
+					console.log(leave.lastApprovedLeaveType);
+					if(leave.lastApprovedLeaveType && leave.leaveType != leave.lastApprovedLeaveType){
+						console.log(new Date(leave.lastApprovedLeaveArrivalDate));
+						console.log(new Date(leave.departDate));
+						var a = $scope.calculateNoOfDays(new Date(leave.lastApprovedLeaveArrivalDate), new Date(leave.departDate));
+						return a; 						
+					}
+				}
+
+				var CLdiffEL = $scope.CLwithEL()
+				
+				if(CLdiffEL <= 1){
+					message("Can't combine EL and CL", ngToast);
+					return false;
+				}
+
 				BackendService.applyForLeave('?email=' + $scope.user.email, leave).then(function (response) {
 					if (response.status == 200) {
 						$scope.departDate = '';
@@ -1399,6 +1541,221 @@ angular.module('testApp')
 			$('#timepicker1').mdtimepicker();
 		});
 	})
+	.controller('EresourcesCntrl', function (broadcastService,$scope, ngToast, $location, BackendService, Upload, $timeout, $stateParams) {
+		broadcastService.broadcast('ShowFooter', {
+			some: 'data'
+		});
+		$scope.Eresources = [
+			{
+			"product_name": "Tax Sutra",
+			"credentials" : [{"username" : "nadtlibrary1@gmail.com", "password" : "Tax@123"}, {"username" : "nadtlibrary2@gmail.com", "password" : "Tax@123"}],
+			"website" : "www.taxsutra.com",
+			"Duration": "Jan. 2018 to Dec. 2018",
+			"image" : ""
+			},
+			{
+				"product_name": "IIMS Journal of Management Science",
+				"credentials" : [{"username" : "Kalyan_lib@rediffmail.com", "password" : "gold5275"}],
+				"website" : "www.IndianJournals.com/ijor.aspx",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Dynamics of Public Administration",
+				"credentials" : [{"username" : "Kalyan_lib@rediffmail.com", "password" : "gold5275"}],
+				"website" : "www.IndianJournals.com/ijor.aspx",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Siddhant – A Journal of Decision Making",
+				"credentials" : [{"username" : "Kalyan_lib@rediffmail.com", "password" : "gold5275"}],
+				"website" : "www.IndianJournals.com/ijor.aspx",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Training & Development Journal",
+				"credentials" : [{"username" : "Kalyan_lib@rediffmail.com", "password" : "gold5275"}],
+				"website" : "www.IndianJournals.com/ijor.aspx",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Vikalpa Journal",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://vik.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Vision",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://vis.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Vikalpa Journal",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://vik.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Vision",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://vis.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "India Quarterly",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://iqq.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Indian Economic and Social History Review",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://ier.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Indian Historical Review",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://ihr.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Indian Economic and Social History Review",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://ier.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Journal of Human Values",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://jhv.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "South Asia Economic Journal",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://sae.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Journal of Human Values",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://jhv.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "South Asia Economic Journal",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://sae.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "South Asia Research",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://sar.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Studies in History",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://sih.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "The Medieval History Journal",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://mhj.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "South Asian Journal of Macroeconomics and Public Finance",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://smp.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Journal of Infrastructure Development",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://joi.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Studies in Microeconomics",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://mic.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Contributions to Indian Sociology ",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://cis.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Indian Journal of Corporate Governance",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://ijc.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Asian Journal of Management Cases",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://ajc.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Foreign Trade Review",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://ftr.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Asian Journal of Management Cases",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://ajc.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			},
+			{
+				"product_name": "Foreign Trade Review",
+				"credentials" : [{"username" : "nadtlibrary", "password" : "academy"}],
+				"website" : "http://ftr.sagepub.com",
+				"Duration": "Jan. 2018 to Dec. 2018",
+				"image" : ""
+			}
+	
+	
+	]
+	
+	})
+
+	
 
 
 
@@ -1407,3 +1764,5 @@ function message(message, ngToast, call) {
 	if (call)
 		call();
 }
+
+

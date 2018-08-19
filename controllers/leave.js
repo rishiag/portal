@@ -98,12 +98,14 @@ module.exports.approveOrDecline = function (req, res) {
             if (req.body.leaveStatus == 'Approved') {
                 var date = new Date();
                 date.setMonth(date.getMonth() + 1);
-                var setObj = { status: req.body.leaveStatus, leaveAppDeclineReason: req.body.leaveAppDeclineReason, approver: req.body.approver, approvalDate: date, leaveDays: req.body.leaveDays }
+                var setObj = { status: req.body.leaveStatus,  approver: req.body.approver, approvalDate: date, leaveDays: req.body.leaveDays }
             } else {
                 //if(req.body.leaveOldStatus == 'Approved'){
-                var setObj = { status: req.body.leaveStatus, leaveAppDeclineReason: req.body.leaveAppDeclineReason, approver: req.body.approver, leaveDays: 0 }
+                var setObj = { status: req.body.leaveStatus,  approver: req.body.approver, leaveDays: 0 }
                 //}
             }
+
+
             Leave.update({ _id: req.body.leaveId }, { $set: setObj }, function (err) {
                 // console.log(err)
                 if (!err)
@@ -111,6 +113,11 @@ module.exports.approveOrDecline = function (req, res) {
                 else {
                     res.send({ status: 101, message: "Error saving leave request" });
                 }
+            })
+
+
+            Leave.update({ _id: req.body.leaveId }, { $addToSet: {leaveAppDeclineReason:{comment:req.body.leaveAppDeclineReason,commentor: req.body.approver,date:new Date()}} }, function (err) {
+               console.log(err);
             })
         },
         function (cb) {
@@ -153,4 +160,13 @@ module.exports.deleteLeave = function(req,res){
             res.send({ status: 101, message: "Error saving leave request" });
         
     })
+}
+
+module.exports.commentOnLeave = function(req,res){
+    Leave.update({ _id: req.query.id }, { $addToSet: {leaveAppDeclineReason:{comment:req.body.comment,commentor: req.body.commentor,date:new Date()}} }, function (err) {
+        if (!err)
+            res.send({ status: 200, message: "Comment Successfully Submitted" });
+        else 
+            res.send({ status: 101, message: "Error submitting comment" });
+     })
 }

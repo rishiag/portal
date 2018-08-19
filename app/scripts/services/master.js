@@ -33,7 +33,8 @@ angular
 			getWeekSession : getWeekSession,
 			actWeekSession : actWeekSession,
 			sessionFeedback : sessionFeedback,
-			deleteSession : deleteSession
+			deleteSession : deleteSession,
+			submitLeaveComment : submitLeaveComment
 		};
 
 		
@@ -63,6 +64,10 @@ angular
 
 		function cancelLeave(query, ) {
 			return $http.delete('/api/leave' + query).then(handleSuccess, handleError);
+		}
+
+		function submitLeaveComment(query,obj) {
+			return $http.post('/api/leave/comment' + query,obj).then(handleSuccess, handleError);
 		}
 
 		function applyForLeave(query, obj) {

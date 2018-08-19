@@ -1,32 +1,80 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+	  $('.carousel').carousel({
+		interval: 2000
+	  })
+	});
+  </script>
+
 <div style="" class="home-page">
 
-	<div class="col-md-12">
-		<div class="col-md-6" style="margin-top: 10px;">
-			<div class="academics-notices">Academics</div>
-			<div class="home-child-title" style="color:#425364;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;border-color:#e0e6ef !important;">
-				<span stle="color: #425364;">Training Material</span>
-				<span style="float:right;font-size: initial;">{{trainingArr.length}}</span>
+	<div class="col-md-12" style=" 
+	background-color: #FFFFFF;" >
+
+		<div id="myCarousel" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+    <li data-target="#myCarousel" data-slide-to="1"></li>
+    <li data-target="#myCarousel" data-slide-to="2"></li>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+    <div class="item active">
+      <img src="../images/education-banner.jpg" alt="Los Angeles">
+    </div>
+
+    <div class="item">
+      <img src="../images/education-banner.jpg" alt="Chicago">
+    </div>
+
+    <div class="item">
+      <img src="../images/education-banner.jpg" alt="New York">
+    </div>
+  </div>
+
+  <!-- Left and right controls -->
+  <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="right carousel-control" href="#myCarousel" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+		<!-- <div class = "col-md-12">
+		<img src="../images/education-banner.jpg" style="width:1350px;cursor:pointer;height: 260px">
+		</div> -->
+
+
+		<div class="col-md-6" style="margin-top: 40px;">
+			<!-- <div class="academics-notices">Academics</div> -->
+			<div class="home-child-title" style="background-color:#990000;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;border-color:#e0e6ef !important;">
+				<span style="color: #FFFFFF;">Training Material</span>
+				<!-- <span style="float:right;font-size: initial; color: #FFFFFF">{{trainingArr.length}}</span> -->
 			</div>
-			<div class="home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;"
+			<div class="home-child-one-child" ng-repeat="training in trainingArr| limitTo:5" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;"
 			 ng-click="callFromHome(training,'classroom')">{{training.title}}</div>
 			<div class="home-child-one-child home-view-more" ng-click="callFromHome(null,'classroom')" ng-if="trainingArr.length>0">View More</div>
 			<div ng-if="trainingArr.length==0" class="no-material-notice">No Training Material Available</div>
 		</div>
 		<!-- <div style="width:3%"></div> -->
-		<div class=" col-md-6" style="margin-top: 10px;">
-			<div class="academics-notices">Notices</div>
-			<div class="home-child-title" style="color:#425364;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;display:-webkit-box;border-color:#e0e6ef !important;">
+		<div class=" col-md-6" style="margin-top: 40px;">
+			<!-- <div class="academics-notices">Notices</div> -->
+			<div class="home-child-title" style="background-color:#990000;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;display:-webkit-box;border-color:#e0e6ef !important;">
 				<div style="width:100%;display:-webkit-box">
-					<div style="width:38%;color: #425364;">Notices</div>
+					<div style="width:38%;color: #FFFFFF;">Notices</div>
 					<div class="notice-home-count">
-						<div style="color:#007fff;">{{unread}} Unread</div>
-						<div style="width:2px;background:#95a9c0;margin: 0 2px 0 2px;"></div>
-						<div style="color:#425364">{{notices.length}} Total</div>
+						<div style="color:#FFFFFF;">{{unread}} Unread</div>
+						<!-- <div style="width:2px;background:#95a9c0;margin: 0 2px 0 2px;"></div> -->
+						<!-- <div style="color:#425364">{{notices.length}} Total</div> -->
 					</div>
 				</div>
 			</div>
-			<div class="home-child-one-child" ng-repeat="notice in notices" style="padding: 10px 15px 10px 15px;display: -webkit-box;border-color:#e0e6ef;"
-			 ng-click="callFromHome(notice,'notice');" ng-style="(notice.status == 'unread') && {'color': '#007fff'}">
+			<div class="home-child-one-child" ng-repeat="notice in notices | limitTo:5" style="padding: 10px 15px 10px 15px;display: -webkit-box;border-color:#e0e6ef;"
+			 ng-click="callFromHome(notice,'notice');" ng-style="(notice.status == 'unread') && {'color': '#000000', 'font-weight': 'bold'}">
 				<div class="notice-subject-home">{{notice.subjectToShow}}</div>
 				<div style="" class="notice-type-home">{{notice.notificationType ? notice.notificationType :'official' }}</div> &nbsp; &nbsp;
 				<div style="" class="notice-time-home">{{notice.time}}</div>
@@ -35,21 +83,25 @@
 			<div ng-if="notices.length==0" class="no-material-notice">No Notice Available</div>
 		</div>
 	</div>
-	<div class="col-md-12" style="margin: 10px 0 20px 0;">
-		<div style="color:#fff;" class="col-md-6">
-			<div class="academics-notices">Birthday/Events</div>
+	
+	<div class="col-md-12" style="margin: 50px 0 20px 0; background-color: #FFFFFF;">
+		<div style="color:#000000;" class="col-md-8">
 			<div class="col-md-6 padding-left-zero-b-box">
-				<div class="col-md-12 home-b-e-responsive" style="background: linear-gradient(to left, #00b6ff, #007fff);padding: 5px;border-radius:6px 6px 0px 0px;">
+				<div class="home-child-title" style="background-color:#990000;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;border-color:#e0e6ef !important;">
+				<span style="color: #FFFFFF;">Birthdays</span>
+				<!-- <span style="float:right;font-size: initial; color: #FFFFFF">{{trainingArr.length}}</span> -->
+			</div>
+				<div class="col-md-12 home-b-e-responsive" style="background:#ffffff;padding: 5px;border-radius:6px 6px 0px 0px;">
 					<div class="col-md-4 padding-left-zero">
 						<img src="profile-images/batch-pics/{{bpic}}" style="width: 60px;height: 60px;border-radius: 50%;" />
 					</div>
 					<div class="col-md-8 padding-zero ">
-						<div class="home-b-e-name" style="font-size:14px;padding: 5px 0 5px 0;">{{adv}}Happy Birthday!!</div>
+						<div class="home-b-e-name" style="color: #000000;font-size:14px;padding: 5px 0 5px 0;">{{adv}}Happy Birthday!!</div>
 						<div class="home-b-e-name">{{bname}}</div>
 					</div>
 				</div>
-				<div class="col-md-12 b-e-box" style="background-color: #007fff;" id="home-bday">
-					<div class="b-e-title">Upcoming Birthdays</div>
+				<div class="col-md-12 b-e-box" style="background-color: #FFFFFF;" id="home-bday">
+					<div class="b-e-title" style="color: #000000;">Upcoming Birthdays</div>
 					<div ng-repeat="birthday in birthdays" class="home-e-b-list">
 						<span>{{birthday.name}}</span>
 						<span style="float:right;">{{birthday.dob | date : "MMM d"}}</span>
@@ -57,7 +109,11 @@
 				</div>
 			</div>
 			<div class="col-md-6 padding-zero home-event-box-margin">
-				<div class="col-md-12 home-b-e-responsive" style="background: linear-gradient(to left, #9ae846, #7ed321);padding: 5px;border-radius:6px 6px 0px 0px;">
+				<div class="home-child-title" style="background-color:#990000;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;border-color:#e0e6ef !important;">
+				<span style="color: #FFFFFF;">Club Events</span>
+				<!-- <span style="float:right;font-size: initial; color: #FFFFFF">{{trainingArr.length}}</span> -->
+			</div>
+				<div class="col-md-12 home-b-e-responsive" style="background:#ffffff;">
 					<div class="col-md-4 padding-left-zero ">
 						<img src="../images/event-infograph.jpg" style="width: 60px;height: 60px;border-radius: 50%;" />
 					</div>
@@ -66,7 +122,7 @@
 						<div class="home-b-e-name">Gather @ Hall</div>
 					</div>
 				</div>
-				<div class="col-md-12 b-e-box" style=" background-color: #7ed321;" id="home-event">
+				<div class="col-md-12 b-e-box" style=" background-color: #FFFFFF;" id="home-event">
 					<div class="b-e-title">Upcoming Events</div>
 					<div ng-repeat="event in events" class="home-e-b-list" style="cursor: pointer;" ng-click="callFromHome(event,'clubs-society')">
 						<span>{{event.subject}} ({{event.eventVanue}})</span>
@@ -77,13 +133,23 @@
 			</div>
 		</div>
 
-		<div class="col-md-6 home-event-box-margin">
-			<div class="academics-notices">Quick Links</div>
+		<div class="col-md-4 home-event-box-margin">
+			<div class="home-child-title" style="background-color:#990000;font-size:18px;border-top-left-radius: 6px;border-top-right-radius: 6px;cursor:auto;border-color:#e0e6ef !important;">
+				<span style="color: #FFFFFF;">E-Resources</span>
+				<!-- <span style="float:right;font-size: initial; color: #FFFFFF">{{trainingArr.length}}</span> -->
+			</div>
 			<div style="height:204px;overflow-y:scroll;" id="quick-link">
 				<div class="col-md-12 home-child-one-child" ng-repeat="training in trainingArr" style="padding: 10px 15px 10px 15px;border-color:#e0e6ef;"
 				 ng-class="{'quick-link' : $index == 0}">{{training.fileName}}</div>
 			</div>
 		</div>
+
+		
+		
 	</div>
+
+	</div>
+
+	
 
 </div>

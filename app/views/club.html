@@ -17,7 +17,7 @@
 
 <div style="margin-top:3%;background:#f5f6fa !important;" class="col-md-12">
         <div class="event-list event-list-menu col-md-4">
-                <div class="create-event-button" data-toggle="modal" data-target="#myModal">
+                <div class="create-event-button" ng-if="create_event" data-toggle="modal" data-target="#myModal">
                         + Create New Event
                 </div>
                 <div style="background:#fff;height:10px;"></div>
@@ -91,20 +91,8 @@
 <div class="col-md-12" style="margin-top:25px;padding:0;">
         <div class="col-md-6">
                 <div class="panel panel-default panel-border">
-                        <div class="panel-heading club-info" style="background:#fff;">Dramatics Club Information</div>
-                        <div class="panel-body club-info-box" id="clubDesc">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                                industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
-                                of type and scrambled it to make a type specimen book. It has survived not only five centuries,
-                                but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised
-                                in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
-                                recently with desktop publishing software like Aldus PageMaker including versions of Lorem
-                                Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown printer
-                                took a galley of type and scrambled it to make a type specimen book. It has survived not
-                                only five centuries, but also the leap into electronic typesetting, remaining essentially
-                                unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
-                                Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker
-                                including versions of Lorem Ipsum.
+                        <div class="panel-heading club-info" style="background:#fff;">{{club_title}} Information</div>
+                        <div class="panel-body club-info-box" id="clubDesc">{{club_information}}
                         </div>
                 </div>
         </div>
@@ -113,20 +101,20 @@
                         <div class="panel-heading club-info" style="background:#fff;display:-webkit-box;">
                                 <div>Hall Of Fame</div>
                                 <div class="hall-title">
-                                        <a data-toggle="modal" data-target="#hallOfFame" style="cursor: pointer;">
-                                                <img src="../images/add_blue.png" style="width:20px;"> Add Hall of Fame</a>
+                                        <a data-toggle="modal" ng-if="create_hall" data-target="#hallOfFame" style="cursor: pointer;">
+                                                <img src="../images/add_blue.png" style="width:20px;" > Add Hall of Fame</a>
                                 </div>
                                 <!-- <div style="text-align:-webkit-right;width:70%;"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#hallOfFame">Add</button></div> -->
                         </div>
                         <div class="panel-body club-info-box" id="hall">
-                                <div ng-repeat="hall in hallOfFameArr">
+                                <div ng-repeat="hall in hallOfFameArr" class="hallline">
                                         {{hall.hallOfFameContent}}
                                         <div>
                                                 <span style="color:#8b8fa1;font-weight:600;">Added By</span> : {{hall.creator.name}}
                                         </div>
                                         <div style="text-align:right;">
-                                                <button type="button" class="hall-btn btn btn-primary" ng-click="showEditModal(hall);">Edit</button>
-                                                <button type="button" class="hall-btn btn btn-danger" ng-click="deleteHallOfFame(hall._id);">Delete</button>
+                                                <button type="button" class="hall-btn btn btn-primary" ng-if = "edit_hall" ng-click="showEditModal(hall);">Edit</button>
+                                                <button type="button" class="hall-btn btn btn-danger" ng-if= "delete_hall" ng-click="deleteHallOfFame(hall._id);">Delete</button>
                                         </div>
                                         <hr>
                                 </div>

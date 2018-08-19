@@ -77,6 +77,11 @@ angular
 				url : '/leave',
 				templateUrl: 'views/leave.html',
 				controller: 'LeaveCntrl'
+			})
+			.state('e-resources', {
+				url : '/e-resources',
+				templateUrl: 'views/e-resources.html',
+				controller: 'EresourcesCntrl'
 			});
 			$urlRouterProvider.otherwise('/login')
 			$locationProvider.html5Mode(true);
@@ -150,6 +155,52 @@ angular
 			}
 		}
 	})
+	.service('broadcastService', function($rootScope, $log) {
+		this.broadcast = function(eventName, payload) {
+			$log.info('broadcasting: ' + eventName + payload);
+			console.log("from broadcast service")
+			$rootScope.$broadcast(eventName, payload);
+		};
+	})
+	.directive('footerDirective', function(broadcastService, $log) {
+		return {
+			restrict: 'E',
+			templateUrl:'views/footer.html',
+			link: function(scope, elm, attr) {
+				elm.hide();
+				scope.$on('ShowFooter', function(payload) {
+					$log.info('payload received');
+					$log.debug(payload);
+					// assuming you have jQuery
+					elm.show();
+				});
+				scope.$on('HideFooter', function() {
+					// assuming you have jQuery
+					elm.hide();
+				});
+			}
+		}
+	})
+	.directive('headerDirective', function(broadcastService, $log,) {
+		return {
+			restrict: 'E',
+			templateUrl:'views/top-bar.html',
+			link: function(scope, elm, attr) {
+				elm.hide();
+				scope.$on('ShowFooter', function(payload) {
+					console.log("from directicve")
+					$log.info('payload received');
+					$log.debug(payload);
+					// assuming you have jQuery
+					elm.show();
+				});
+				scope.$on('HideFooter', function() {
+					// assuming you have jQuery
+					elm.hide();
+				});
+			}
+		}
+	})
 	.service('apiCheck', ['$location',function($location) {
 		this.request = function(config) {
 			if(window.sessionStorage && window.sessionStorage.user && config.url.indexOf('/api') > -1){
@@ -166,7 +217,7 @@ angular
 		}
 	}])
 	.run(function($rootScope, $location, $state,$timeout,$http){
-		$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+		$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams,broadcastService){
 			//console.log('from state change...',toState.url);
 			$http.pendingRequests.forEach(function(request) {
 				console.log('from pending......',request)
@@ -176,10 +227,8 @@ angular
 			});
 			var privateUrl = ['/home','/notice','/classroom','/courseframework','/club-society','/leave','/clubs-society'];
 			if(privateUrl.indexOf(toState.url) > -1 && window.sessionStorage["user"]){
-				//$timeout(function(){
-				//	console.log("from heder")
+				
 					
-				//},2)
 				$rootScope.loggedin = true;	
 				//console.log(JSON.parse(window.sessionStorage.user))
 				$rootScope.userName = JSON.parse(window.sessionStorage.user).name;
